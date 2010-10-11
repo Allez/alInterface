@@ -1,0 +1,7 @@
+## Interface: 40000
+## Author: Allez
+## Title: |cff777777al|rInterface
+## Notes: Interface setup
+## Version: 40000.1
+
+core.lua
