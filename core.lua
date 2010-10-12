@@ -63,8 +63,8 @@ SlashCmdList["UISETUP"] = function()
 	SetCVar("uiScale", min(2, max(.64, 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))))
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G["ChatFrame"..i]
-		frame:SetSize(400, 150)
-		SetChatWindowSavedDimensions(i, 400, 150)
+		frame:SetSize(400, 145)
+		SetChatWindowSavedDimensions(i, 400, 145)
 		if i == 1 then
 			frame:ClearAllPoints()
 			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 12)
@@ -97,7 +97,7 @@ end
 SLASH_UISETUP1 = "/uisetup"
 
 WatchFrame:ClearAllPoints()
-WatchFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 200, -20)
+WatchFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 190, -20)
 WatchFrame:SetWidth(250)
 WatchFrame:SetHeight(500)
 WatchFrame.SetPoint = function() end
