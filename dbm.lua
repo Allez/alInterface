@@ -25,11 +25,11 @@ local function SkinBars(self)
 				local timer = _G[frame:GetName().."BarTimer"]
 
 				if icon1 then
-					icon1.bg = CreateBG(icon1)
+					--icon1.bg = CreateBG(icon1)
 				end
 
 				if icon2 then
-					icon2.bg = CreateBG(icon2)
+					--icon2.bg = CreateBG(icon2)
 				end
 
 				if not frame.styled then
@@ -62,14 +62,14 @@ local function SkinBars(self)
 				if not name.styled then
 					name:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
 					name:SetShadowOffset(0, 0)
-					name.SetFont = function end
+					name.SetFont = function() end
 					name.styled=true
 				end
 
 				if not timer.styled then	
 					timer:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
 					timer:SetShadowOffset(0, 0)
-					timer.SetFont = function end
+					timer.SetFont = function() end
 					timer.styled=true
 				end
 
