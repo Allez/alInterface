@@ -1,12 +1,18 @@
 if not IsAddOnLoaded("DBM-Core") or not DBM then return end
 
+local backdrop = {
+	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
+	insets = {top = 0, left = 0, bottom = 0, right = 0},
+}
+
 local CreateBG = function(parent)
 	local bg = CreateFrame("Frame", nil, parent)
 	bg:SetPoint("TOPLEFT", parent, "TOPLEFT", -1, 1)
 	bg:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 1, -1)
 	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
 	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.7)
+	bg:SetBackdropColor(0, 0, 0, 0.4)
 	bg:SetBackdropBorderColor(0, 0, 0, 1)
 	return bg
 end
@@ -25,16 +31,22 @@ local function SkinBars(self)
 				local timer = _G[frame:GetName().."BarTimer"]
 
 				if icon1 then
-					--icon1.bg = CreateBG(icon1)
+					icon1:SetSize(15, 15)
 				end
 
 				if icon2 then
-					--icon2.bg = CreateBG(icon2)
+					icon2:SetSize(15, 15)
 				end
 
 				if not frame.styled then
-					bar.frame:SetScale(1)
-					frame:SetSize(200, 15)
+					frame:SetScale(1)
+					frame:SetSize(150, 15)
+					frame.background = CreateBG(frame)
+					frame.styled=true
+				end
+
+				if not tbar.styled then
+					tbar:SetAllPoints(frame)
 					frame.styled=true
 				end
 
