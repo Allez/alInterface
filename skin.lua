@@ -21,7 +21,7 @@ end
 
 local SkinPanel = function(frame)
 	frame:SetBackdrop(backdrop)
-	frame:SetBackdropColor(0, 0, 0, 0.4)
+	frame:SetBackdropColor(0, 0, 0, 0.5)
 	frame:SetBackdropBorderColor(0, 0, 0, 1) 
 end
 
@@ -82,6 +82,7 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 			"VideoOptionsFrameCategoryFrame",
 			"VideoOptionsFramePanelContainer",			
 			"AudioOptionsFrameCategoryFrame",
+			--"AudioOptionsFramePanelContainer",			
 			"AudioOptionsSoundPanel",
 			"AudioOptionsSoundPanelPlayback",
 			"AudioOptionsSoundPanelHardware",
@@ -218,47 +219,9 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 		
-		-- Button position or text
-		_G["VideoOptionsFrameCancel"]:ClearAllPoints()
-		_G["VideoOptionsFrameCancel"]:SetPoint("RIGHT", _G["VideoOptionsFrameApply"], "LEFT", -4, 0)	 
-		_G["VideoOptionsFrameOkay"]:ClearAllPoints()
-		_G["VideoOptionsFrameOkay"]:SetPoint("RIGHT", _G["VideoOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["AudioOptionsFrameOkay"]:ClearAllPoints()
-		_G["AudioOptionsFrameOkay"]:SetPoint("RIGHT", _G["AudioOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["InterfaceOptionsFrameOkay"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameOkay"]:SetPoint("RIGHT", _G["InterfaceOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["ColorPickerOkayButton"]:ClearAllPoints()
-		_G["ColorPickerOkayButton"]:SetPoint("BOTTOMLEFT", _G["ColorPickerFrame"], "BOTTOMLEFT", 6, 6)		 
-		_G["ColorPickerCancelButton"]:ClearAllPoints()
-		_G["ColorPickerCancelButton"]:SetPoint("BOTTOMRIGHT", _G["ColorPickerFrame"], "BOTTOMRIGHT", -6, 6)
-		_G["ReadyCheckFrameYesButton"]:SetParent(_G["ReadyCheckFrame"])
-		_G["ReadyCheckFrameNoButton"]:SetParent(_G["ReadyCheckFrame"]) 
-		_G["ReadyCheckFrameYesButton"]:SetPoint("RIGHT", _G["ReadyCheckFrame"], "CENTER", -6, 0)
-		_G["ReadyCheckFrameNoButton"]:SetPoint("LEFT", _G["ReadyCheckFrameYesButton"], "RIGHT", 6, 0)
-		_G["ReadyCheckFrameText"]:SetParent(_G["ReadyCheckFrame"])	
-		_G["ReadyCheckFrameText"]:ClearAllPoints()
-		_G["ReadyCheckFrameText"]:SetPoint("TOP", 0, -12)
-		_G["InterfaceOptionsFrameTab1"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameTab1"]:SetPoint("TOPLEFT", _G["InterfaceOptionsFrameCategories"], "TOPLEFT", 10, 27)
-		_G["InterfaceOptionsFrameTab2"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameTab2"]:SetPoint("TOPLEFT", _G["InterfaceOptionsFrameTab1"], "TOPRIGHT", 6, 0)
-		_G["ChatConfigFrameDefaultButton"]:SetWidth(125)
-		_G["ChatConfigFrameDefaultButton"]:ClearAllPoints()
-		_G["ChatConfigFrameDefaultButton"]:SetPoint("TOP", _G["ChatConfigCategoryFrame"], "BOTTOM", 0, -4)
-		_G["ChatConfigFrameOkayButton"]:ClearAllPoints()
-		_G["ChatConfigFrameOkayButton"]:SetPoint("TOPRIGHT", _G["ChatConfigBackgroundFrame"], "BOTTOMRIGHT", 0, -4)
-		
 		-- Others
 		_G["ReadyCheckListenerFrame"]:SetAlpha(0)
 		_G["ReadyCheckFrame"]:HookScript("OnShow", function(self) if UnitIsUnit("player", self.initiator) then self:Hide() end end)
-		_G["GhostFrameContentsFrame"]:SetWidth(140)
-		_G["GhostFrameContentsFrame"]:ClearAllPoints()
-		_G["GhostFrameContentsFrame"]:SetPoint("CENTER")
-		_G["GhostFrameContentsFrame"].SetPoint = function() end
-		_G["GhostFrame"]:SetFrameStrata("HIGH")
-		_G["GhostFrame"]:SetFrameLevel(10)
-		_G["GhostFrame"]:ClearAllPoints()
-		_G["GhostFrame"]:SetPoint("BOTTOM", Minimap, "TOP", 0, 5)
 		_G["GhostFrameContentsFrameIcon"]:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 		_G["PlayerPowerBarAlt"]:HookScript("OnShow", function(self) self:ClearAllPoints() self:SetPoint("TOP", 0, -12) end)
 		
