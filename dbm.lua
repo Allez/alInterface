@@ -32,6 +32,7 @@ local SkinBars = function(self)
 
 				if icon1 then
 					icon1:SetSize(15, 15)
+					icon1:SetPoint("RIGHT", frame, "LEFT", -3, 0)
 				end
 
 				if icon2 then
@@ -40,7 +41,7 @@ local SkinBars = function(self)
 
 				if not frame.styled then
 					frame:SetScale(1)
-					frame:SetSize(150, 15)
+					frame:SetHeight(15)
 					frame.background = CreateBG(frame)
 					frame.styled=true
 				end
@@ -67,10 +68,10 @@ local SkinBars = function(self)
 
 				if not icon2.styled then
 					icon2:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-					icon2.frame = CreateFrame("Frame", nil, tbar)
-					icon2.frame:SetFrameStrata("BACKGROUND")
-					icon2.frame:SetAllPoints(icon2)
-					icon2.frame.background = CreateBG(icon2.frame)
+					--icon2.frame = CreateFrame("Frame", nil, tbar)
+					--icon2.frame:SetFrameStrata("BACKGROUND")
+					--icon2.frame:SetAllPoints(icon2)
+					--icon2.frame.background = CreateBG(icon2.frame)
 					icon2.styled=true
 				end
 
@@ -114,11 +115,11 @@ local UploadDBM = function()
 	DBT_SavedOptions["DBM"].Scale = 1
 	DBT_SavedOptions["DBM"].HugeScale = 1
 	DBT_SavedOptions["DBM"].BarXOffset = 0
-	DBT_SavedOptions["DBM"].BarYOffset = 5
+	DBT_SavedOptions["DBM"].BarYOffset = -7
 	DBT_SavedOptions["DBM"].Font = 'Fonts\\VisitorR.TTF'
 	DBT_SavedOptions["DBM"].FontSize = 10
-	DBT_SavedOptions["DBM"].Width = 150
-	DBT_SavedOptions["DBM"].TimerX = 28
+	DBT_SavedOptions["DBM"].Width = 170
+	DBT_SavedOptions["DBM"].TimerX = 125
 	DBT_SavedOptions["DBM"].TimerY = 250
 	DBT_SavedOptions["DBM"].TimerPoint = "BOTTOMLEFT"
 	DBT_SavedOptions["DBM"].FillUpBars = true
