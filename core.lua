@@ -102,3 +102,16 @@ WatchFrame:SetWidth(250)
 WatchFrame:SetHeight(500)
 WatchFrame.SetPoint = function() end
 WatchFrame.ClearAllPoints = function() end
+
+function frame_info(f)
+   local str = ""
+   if(f) then
+      local name = f:GetName() 
+      if(name) then
+         str = str..name
+         local parent = f:GetParent()
+         if(parent) then str = str.." -> ".. frame_info(parent) end
+      else str = "no name" end   
+   end
+   return str
+end 
