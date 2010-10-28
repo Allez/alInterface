@@ -4,7 +4,9 @@
 ## Notes: Interface setup
 ## Version: 40000.1
 ## OptionalDeps: DBM-Core
+## SavedVariables: UISetup
 
 core.lua
 dbm.lua
 skin.lua
+config.lua

@@ -1,26 +1,9 @@
-UIConfig = {
-	ActionBars = {
-		button_size = 27,
-		spacing = 3,
-	},
-	DamageMeter = {
-		anchor = "TOPLEFT",
-		x = 12,
-		barheight = 14,
-		spacing = 1,
-		maxbars = 8,
-		width = 150,
-		maxfights = 10,
-		reportstrings = 10,
-		texture = "Interface\\TargetingFrame\\UI-StatusBar",
-		border_size = 1,
-		font = 'Fonts\\VisitorR.TTF',
-		font_size = 10,
-		hidetitle = false,
-	},
-}
 
-local UISetup = {}
+local addon_name, ns = ...
+
+UIConfig = {}
+UISetup = {}
+
 local lastVisible = nil
 local backdrop = {
 	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -48,7 +31,7 @@ end
 
 local CreateConfigFrame = function()
 	local main = CreateFrame("Frame", "UIConfigFrame", UIParent)
-	local scroll = CreateFrame("ScrollFrame", "UIConfigScrollFrame", main)--, "UIParentScrollFrameTemplate")
+	local scroll = CreateFrame("ScrollFrame", "UIConfigScrollFrame", main)
 	local groups = CreateFrame("Frame", "UIConfigGroupFrame", main)
 	local set = CreateFrame("Button", "UIConfigSetFrame", main)
 	local cancel = CreateFrame("Button", "UIConfigCancelFrame", main)
@@ -69,11 +52,6 @@ local CreateConfigFrame = function()
 	set:SetSize(50, 20)
 	set:SetPoint("TOPRIGHT", main, "BOTTOMRIGHT", 0, -5)
 	set:SetScript("OnClick", function()
-		for group, options in pairs(UISetup) do
-			for option, value in pairs(options) do
-				UIConfig[group][option] = value
-			end
-		end
 		ReloadUI()
 	end)
 	cancel.bg = CreateBG(cancel)
@@ -165,6 +143,22 @@ local CreateConfigFrame = function()
 	end
 end
 
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("ADDON_LOADED")
+frame:SetScript("OnEvent", function(self, event, addon)
+	if addon == addon_name then
+		self:UnregisterEvent(event)
+		if UISetup then
+			for group, options in pairs(UISetup) do
+				for option, value in pairs(options) do
+					if UIConfig and UIConfig[group] then
+						UIConfig[group][option] = value
+					end
+				end
+			end
+		end
+	end
+end)
 
 SlashCmdList["UICONFIG"] = CreateConfigFrame
 SLASH_UICONFIG1 = "/uiconfig"
