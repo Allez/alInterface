@@ -5,6 +5,7 @@ UIConfig = {}
 UISetup = {}
 
 local lastVisible = nil
+
 local backdrop = {
 	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
 	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
@@ -22,6 +23,14 @@ local CreateBG = function(parent)
 	return bg
 end
 
+local CreateFS = function(frame, fsize, fstyle)
+	local fstring = frame:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+	fstring:SetFont('Fonts\\VisitorR.TTF', fsize, fstyle)
+	fstring:SetShadowColor(0, 0, 0, 1)
+	fstring:SetShadowOffset(0, 0)
+	return fstring
+end
+
 local SetValue = function(group, option, value)
 	if not UISetup[group] then
 		UISetup[group] = {}
@@ -30,20 +39,32 @@ local SetValue = function(group, option, value)
 end
 
 local CreateConfigFrame = function()
+	if _G["UIConfigFrame"] then
+		_G["UIConfigFrame"]:Show()
+		return
+	end
+
 	local main = CreateFrame("Frame", "UIConfigFrame", UIParent)
 	local scroll = CreateFrame("ScrollFrame", "UIConfigScrollFrame", main)
 	local groups = CreateFrame("Frame", "UIConfigGroupFrame", main)
 	local set = CreateFrame("Button", "UIConfigSetFrame", main)
 	local cancel = CreateFrame("Button", "UIConfigCancelFrame", main)
+	local title = CreateFrame("Frame", "UIConfigTitleFrame", main)
 
-	main:SetSize(800, 600)
+	main:SetSize(640, 480)
 	main:SetPoint("CENTER")
 	main.bg = CreateBG(main)
-	scroll:SetSize(150, 550)
+	scroll:SetSize(150, 420)
 	scroll:SetPoint("BOTTOMLEFT", 12, 12)
 	scroll:SetScrollChild(groups)
 	scroll.bg = CreateBG(scroll)
 	groups:SetAllPoints(scroll)
+	title:SetPoint("TOPLEFT", 12, -12)
+	title:SetPoint("BOTTOMRIGHT", scroll, "TOPRIGHT", 0, 12)
+	title.bg = CreateBG(title)
+	title.label = CreateFS(title, 20, 'OUTLINEMONOCHROME')
+	title.label:SetPoint("CENTER")
+	title.label:SetText("ALLEZ UI")
 
 	set.bg = CreateBG(set)
 	set.label = set:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -75,8 +96,8 @@ local CreateConfigFrame = function()
 		label:SetFont(GameFontNormal:GetFont(), 14)
 		label:SetText(group)
 		local settings = CreateFrame("Frame", "UIConfigSettings"..group, main)
-		settings:SetSize(600, 550)
 		settings:SetPoint("BOTTOMRIGHT", -12, 12)
+		settings:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 20, 0)
 		settings.bg = CreateBG(settings)
 		settings:Hide()
 		button:SetScript("OnMouseUp", function()
@@ -99,14 +120,14 @@ local CreateConfigFrame = function()
 			if type(value) == "number" or type(value) == "string" then
 				local label = settings:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 				label:SetText(option)
-				label:SetWidth(200)
+				label:SetWidth(140)
 				label:SetHeight(20)
 				label:SetJustifyH("LEFT")
 				label:SetPoint("TOPLEFT", 5, -(offsetgroup))
 				local editbox = CreateFrame("EditBox", nil, settings)
 				editbox:SetAutoFocus(false)
 				editbox:SetMultiLine(false)
-				editbox:SetWidth(300)
+				editbox:SetWidth(200)
 				editbox:SetHeight(20)
 				editbox:SetMaxLetters(255)
 				editbox:SetTextInsets(3, 0, 0, 0)
@@ -144,16 +165,14 @@ local CreateConfigFrame = function()
 end
 
 local frame = CreateFrame("Frame")
-frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, addon)
-	if addon == addon_name then
-		self:UnregisterEvent(event)
-		if UISetup then
-			for group, options in pairs(UISetup) do
-				for option, value in pairs(options) do
-					if UIConfig and UIConfig[group] then
-						UIConfig[group][option] = value
-					end
+	self:UnregisterEvent(event)
+	if UISetup then
+		for group, options in pairs(UISetup) do
+			for option, value in pairs(options) do
+				if UIConfig and UIConfig[group] then
+					UIConfig[group][option] = value
 				end
 			end
 		end
