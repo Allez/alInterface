@@ -11,12 +11,10 @@ local backdrop = {
 
 local function SetModifiedBackdrop(self)
 	self:SetBackdropBorderColor(1, 1, 0, 1)
-	--self.bg:SetVertexColor(SettingsDB.color.r, SettingsDB.color.g, SettingsDB.color.b, 0.3)
 end
 
 local function SetOriginalBackdrop(self)
 	self:SetBackdropBorderColor(0, 0, 0, 1)
-	--self.bg:SetVertexColor(0.1, 0.1, 0.1, 1)
 end
 
 local SkinPanel = function(frame)
@@ -275,55 +273,5 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 		_G["InterfaceOptionsFrameTab2MiddleDisabled"]:SetAlpha(0)
 		_G["InterfaceOptionsFrameTab2RightDisabled"]:SetAlpha(0)
 		_G["InterfaceOptionsFrameTab2HighlightTexture"]:SetAlpha(0)
-	end
-	
-	-- AtlasLoot Tooltip
-	if addon == "AtlasLoot" then
-		AtlasLootTooltip:HookScript("OnShow", function(self) SkinPanel(self) end)
-	end
-	
-	-- DBM-GUI Frame
-	if addon == "DBM-GUI" then
-		SkinPanel(_G["DBM_GUI_OptionsFrame"])
-		SkinPanel(_G["DBM_GUI_OptionsFramePanelContainer"])
-		SkinPanel(_G["DBM_GUI_OptionsFrameTab1"])
-		SkinPanel(_G["DBM_GUI_OptionsFrameTab2"])
-		
-		_G["DBM_GUI_OptionsFrameTab1Left"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1Middle"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1Right"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1LeftDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1MiddleDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1RightDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab1HighlightTexture"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2Left"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2Middle"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2Right"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2LeftDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2MiddleDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2RightDisabled"]:SetAlpha(0)
-		_G["DBM_GUI_OptionsFrameTab2HighlightTexture"]:SetAlpha(0)
-
-		_G["DBM_GUI_OptionsFrameTab1"]:ClearAllPoints()
-		_G["DBM_GUI_OptionsFrameTab1"]:SetPoint("TOPLEFT", _G["DBM_GUI_OptionsFrameBossMods"], "TOPLEFT", 10, 27)
-		_G["DBM_GUI_OptionsFrameTab2"]:ClearAllPoints()
-		_G["DBM_GUI_OptionsFrameTab2"]:SetPoint("TOPLEFT", _G["DBM_GUI_OptionsFrameTab1"], "TOPRIGHT", 6, 0)
-		
-		_G["DBM_GUI_OptionsFrameBossMods"]:HookScript("OnShow", function(self) SkinPanel(self) end)
-		_G["DBM_GUI_OptionsFrameDBMOptions"]:HookScript("OnShow", function(self) SkinPanel(self) end)
-		_G["DBM_GUI_OptionsFrameHeader"]:SetTexture("")
-		_G["DBM_GUI_OptionsFrameHeader"]:ClearAllPoints()
-		_G["DBM_GUI_OptionsFrameHeader"]:SetPoint("TOP", DBM_GUI_OptionsFrame, 0, 7)
-		
-		local dbmbskins = {
-			"DBM_GUI_OptionsFrameOkay",
-		}
-		
-		for i = 1, getn(dbmbskins) do
-			local DBMButtons = _G[dbmbskins[i]]
-			if DBMButtons then
-				SkinButton(DBMButtons)
-			end
-		end
 	end
 end) 

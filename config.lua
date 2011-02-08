@@ -12,7 +12,7 @@ local backdrop = {
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 }
 
-local CreateBG = function(parent)
+local CreateBG = CreateBG or function(parent)
 	local bg = CreateFrame('Frame', nil, parent)
 	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1, 1)
 	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1, -1)
@@ -49,13 +49,16 @@ local CreateConfigFrame = function()
 	local groups = CreateFrame("Frame", "UIConfigGroupFrame", main)
 	local set = CreateFrame("Button", "UIConfigSetFrame", main)
 	local cancel = CreateFrame("Button", "UIConfigCancelFrame", main)
+	local reset = CreateFrame("Button", "UIConfigResetFrame", main)
 	local title = CreateFrame("Frame", "UIConfigTitleFrame", main)
 
 	main:SetSize(640, 480)
 	main:SetPoint("CENTER")
+	main:SetFrameStrata("HIGH")
+	main:SetToplevel(true)
 	main.bg = CreateBG(main)
-	scroll:SetSize(150, 420)
-	scroll:SetPoint("BOTTOMLEFT", 12, 12)
+	scroll:SetSize(150, 390)
+	scroll:SetPoint("BOTTOMLEFT", 12, 42)
 	scroll:SetScrollChild(groups)
 	scroll.bg = CreateBG(scroll)
 	groups:SetAllPoints(scroll)
@@ -64,14 +67,14 @@ local CreateConfigFrame = function()
 	title.bg = CreateBG(title)
 	title.label = CreateFS(title, 20, 'OUTLINEMONOCHROME')
 	title.label:SetPoint("CENTER")
-	title.label:SetText("ALLEZ UI")
+	title.label:SetText("Allez UI")
 
 	set.bg = CreateBG(set)
 	set.label = set:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	set.label:SetPoint("CENTER")
 	set.label:SetText(ACCEPT)
 	set:SetSize(50, 20)
-	set:SetPoint("TOPRIGHT", main, "BOTTOMRIGHT", 0, -5)
+	set:SetPoint("BOTTOMRIGHT", -12, 12)
 	set:SetScript("OnClick", function()
 		ReloadUI()
 	end)
@@ -80,12 +83,21 @@ local CreateConfigFrame = function()
 	cancel.label:SetPoint("CENTER")
 	cancel.label:SetText(CANCEL)
 	cancel:SetSize(50, 20)
-	cancel:SetPoint("RIGHT", set, "LEFT", -5, 0)
+	cancel:SetPoint("RIGHT", set, "LEFT", -12, 0)
 	cancel:SetScript("OnClick", function()
-		wipe(UISetup)
 		_G["UIConfigFrame"]:Hide()
 	end)
-
+	reset.bg = CreateBG(reset)
+	reset.label = reset:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	reset.label:SetPoint("CENTER")
+	reset.label:SetText(RESET)
+	reset:SetSize(50, 20)
+	reset:SetPoint("RIGHT", cancel, "LEFT", -12, 0)
+	reset:SetScript("OnClick", function()
+		wipe(UISetup)
+		ReloadUI()
+	end)
+	
 	local offset = 0
 	for group, options in pairs(UIConfig) do
 		local button = CreateFrame("Button", "UIConfigGroup"..group, groups)
@@ -95,17 +107,24 @@ local CreateConfigFrame = function()
 		label:SetPoint("CENTER")
 		label:SetFont(GameFontNormal:GetFont(), 14)
 		label:SetText(group)
-		local settings = CreateFrame("Frame", "UIConfigSettings"..group, main)
-		settings:SetPoint("BOTTOMRIGHT", -12, 12)
-		settings:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 20, 0)
-		settings.bg = CreateBG(settings)
-		settings:Hide()
+		
+		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScrollSettings"..group, main, "UIPanelScrollFrameTemplate")
+		scrollsettings:SetPoint("BOTTOMRIGHT", -12, 42)
+		scrollsettings:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 20, 0)
+		local settings = CreateFrame("Frame", "UIConfigSettings"..group, scrollsettings)
+		settings:SetPoint("TOPLEFT")
+		settings:SetSize(scrollsettings:GetWidth(), 100)
+		scrollsettings:SetScrollChild(settings)
+		scrollsettings:Hide()
+		scrollsettings.ScrollBar:SetPoint("TOPRIGHT", -22, -16)
+		scrollsettings.ScrollBar:SetPoint("BOTTOMRIGHT", -22, 16)
+		scrollsettings.bg = CreateBG(scrollsettings)
 		button:SetScript("OnMouseUp", function()
 			if lastVisible then
 				lastVisible:Hide()
 			end
-			settings:Show()
-			lastVisible = settings
+			scrollsettings:Show()
+			lastVisible = scrollsettings
 		end)
 		offset = offset + 21
 		local offsetgroup = 5
@@ -114,8 +133,10 @@ local CreateConfigFrame = function()
 				local check = CreateFrame("CheckButton", "UIConfigSettings"..group..option, settings, "InterfaceOptionsCheckButtonTemplate")
 				_G[check:GetName().."Text"]:SetText(option)
 				check:SetChecked(value)
-				check:SetScript("OnClick", function(self) SetValue(group, option, self:GetChecked() and true or false) end)
-				check:SetPoint("TOPLEFT", 5, -(offsetgroup))
+				check:SetScript("OnClick", function(self)
+					SetValue(group, option, self:GetChecked() and true or false)
+				end)
+				check:SetPoint("TOPLEFT", 5, -offsetgroup)
 			end
 			if type(value) == "number" or type(value) == "string" then
 				local label = settings:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -123,11 +144,11 @@ local CreateConfigFrame = function()
 				label:SetWidth(140)
 				label:SetHeight(20)
 				label:SetJustifyH("LEFT")
-				label:SetPoint("TOPLEFT", 5, -(offsetgroup))
+				label:SetPoint("TOPLEFT", 5, -offsetgroup)
 				local editbox = CreateFrame("EditBox", nil, settings)
 				editbox:SetAutoFocus(false)
 				editbox:SetMultiLine(false)
-				editbox:SetWidth(200)
+				editbox:SetWidth(250)
 				editbox:SetHeight(20)
 				editbox:SetMaxLetters(255)
 				editbox:SetTextInsets(3, 0, 0, 0)
@@ -137,27 +158,52 @@ local CreateConfigFrame = function()
 				editbox:SetBackdrop(backdrop)
 				editbox:SetBackdropColor(0, 0, 0, 0)
 				editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-				local okbutton = CreateFrame("Button", nil, settings)
-				okbutton:SetHeight(editbox:GetHeight())
-				okbutton:SetWidth(55)
-				okbutton:SetBackdrop(backdrop)
-				okbutton:SetBackdropColor(0, 0, 0, 0)
-				okbutton:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-				okbutton:SetPoint("LEFT", editbox, "RIGHT", 5, 0)
-				--okbutton:Hide()
-				local oktext = okbutton:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-				oktext:SetText(ACCEPT)
-				oktext:SetPoint("CENTER")
- 
-				editbox:SetScript("OnEscapePressed", function(self) okbutton:Hide() self:ClearFocus() self:SetText(value) end)
-				editbox:SetScript("OnChar", function(self) okbutton:Show() end)
-				if type(value) == "number" then
-					editbox:SetScript("OnEnterPressed", function(self) okbutton:Hide() self:ClearFocus() SetValue(group,option,tonumber(self:GetText())) end)
-					okbutton:SetScript("OnMouseDown", function(self) editbox:ClearFocus() self:Hide() SetValue(group,option,tonumber(editbox:GetText())) end)
-				else
-					editbox:SetScript("OnEnterPressed", function(self) okbutton:Hide() self:ClearFocus() SetValue(group,option,tostring(self:GetText())) end)
-					okbutton:SetScript("OnMouseDown", function(self) editbox:ClearFocus() self:Hide() SetValue(group,option,tostring(editbox:GetText())) end)
-				end
+				editbox:SetScript("OnChar", function(self)
+					if type(value) == "number" then
+						SetValue(group,option,tonumber(self:GetText()))
+					else
+						SetValue(group,option,tostring(self:GetText()))
+					end
+				end)
+			end
+			if type(value) == "table" then
+				local label = settings:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+				label:SetText(option)
+				label:SetWidth(140)
+				label:SetHeight(20)
+				label:SetJustifyH("LEFT")
+				label:SetPoint("TOPLEFT", 5, -offsetgroup)
+				local button = CreateFrame("Button", nil, settings)
+				button:SetSize(50, 20)
+				button:SetPoint("LEFT", label, "RIGHT", 5, 0)
+				button.bg = CreateBG(button)
+				button.bg:SetBackdropBorderColor(unpack(value))
+				button.label = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+				button.label:SetText(COLOR)
+				button.label:SetPoint("CENTER")
+				local r, g, b, a = unpack(value)
+				button:SetScript("OnClick", function(self) 
+					if ColorPickerFrame:IsShown() then return end
+					
+					local function myColorCallback(restore)
+						local newR, newG, newB, newA
+						if restore then
+							newR, newG, newB, newA = unpack(restore)
+						else
+							newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+						end
+						r, g, b, a = newR, newG, newB, newA
+						SetValue(group,option,{r, g, b, a})
+						self.bg:SetBackdropBorderColor(r, g, b, a)
+					end
+					
+					ColorPickerFrame:SetColorRGB(r,g,b)
+					ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
+					ColorPickerFrame.previousValues = {r,g,b,a}
+					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = myColorCallback, myColorCallback, myColorCallback
+					ColorPickerFrame:Hide()
+					ColorPickerFrame:Show()
+				end)
 			end
 			offsetgroup = offsetgroup + 25
 		end
@@ -165,7 +211,7 @@ local CreateConfigFrame = function()
 end
 
 local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("VARIABLES_LOADED")
 frame:SetScript("OnEvent", function(self, event, addon)
 	self:UnregisterEvent(event)
 	if UISetup then

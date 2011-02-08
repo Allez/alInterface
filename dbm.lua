@@ -66,15 +66,6 @@ local SkinBars = function(self)
 					icon1.styled=true
 				end
 
-				if not icon2.styled then
-					icon2:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-					--icon2.frame = CreateFrame("Frame", nil, tbar)
-					--icon2.frame:SetFrameStrata("BACKGROUND")
-					--icon2.frame:SetAllPoints(icon2)
-					--icon2.frame.background = CreateBG(icon2.frame)
-					icon2.styled=true
-				end
-
 				if not texture.styled then
 					texture:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
 					texture.styled=true

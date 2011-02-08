@@ -30,7 +30,7 @@ SlashCmdList["GROUPDISBAND"] = function()
 end
 SLASH_GROUPDISBAND1 = "/rd"
 
-SlashCmdList["UISETUP"] = function() 
+local SetupUI = function() 
 	SetCVar("chatStyle", "classic")
 	SetCVar("chatMouseScroll", 1)
 	SetCVar("nameplateShowFriends", 0)
@@ -92,16 +92,23 @@ SlashCmdList["UISETUP"] = function()
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL3")
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL4")
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL5")
+	setupUI = true
 	ReloadUI()
 end
+
+SlashCmdList["UISETUP"] = SetupUI
 SLASH_UISETUP1 = "/uisetup"
 
+local WatchFrameAnchor = CreateFrame("Frame", "WatchFrameAnchor", UIParent)
+WatchFrameAnchor:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 190, -20)
+WatchFrameAnchor:SetSize(250, 20)
 WatchFrame:ClearAllPoints()
-WatchFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 190, -20)
+WatchFrame:SetPoint("TOP", WatchFrameAnchor, 0, 0)
 WatchFrame:SetWidth(250)
 WatchFrame:SetHeight(500)
 WatchFrame.SetPoint = function() end
 WatchFrame.ClearAllPoints = function() end
+if UIMovableFrames then tinsert(UIMovableFrames, WatchFrameAnchor) end
 
 function frame_info(f)
    local str = ""
@@ -114,4 +121,60 @@ function frame_info(f)
       else str = "no name" end   
    end
    return str
-end 
+end
+
+StaticPopupDialogs["SETUP_UI"] = {
+	text = "First time on Allez UI with this Character. You must reload UI to configure it.", 
+	button1 = ACCEPT, 
+	button2 = CANCEL,
+	OnAccept = SetupUI,
+	timeout = 0, 
+	whileDead = 1,
+	hideOnEscape = 1, 
+}
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self, event, addon)
+	self:UnregisterEvent(event)
+	if not setupUI then
+		StaticPopup_Show("SETUP_UI")
+	end
+end)
+
+
+CreateBG = function(parent, noparent)
+	local bg = CreateFrame('Frame', nil, noparent and UIParent or parent)
+	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -2, 2)
+	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 2, -2)
+	bg:SetFrameLevel(parent:GetFrameLevel()-1 > 0 and parent:GetFrameLevel()-1 or 0)
+	bg:SetBackdrop({
+		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeSize = 1,
+		insets = { left = 1, right = 1, top = 1, bottom = 1}
+	})
+	bg:SetBackdropColor(0, 0, 0, .7) 
+    bg:SetBackdropBorderColor(.4, .4, .4, 1)
+	bg.border = CreateFrame("Frame", nil, bg)
+	bg.border:SetPoint("TOPLEFT", 1, -1)
+	bg.border:SetPoint("BOTTOMRIGHT", -1, 1)
+	bg.border:SetFrameLevel(bg:GetFrameLevel())
+	bg.border:SetBackdrop({
+	  edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+	  edgeSize = 1,
+	  insets = { left = 1, right = 1, top = 1, bottom = 1}
+	})
+	bg.border:SetBackdropBorderColor(0, 0, 0, 1)
+	bg.border2 = CreateFrame("Frame", nil, bg)
+	bg.border2:SetPoint("TOPLEFT", -1, 1)
+	bg.border2:SetPoint("BOTTOMRIGHT", 1, -1)
+	bg.border2:SetFrameLevel(bg:GetFrameLevel())
+	bg.border2:SetBackdrop({
+	  edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+	  edgeSize = 1,
+	  insets = { left = 1, right = 1, top = 1, bottom = 1}
+	})
+	bg.border2:SetBackdropBorderColor(0, 0, 0, 0.9)
+	return bg
+end
