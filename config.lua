@@ -1,4 +1,3 @@
-
 local addon_name, ns = ...
 
 UIConfig = {}
@@ -181,10 +180,10 @@ local CreateConfigFrame = function()
 				button.label = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 				button.label:SetText(COLOR)
 				button.label:SetPoint("CENTER")
-				local r, g, b, a = unpack(value)
 				button:SetScript("OnClick", function(self) 
 					if ColorPickerFrame:IsShown() then return end
-					
+					local r, g, b, a = unpack(value)
+
 					local function myColorCallback(restore)
 						local newR, newG, newB, newA
 						if restore then
@@ -192,14 +191,14 @@ local CreateConfigFrame = function()
 						else
 							newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 						end
-						r, g, b, a = newR, newG, newB, newA
-						SetValue(group,option,{r, g, b, a})
-						self.bg:SetBackdropBorderColor(r, g, b, a)
+						SetValue(group,option,{newR, newG, newB, newA})
+						self.bg:SetBackdropBorderColor(newR, newG, newB, newA)
 					end
 					
-					ColorPickerFrame:SetColorRGB(r,g,b)
+					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = myColorCallback, myColorCallback, myColorCallback
+					ColorPickerFrame:SetColorRGB(r, g, b)
 					ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
-					ColorPickerFrame.previousValues = {r,g,b,a}
+					ColorPickerFrame.previousValues = {r, g, b, a}
 					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = myColorCallback, myColorCallback, myColorCallback
 					ColorPickerFrame:Hide()
 					ColorPickerFrame:Show()
