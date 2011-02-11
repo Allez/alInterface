@@ -199,7 +199,6 @@ local CreateConfigFrame = function()
 					ColorPickerFrame:SetColorRGB(r, g, b)
 					ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
 					ColorPickerFrame.previousValues = {r, g, b, a}
-					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = myColorCallback, myColorCallback, myColorCallback
 					ColorPickerFrame:Hide()
 					ColorPickerFrame:Show()
 				end)
