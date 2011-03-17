@@ -3,8 +3,8 @@ local addon_name, ns = ...
 local font = 'Fonts\\VisitorR.TTF'
 local fontsize = 10
 local stdfont = GameFontNormal:GetFont()
-local texture = [=[Interface\AddOns\alUnitFrames\media\statusbarTex]=]
-local glowTex = [=[Interface\AddOns\alUnitFrames\media\glowTex]=]
+local texture = addon_name.."\\media\\statusbarTex"
+local glowTex = addon_name.."\\media\\glowTex"
 
 local config = {
 	["Default font"] = font,
