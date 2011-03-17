@@ -63,11 +63,11 @@ local SetupUI = function()
 	SetCVar("uiScale", min(2, max(.64, 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))))
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G["ChatFrame"..i]
-		frame:SetSize(400, 145)
-		SetChatWindowSavedDimensions(i, 400, 145)
+		frame:SetSize(380, 145)
+		SetChatWindowSavedDimensions(i, 360, 145)
 		if i == 1 then
 			frame:ClearAllPoints()
-			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 12)
+			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 11)
 		end
 		FCF_SavePositionAndDimensions(frame)
 	end
@@ -154,8 +154,8 @@ CreateBG = function(parent, noparent)
 		edgeSize = 1,
 		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
-	bg:SetBackdropColor(0, 0, 0, .7) 
-    bg:SetBackdropBorderColor(.4, .4, .4, 1)
+	bg:SetBackdropColor(0, 0, 0, .65) 
+    bg:SetBackdropBorderColor(.43, .4, .4, 1)
 	bg.border = CreateFrame("Frame", nil, bg)
 	bg.border:SetPoint("TOPLEFT", 1, -1)
 	bg.border:SetPoint("BOTTOMRIGHT", -1, 1)

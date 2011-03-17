@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file='oUF\oUF.xml' />
+	<Include file='cargBags\embed.xml' />
+</Ui>

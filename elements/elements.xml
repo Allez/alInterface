@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file='actionbars\actionbars.xml' />
+	<Include file='unitframes\unitframes.xml' />
+
+	<Script file='bag.lua' />
+	<Script file='buff.lua' />
+	<Script file='chat.lua' />
+	<Script file='combattext.lua' />
+	<Script file='loot.lua' />
+	<Script file='lootroll.lua' />
+	<Script file='map.lua' />
+	<Script file='minimap.lua' />
+	<Script file='mirrortimer.lua' />
+	<Script file='nameplates.lua' />
+	<Script file='raidmanager.lua' />
+	<Script file='tooltip.lua' />
+</Ui>

@@ -25,9 +25,10 @@ local CreateMover = function(frame)
 	local mover = CreateFrame("Frame", nil, UIParent)
 	mover:SetBackdrop({
 		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		insets = {top = -1, left = -1, bottom = -1, right = -1},
+		--edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
+		insets = {top = -2, left = -2, bottom = -2, right = -2},
 	})
-	mover:SetBackdropColor(0, 0.9, 0.6, 0.4)
+	mover:SetBackdropColor(0.2, 0.2, 0.5, 0.7)
 	mover:SetAllPoints(frame)
 	mover:SetFrameStrata("TOOLTIP")
 	mover:EnableMouse(true)
@@ -37,6 +38,7 @@ local CreateMover = function(frame)
 	mover:SetScript("OnDragStop", OnDragStop)
 	mover.frame = frame
 	mover.name = mover:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	mover.name:SetFont(GameFontNormal:GetFont())
 	mover.name:SetPoint("CENTER")
 	mover.name:SetTextColor(1, 1, 1)
 	mover.name:SetText(frame:GetName())
@@ -63,6 +65,11 @@ StaticPopupDialogs["MOVE_UI"] = {
 
 local InitMove = function(msg)
 	if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
+	if msg and msg == 'reset' then
+		UISavedPositions = {}
+		ReloadUI()
+		return
+	end
 	if not moving then
 		for i, v in pairs(UIMovableFrames) do
 			local mover = GetMover(v)
@@ -78,16 +85,30 @@ local InitMove = function(msg)
 	end
 end
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:SetScript("OnEvent", function(self, event)
-	self:UnregisterEvent(event)
+local RestoreUI = function(self)
+	if InCombatLockdown() then
+		if not self.shedule then self.shedule = CreateFrame("Frame", nil, self) end
+		self.shedule:RegisterEvent("PLAYER_REGEN_ENABLED")
+		self.shedule:SetScript("OnEvent", function(self)
+			RestoreUI(self:GetParent())
+			self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+			self:SetScript("OnEvent", nil)
+		end)
+		return
+	end
 	for frame_name, point in pairs(UISavedPositions) do
 		if _G[frame_name] then
 			_G[frame_name]:ClearAllPoints()
 			_G[frame_name]:SetPoint(unpack(point))
 		end
 	end
+end
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self, event)
+	self:UnregisterEvent(event)
+	RestoreUI(self)
 end)
 
 SlashCmdList["MoveUI"] = InitMove

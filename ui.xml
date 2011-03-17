@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file='lib\lib.xml' /> 
+	<Include file='embeds\embeds.xml' />
+	<Include file='core\core.xml' /> 
+	<Include file='elements\elements.xml' />
+	<Include file='skin\skin.xml' />
+</Ui>

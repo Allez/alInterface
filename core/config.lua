@@ -1,3 +1,4 @@
+
 local addon_name, ns = ...
 
 UIConfig = {}
@@ -44,11 +45,10 @@ local CreateConfigFrame = function()
 	end
 
 	local main = CreateFrame("Frame", "UIConfigFrame", UIParent)
-	local scroll = CreateFrame("ScrollFrame", "UIConfigScrollFrame", main)
 	local groups = CreateFrame("Frame", "UIConfigGroupFrame", main)
-	local set = CreateFrame("Button", "UIConfigSetFrame", main)
-	local cancel = CreateFrame("Button", "UIConfigCancelFrame", main)
-	local reset = CreateFrame("Button", "UIConfigResetFrame", main)
+	local set = CreateFrame("Button", "UIConfigSetButton", main)
+	local cancel = CreateFrame("Button", "UIConfigCancelButton", main)
+	local reset = CreateFrame("Button", "UIConfigResetButton", main)
 	local title = CreateFrame("Frame", "UIConfigTitleFrame", main)
 
 	main:SetSize(640, 480)
@@ -56,13 +56,11 @@ local CreateConfigFrame = function()
 	main:SetFrameStrata("HIGH")
 	main:SetToplevel(true)
 	main.bg = CreateBG(main)
-	scroll:SetSize(150, 390)
-	scroll:SetPoint("BOTTOMLEFT", 12, 42)
-	scroll:SetScrollChild(groups)
-	scroll.bg = CreateBG(scroll)
-	groups:SetAllPoints(scroll)
+	groups:SetSize(150, 390)
+	groups:SetPoint("BOTTOMLEFT", 12, 42)
+	groups.bg = CreateBG(groups)
 	title:SetPoint("TOPLEFT", 12, -12)
-	title:SetPoint("BOTTOMRIGHT", scroll, "TOPRIGHT", 0, 12)
+	title:SetPoint("BOTTOMRIGHT", groups, "TOPRIGHT", 0, 12)
 	title.bg = CreateBG(title)
 	title.label = CreateFS(title, 20, 'OUTLINEMONOCHROME')
 	title.label:SetPoint("CENTER")
@@ -107,9 +105,10 @@ local CreateConfigFrame = function()
 		label:SetFont(GameFontNormal:GetFont(), 14)
 		label:SetText(group)
 		
-		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScrollSettings"..group, main, "UIPanelScrollFrameTemplate")
+		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScroll"..group, main, "UIPanelScrollFrameTemplate")
 		scrollsettings:SetPoint("BOTTOMRIGHT", -12, 42)
-		scrollsettings:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 20, 0)
+		scrollsettings:SetPoint("TOPLEFT", groups, "TOPRIGHT", 20, 0)
+		scrollsettings.bg = CreateBG(scrollsettings)
 		local settings = CreateFrame("Frame", "UIConfigSettings"..group, scrollsettings)
 		settings:SetPoint("TOPLEFT")
 		settings:SetSize(scrollsettings:GetWidth(), 100)
@@ -117,7 +116,6 @@ local CreateConfigFrame = function()
 		scrollsettings:Hide()
 		scrollsettings.ScrollBar:SetPoint("TOPRIGHT", -22, -16)
 		scrollsettings.ScrollBar:SetPoint("BOTTOMRIGHT", -22, 16)
-		scrollsettings.bg = CreateBG(scrollsettings)
 		button:SetScript("OnMouseUp", function()
 			if lastVisible then
 				lastVisible:Hide()
@@ -180,6 +178,7 @@ local CreateConfigFrame = function()
 				button.label = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 				button.label:SetText(COLOR)
 				button.label:SetPoint("CENTER")
+				button.option = option
 				button:SetScript("OnClick", function(self) 
 					if ColorPickerFrame:IsShown() then return end
 					local r, g, b, a = unpack(value)
@@ -191,11 +190,12 @@ local CreateConfigFrame = function()
 						else
 							newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 						end
-						SetValue(group,option,{newR, newG, newB, newA})
+						SetValue(group, self.option, {newR, newG, newB, newA})
 						self.bg:SetBackdropBorderColor(newR, newG, newB, newA)
 					end
-					
-					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = myColorCallback, myColorCallback, myColorCallback
+
+					ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = 
+						myColorCallback, myColorCallback, myColorCallback
 					ColorPickerFrame:SetColorRGB(r, g, b)
 					ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
 					ColorPickerFrame.previousValues = {r, g, b, a}
@@ -207,6 +207,18 @@ local CreateConfigFrame = function()
 		end
 	end
 end
+
+local toggle = CreateFrame("Button", "C", UIParent)
+toggle:SetSize(18, 18)
+toggle:SetNormalTexture("Interface\\Addons\\alInterface\\media\\icon-config")
+toggle:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -7)
+toggle:SetFrameStrata("LOW")
+toggle:SetFrameLevel(0)
+toggle.bg = CreateBG(toggle)
+toggle:SetScript("OnClick", function(self)
+	CreateConfigFrame()
+end)
+tinsert(UIMovableFrames, toggle)
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("VARIABLES_LOADED")

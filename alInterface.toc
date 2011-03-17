@@ -4,11 +4,8 @@
 ## Notes: Interface setup
 ## Version: 40000.1
 ## OptionalDeps: DBM-Core
-## SavedVariables: UISetup, UISavedPositions
-## SavedVariablesPerCharacter: setupUI
+## SavedVariables: nothing
+## SavedVariablesPerCharacter: UISetup, UISavedPositions, setupUI
 
-mover.lua
-core.lua
-dbm.lua
-config.lua
+ui.xml
 
