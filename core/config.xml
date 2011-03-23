@@ -1,0 +1,113 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Script file="VideoOptionsFrame.lua"/>
+
+	<Frame name="UIConfigFrame">
+		<Size>
+			<AbsDimension x="640" y="480"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+				<Offset>
+					<AbsDimension x="0" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentElements" text="ACCEPT">
+				<Size>
+					<AbsDimension x="150" y="390"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="12" y="42"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						CreateBG(self);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentTitle" text="ACCEPT">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentElements">
+						<Offset>
+							<AbsDimension x="0" y="12"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="12" y="-12"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						CreateBG(self);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="$parentApply" text="ACCEPT">
+				<Size>
+					<AbsDimension x="96" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-12" y="12"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						CreateBG(self);
+					</OnLoad>
+					<OnClick>
+						ReloadUI();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancel" text="CANCEL">
+				<Size>
+					<AbsDimension x="96" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentApply" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						CreateBG(self);
+					</OnLoad>
+					<OnClick>
+						self:GetParent:Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentReset" inherits="UIPanelButtonTemplate" text="RESET">
+				<Size>
+					<AbsDimension x="96" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						CreateBG(self);
+					</OnLoad>
+					<OnClick>
+						wipe(UISetup);
+						ReloadUI();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="VideoOptionsFrame_OnLoad"/>
+			<OnHide function="VideoOptionsFrame_OnHide"/>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -6,56 +6,59 @@ local stdfont = GameFontNormal:GetFont()
 local texture = addon_name.."\\media\\statusbarTex"
 local glowTex = addon_name.."\\media\\glowTex"
 
-local config = {
-	["Default font"] = font,
-	["Default font size"] = fontsize,
-	["Power font size"] = fontsize,
-	["Info font size"] = fontsize,
-	["Castbar font size"] = fontsize,
-	["Aura font size"] = fontsize,
-	["Heal layout"] = false,
-	["Aggro indicator"] = true,
-	["Enable castbar"] = true,
-	["Enable range alpha"] = true,
-	["Classcolored health bar"] = true,
-	["Classcolored power bar"] = false,
-	["Classcolored unit name"] = false,
-	["Raid groups"] = "1,2,3,4,5,6,7,8",
-	["Show aura cooldown spiral"] = false,
-	["Show aura timer"] = true,
-	["Show focus debuffs"] = true,
-	["Show target debuffs"] = true,
-	["Show pet debuffs"] = true,
-	["Show ToT debuffs"] = true,
-	["Color debuff type"] = true,
-	["Enable portraits"] = true,
-	["Show GCD"] = true,
-	["Show eclipse bar"] = true,
-	["Show holypower"] = true,
-	["Show combo points"] = true,
-	["Show soulshards"] = true,
-	["Show runes"] = true,
-	["Show totem bar"] = true,
-	["Show reputation"] = true,
-	["Show experience"] = true,
-	["Smooth bars"] = true,
-	["Raid DPS width"] = 36,
-	["Raid DPS height"] = 23,
-	["Raid heal width"] = 53,
-	["Raid heal height"] = 25,
-	["Show mana in raid"] = false,
-	["Health color"] = {0.2, 0.2, 0.2},
-	["Health background color"] = {0.0, 0.0, 0.0},
-	["Power color"] = {0.2, 0.2, 0.2},
-	["Power background color"] = {0.0, 0.0, 0.0},
-	["Castbar complete color"] = {0.12, 0.86, 0.15},
-	["Castbar casting color"] = {1.0, 0.49, 0},
-	["Castbar fail color"] = {1.0, 0.09, 0},
-	["Castbar channeling color"] = {0.32, 0.3, 1},
+local cfg = {
+	general = {
+		smooth = true,
+		auraspiral = true,
+		auratimer = true,
+		focusdebuffs = true,
+		targetdebuffs = true,
+		petdebuffs = true,
+		totdebuffs = true,
+		colordebuff = true,
+		aggro = true,
+	},
+	fonts = {
+		
+	},
+	colors = {
+		health = {0.2, 0.2, 0.2},
+		healthbg = {0.0, 0.0, 0.0},
+		powerbg = {0.0, 0.0, 0.0},
+		castcomplete = {0.12, 0.86, 0.15},
+		casting = {1.0, 0.49, 0},
+		channeling = {1.0, 0.09, 0},
+		castfail = {0.32, 0.3, 1},
+	},
+	elements = {
+		portraits = true,
+		gcd = true,
+		eclipsebar = true,
+		holypower = true,
+		combo = true,
+		soulshards = true,
+		runes = true,
+		totembar = true,
+		reputation = true,
+		experience = true,
+		castbar = true,
+	},
+	raid = {
+		direction = {
+			type = "select",
+			value = "LEFT",
+			select = {"LEFT", "RIGHT", "UP", "DOWN"},
+		},
+		width = 36,
+		height = 23,
+		showpower = false,
+		raiddebuffs = true,
+	}
 }
 if UIConfig then
-	UIConfig["Unit frames"] = config
+	UIConfig["Unit frames"] = cfg
 end
+if true then return end
 
 local _, class = UnitClass('player')
 
