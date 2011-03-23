@@ -1,9 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
-	<Script file="VideoOptionsFrame.lua"/>
+	<Script file="config.lua"/>
 
-	<Frame name="UIConfigFrame">
+	<Frame name="UIConfigFrame" parent="UIParent">
 		<Size>
 			<AbsDimension x="640" y="480"/>
 		</Size>
@@ -15,7 +15,7 @@
 			</Anchor>
 		</Anchors>
 		<Frames>
-			<Frame name="$parentElements" text="ACCEPT">
+			<Frame name="$parentElements">
 				<Size>
 					<AbsDimension x="150" y="390"/>
 				</Size>
@@ -32,9 +32,9 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentTitle" text="ACCEPT">
+			<Frame name="$parentTitle">
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentElements">
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="$parentElements">
 						<Offset>
 							<AbsDimension x="0" y="12"/>
 						</Offset>
@@ -51,9 +51,9 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<Button name="$parentApply" text="ACCEPT">
+			<Button name="$parentApply">
 				<Size>
-					<AbsDimension x="96" y="22"/>
+					<AbsDimension x="70" y="20"/>
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT">
@@ -62,6 +62,15 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentLabel" inherits="GameFontNormal" text="ACCEPT">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
 				<Scripts>
 					<OnLoad>
 						CreateBG(self);
@@ -71,29 +80,55 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentCancel" text="CANCEL">
+			<Button name="$parentCancel">
 				<Size>
-					<AbsDimension x="96" y="22"/>
+					<AbsDimension x="70" y="20"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentApply" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentApply" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-10" y="0"/>
+						</Offset>
+					</Anchor>
 				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentLabel" inherits="GameFontNormal" text="CANCEL">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
 				<Scripts>
 					<OnLoad>
 						CreateBG(self);
 					</OnLoad>
 					<OnClick>
-						self:GetParent:Hide();
+						self:GetParent():Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentReset" inherits="UIPanelButtonTemplate" text="RESET">
+			<Button name="$parentReset">
 				<Size>
-					<AbsDimension x="96" y="22"/>
+					<AbsDimension x="70" y="20"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-10" y="0"/>
+						</Offset>
+					</Anchor>
 				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentLabel" inherits="GameFontNormal" text="RESET">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
 				<Scripts>
 					<OnLoad>
 						CreateBG(self);
@@ -106,8 +141,9 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad function="VideoOptionsFrame_OnLoad"/>
-			<OnHide function="VideoOptionsFrame_OnHide"/>
+			<OnLoad>
+				CreateBG(self);
+			</OnLoad>
 		</Scripts>
 	</Frame>
 </Ui>
