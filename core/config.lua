@@ -1,4 +1,3 @@
-
 local addon_name, ns = ...
 
 UIConfig = {}
@@ -47,10 +46,10 @@ local CreateCheckBox = function(parent)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("LEFT", widget.check, "RIGHT", 3, 0)
 	widget.label:SetPoint("RIGHT", 0, 0)
-	widget.SetChecked = function(checked)
+	widget.SetChecked = function(self, checked)
 		widget.check:SetChecked(checked)
 	end
-	widget.SetCallback = function(func)
+	widget.SetCallback = function(self, func)
 		widget.Callback = func
 	end
 	widget:SetScript("OnClick", function(self)
@@ -69,11 +68,12 @@ local CreateColorPicker = function(parent)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("RIGHT", 0, 0)
-	widget.SetColor = function(...)
+	widget.label:SetPoint("LEFT", widget.color, "RIGHT", 5, 0)
+	widget.SetColor = function(self, ...)
 		widget.color:SetVertexColor(...)
 		widget.value = {...}
 	end
-	widget.SetCallback = function(func)
+	widget.SetCallback = function(self, func)
 		widget.Callback = func
 	end
 	widget:SetScript("OnClick", function(self) 
@@ -105,13 +105,13 @@ end
 local CreateDropDown = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
 	widget:SetSize(200, 40)
-	widget.button = CreateFrame("Button", nil, widget, "UIDropDownMenuTemplate")
-	widget.button:ClearAllPoints()
-	widget.button:SetPoint("BOTTOM")
-	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
+	widget.button = CreateFrame("Button", "Dropdown1", widget, "UIDropDownMenuTemplate")
+	widget.button:ClearAllPoints()
+	widget.button:SetPoint("TOPLEFT", widget.label, "BOTTOMLEFT", -20, 0)
 	local initialize = function(self, level)
 		local info = UIDropDownMenu_CreateInfo()
 		for i, v in pairs(widget.items) do
@@ -121,19 +121,19 @@ local CreateDropDown = function(parent)
 			info.func = function(self)
 				UIDropDownMenu_SetSelectedID(widget.button, self:GetID())
 				widget:Callback(info.value)
-			end)
+			end
 			UIDropDownMenu_AddButton(info, level)
 		end
 	end
 	widget.SetItems = function(items)
 		widget.items = items
 		UIDropDownMenu_Initialize(widget.button, initialize)
-		UIDropDownMenu_SetWidth(widget.button, widget:GetWidth())
-		UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth())
+		UIDropDownMenu_SetWidth(widget.button, widget:GetWidth()-20)
+		UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth()-20)
 		UIDropDownMenu_SetSelectedID(widget.button, 1)
 		UIDropDownMenu_JustifyText(widget.button, "LEFT")
 	end
-	widget.SetCallback = function(func)
+	widget.SetCallback = function(self, func)
 		widget.Callback = func
 	end
 	return widget
@@ -151,15 +151,14 @@ local CreateEditBox = function(parent)
 	widget.editbox:SetFontObject(GameFontHighlight)
 	widget.editbox:SetPoint("BOTTOMLEFT", 0, 0)
 	widget.editbox:SetPoint("BOTTOMRIGHT", 0, 0)
-	widget.editbox:SetText(value)
 	widget.editbox:SetBackdrop(backdrop)
 	widget.editbox:SetBackdropColor(0, 0, 0, 0)
 	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
-	widget.SetCallback = function(func)
+	widget.SetCallback = function(self, func)
 		widget.editbox:SetScript("OnTextChanged", function(self)
 			func(self:GetText())
 		end)
@@ -169,8 +168,8 @@ end
 
 local CreateSlider = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(200, 40)
-	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget:SetSize(200, 50)
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("CENTER")
 	widget.label:SetPoint("TOP")
@@ -178,15 +177,21 @@ local CreateSlider = function(parent)
 	widget.slider:SetOrientation("HORIZONTAL")
 	widget.slider:SetHeight(15)
 	widget.slider:SetHitRectInsets(0, 0, -10, 0)
+	widget.slider:SetBackdrop({
+		bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+		edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+		tile = true, tileSize = 8, edgeSize = 8,
+		insets = { left = 3, right = 3, top = 6, bottom = 6 }
+	})
 	widget.slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
 	widget.slider:SetPoint("TOP", widget.label, "BOTTOM")
 	widget.slider:SetPoint("LEFT", 3, 0)
 	widget.slider:SetPoint("RIGHT", -3, 0)
 	widget.slider:SetValue(0)
 	widget.left = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	widget.left:SetPoint("TOPLEFT")
+	widget.left:SetPoint("TOPLEFT", 0, -10)
 	widget.right = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	widget.right:SetPoint("TOPRIGHT")
+	widget.right:SetPoint("TOPRIGHT", 0, -10)
 	widget.editbox = CreateFrame("EditBox", nil, widget)
 	widget.editbox:SetAutoFocus(false)
 	widget.editbox:SetMultiLine(false)
@@ -198,13 +203,16 @@ local CreateSlider = function(parent)
 	widget.editbox:SetBackdrop(backdrop)
 	widget.editbox:SetBackdropColor(0, 0, 0, 0)
 	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-	widget.SetValue = function(value)
+	widget.SetValue = function(self, value)
 		widget.slider:SetValue(value)
 	end
-	widget.SetSliderValues = function(...)
-		widget.slider:SetSliderValues(...)
+	widget.SetSliderValues = function(self, minv, maxv, step)
+		widget.slider:SetMinMaxValues(minv, maxv)
+		widget.slider:SetValueStep(step)
+		widget.left:SetText(minv)
+		widget.right:SetText(maxv)
 	end
-	widget.SetCallback = function(func)
+	widget.SetCallback = function(self, func)
 		widget.editbox:SetScript("OnTextChanged", function(self)
 			func(self:GetText())
 		end)
@@ -219,20 +227,34 @@ local PanelLayout = function(frame)
 	local width = frame:GetWidth()
 	local height = frame:GetHeight()
 	local totalwidth = 0
-	local row, col = 1, 1
+	local totalheight = 0
+	local row = 0
+	local first
+	local offset = 0
 	for i, widget in pairs(frame.widgets) do
 		if i == 1 then
-			widget:SetPoint("TOPLEFT", 10, -20)
+			widget:SetPoint("TOPLEFT", 10, -5)
+			row = widget:GetHeight()
+			offset = row/2
+			first = widget
 		else
 			if totalwidth + widget:GetWidth() < width then
-				widget:SetPoint("LEFT", frame.widgets[i-1], "RIGHT", 10, 0)
+				widget:SetPoint("BOTTOMLEFT", frame.widgets[i-1], "BOTTOMRIGHT", 10, 0)
+				row = math.max(row, widget:GetHeight())
+				offset = math.max(offset, widget:GetHeight()/2)
 			else
-				widget:SetPoint("TOPLEFT", 10, -20*i)
+				widget:SetPoint("TOPLEFT", 10, -totalheight-first:GetHeight()-offset)
+				totalheight = totalheight + row + 3
+				first = widget
+				offset = widget:GetHeight()/2
+				row = widget:GetHeight()
 				totalwidth = 0
 			end
 		end
 		totalwidth = totalwidth + widget:GetWidth()
 	end
+	totalheight = totalheight + row + offset + 3
+	frame:SetHeight(totalheight)
 end
 
 local CreateOptionsPanel = function(button)
@@ -243,12 +265,14 @@ local CreateOptionsPanel = function(button)
 	frame.ScrollBar:SetPoint("BOTTOMRIGHT", -3, 16)
 	frame.ScrollBar:SetMinMaxValues(0, 1000)
 	frame.ScrollBar:SetValueStep(1)
-	frame.ScrollBar:SetValue(0)
+	frame.ScrollBar:SetValue(1)
 	frame.content = CreateFrame("Frame", "$parentContent", frame)
 	frame.content:SetPoint("TOPLEFT")
 	frame.content:SetPoint("TOPRIGHT")
+	frame.content:SetWidth(430)
 	frame.content:SetHeight(100)
 	frame:SetScrollChild(frame.content)
+	print(frame.content:GetWidth())
 	return frame
 end
 
@@ -271,21 +295,22 @@ local CreateConfigFrame = function()
 		button:SetPoint("TOP", 0, -offset-1)
 		button.label:SetJustifyH("LEFT")
 		button.label:SetText(element)
-		
+
 		button.panel = CreateOptionsPanel(button)
 		button.panel:SetPoint("BOTTOMRIGHT", UIConfigFrame, "BOTTOMRIGHT", -12, 42)
 		button.panel:SetPoint("TOPLEFT", UIConfigFrameElements, "TOPRIGHT", 20, 0)
 		button:SetScript("OnClick", ShowPanel)
 		CreateBG(button.panel)
 		offset = offset + button:GetHeight()
+		button.panel.groups = {}
 		for group, options in pairs(settings) do
 			local panel = CreateFrame("Frame", element..group, button.panel.content)
-			panel:SetSize(settings:GetWidth(), 100)
-			panel:SetPoint("TOP", 0, -subgroupoffset-25)
+			panel:SetSize(410, 100)
+			tinsert(button.panel.groups, panel)
 			CreateBG(panel)
 			panel.title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-			panel.title:SetPoint("TOPLEFT", 0, 20)
-			panel.title:SetText(subgroup)
+			panel.title:SetPoint("BOTTOMLEFT", panel, "TOPLEFT", 0, 5)
+			panel.title:SetText(group)
 			panel.widgets = {}
 			for option, value in pairs(options) do
 				if type(value) == "boolean" then
@@ -300,6 +325,7 @@ local CreateConfigFrame = function()
 				if type(value) == "number" or type(value) == "string" then
 					local editbox = CreateEditBox(panel)
 					editbox.label:SetText(option)
+					editbox.editbox:SetText(value)
 					editbox:SetCallback(function(val)
 						if type(value) == "number" then
 							SetValue(group,option,tonumber(val))
@@ -340,6 +366,13 @@ local CreateConfigFrame = function()
 				end
 			end
 			PanelLayout(panel)
+		end
+		for i, v in pairs(button.panel.groups) do
+			if i == 1 then
+				v:SetPoint("TOP", 0, -30)
+			else
+				v:SetPoint("TOP", button.panel.groups[i-1], "BOTTOM", 0, -30)
+			end
 		end
 	end
 end
