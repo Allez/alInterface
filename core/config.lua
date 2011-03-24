@@ -196,43 +196,51 @@ local PanelLayout = function(frame)
 	end
 end
 
+local CreateOptionsPanel = function(button)
+	local frame = CreateFrame("ScrollFrame", "$parentScroll", button, "UIPanelScrollFrameTemplate")
+	frame:EnableMouseWheel(true)
+	frame.ScrollBar:ClearAllPoints()
+	frame.ScrollBar:SetPoint("TOPRIGHT", -3, -16)
+	frame.ScrollBar:SetPoint("BOTTOMRIGHT", -3, 16)
+	frame.ScrollBar:SetMinMaxValues(0, 1000)
+	frame.ScrollBar:SetValueStep(1)
+	frame.ScrollBar:SetValue(0)
+	frame.content = CreateFrame("Frame", "$parentContent", frame)
+	frame.content:SetPoint("TOPLEFT")
+	frame.content:SetPoint("TOPRIGHT")
+	frame.content:SetHeight(100)
+	frame:SetScrollChild(frame.content)
+	return frame
+end
+
+local ShowPanel = function(self)
+	if lastVisible then
+		lastVisible:Hide()
+	end
+	self.panel:Show()
+	lastVisible = self.panel
+end
+
 local CreateConfigFrame = function()
 	if UIConfigFrame then
 		UIConfigFrame:Show()
 	end
 
 	local offset = 0
-	for group, subgroups in pairs(UIConfig) do
-		local button = CreateFrame("Button", "UIConfigGroup"..group, groups)
-		button:SetSize(148, 20)
+	for element, settings in pairs(UIConfig) do
+		local button = CreateFrame("Button", "$parent"..element, UIConfigFrameElements, "UIConfigGroupButtonTemplate")
 		button:SetPoint("TOP", 0, -offset-1)
-		local label = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-		label:SetPoint("LEFT")
-		label:SetText(group)
+		button.label:SetJustifyH("LEFT")
+		button.label:SetText(element)
 		
-		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScroll"..group, UIConfigFrame, "UIPanelScrollFrameTemplate")
-		scrollsettings:SetPoint("BOTTOMRIGHT", -12, 42)
-		scrollsettings:SetPoint("TOPLEFT", UIConfigFrameElements, "TOPRIGHT", 20, 0)
-		scrollsettings.bg = CreateBG(scrollsettings)
-		local settings = CreateFrame("Frame", "UIConfigSettings"..group, scrollsettings)
-		settings:SetPoint("TOPLEFT")
-		settings:SetSize(scrollsettings:GetWidth(), 100)
-		scrollsettings:SetScrollChild(settings)
-		scrollsettings:Hide()
-		scrollsettings.ScrollBar:SetPoint("TOPRIGHT", -22, -16)
-		scrollsettings.ScrollBar:SetPoint("BOTTOMRIGHT", -22, 16)
-		button:SetScript("OnMouseUp", function()
-			if lastVisible then
-				lastVisible:Hide()
-			end
-			scrollsettings:Show()
-			lastVisible = scrollsettings
-		end)
-		offset = offset + 21
-		local offsetgroup = 5
-		local subgroupoffset = 0
-		for subgroup, options in pairs(subgroups) do
-			local panel = CreateFrame("Frame", group..subgroup, settings)
+		button.panel = CreateOptionsPanel(button)
+		button.panel:SetPoint("BOTTOMRIGHT", UIConfigFrame, "BOTTOMRIGHT", -12, 42)
+		button.panel:SetPoint("TOPLEFT", UIConfigFrameElements, "TOPRIGHT", 20, 0)
+		button:SetScript("OnClick", ShowPanel)
+		CreateBG(button.panel)
+		offset = offset + button:GetHeight()
+		for group, options in pairs(settings) do
+			local panel = CreateFrame("Frame", element..group, button.panel.content)
 			panel:SetSize(settings:GetWidth(), 100)
 			panel:SetPoint("TOP", 0, -subgroupoffset-25)
 			CreateBG(panel)

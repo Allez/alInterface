@@ -3,6 +3,21 @@
 
 	<Script file="config.lua"/>
 
+	<Button name="UIConfigGroupButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="148" y="18"/>
+		</Size>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentLabel" inherits="GameFontNormal" parentKey="label">
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
 	<Frame name="UIConfigFrame" parent="UIParent">
 		<Size>
 			<AbsDimension x="640" y="480"/>
