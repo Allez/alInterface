@@ -49,7 +49,12 @@ local cfg = {
 			value = "LEFT",
 			select = {"LEFT", "RIGHT", "UP", "DOWN"},
 		},
-		width = 36,
+		width = {
+			type = "range",
+			value = 36,
+			min = 12,
+			max = 100,
+		},
 		height = 23,
 		showpower = false,
 		raiddebuffs = true,

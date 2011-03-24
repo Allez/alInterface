@@ -56,6 +56,7 @@ local CreateCheckBox = function(parent)
 	widget:SetScript("OnClick", function(self)
 		self.Callback(self.check:GetChecked() and true or false)
 	end)
+	return widget
 end
 
 local CreateColorPicker = function(parent)
@@ -98,6 +99,7 @@ local CreateColorPicker = function(parent)
 		ColorPickerFrame:Hide()
 		ColorPickerFrame:Show()
 	end)
+	return widget
 end
 
 local CreateDropDown = function(parent)
@@ -110,30 +112,31 @@ local CreateDropDown = function(parent)
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
-	widget.SetItems = function(items)
-		widget.items = items
-	end
-	widget.SetCallback = function(func)
-		widget.Callback = func
-	end
 	local initialize = function(self, level)
 		local info = UIDropDownMenu_CreateInfo()
-		for i, v in pairs(items) do
+		for i, v in pairs(widget.items) do
 			info = UIDropDownMenu_CreateInfo()
 			info.text = v
 			info.value = v
 			info.func = function(self)
 				UIDropDownMenu_SetSelectedID(widget.button, self:GetID())
-				widget:Callback(self.value)
+				widget:Callback(info.value)
 			end)
 			UIDropDownMenu_AddButton(info, level)
 		end
 	end
-	UIDropDownMenu_Initialize(widget.button, initialize)
-	UIDropDownMenu_SetWidth(widget.button, widget:GetWidth())
-	UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth())
-	UIDropDownMenu_SetSelectedID(widget.button, 1)
-	UIDropDownMenu_JustifyText(widget.button, "LEFT")
+	widget.SetItems = function(items)
+		widget.items = items
+		UIDropDownMenu_Initialize(widget.button, initialize)
+		UIDropDownMenu_SetWidth(widget.button, widget:GetWidth())
+		UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth())
+		UIDropDownMenu_SetSelectedID(widget.button, 1)
+		UIDropDownMenu_JustifyText(widget.button, "LEFT")
+	end
+	widget.SetCallback = function(func)
+		widget.Callback = func
+	end
+	return widget
 end
 
 local CreateEditBox = function(parent)
@@ -157,11 +160,11 @@ local CreateEditBox = function(parent)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
 	widget.SetCallback = function(func)
-		widget.Callback = func
+		widget.editbox:SetScript("OnTextChanged", function(self)
+			func(self:GetText())
+		end)
 	end
-	widget.editbox:SetScript("OnTextChanged", function(self)
-		widget:Callback(self:GetText())
-	end)
+	return widget
 end
 
 local CreateSlider = function(parent)
@@ -202,14 +205,14 @@ local CreateSlider = function(parent)
 		widget.slider:SetSliderValues(...)
 	end
 	widget.SetCallback = function(func)
-		widget.Callback = func
+		widget.editbox:SetScript("OnTextChanged", function(self)
+			func(self:GetText())
+		end)
 	end
 	widget.slider:SetScript("OnValueChanged", function(self)
 		widget.editbox:SetText(self:GetValue())
 	end)
-	widget.editbox:SetScript("OnTextChanged", function(self)
-		widget:Callback(self:GetText())
-	end)
+	return widget
 end
 
 local PanelLayout = function(frame)
@@ -307,14 +310,33 @@ local CreateConfigFrame = function()
 					tinsert(panel.widgets, editbox)
 				end
 				if type(value) == "table" then
-					local button = CreateColorPicker(panel)
-					button.label:SetText(option)
-					button:SetColor(unpack(value))
-					button:SetCallback(function(...)
-						local color = {...}
-						SetValue(group, option, color)
-					end)
-					tinsert(panel.widgets, button)
+					if not value.type then
+						local button = CreateColorPicker(panel)
+						button.label:SetText(option)
+						button:SetColor(unpack(value))
+						button:SetCallback(function(...)
+							local color = {...}
+							SetValue(group, option, color)
+						end)
+						tinsert(panel.widgets, button)
+					elseif value.type == "select" then
+						local button = CreateDropDown(panel)
+						button.label:SetText(option)
+						button:SetItems(value.select)
+						button:SetCallback(function(val)
+							SetValue(group, option, val)
+						end)
+						tinsert(panel.widgets, button)
+					elseif value.type == "range" then
+						local slider = CreateSlider(panel)
+						slider.label:SetText(option)
+						slider:SetSliderValues(value.min, value.max, value.step or 1)
+						slider:SetValue(value.value)
+						slider:SetCallback(function(val)
+							SetValue(group, option, val)
+						end)
+						tinsert(panel.widgets, slider)
+					end
 				end
 			end
 			PanelLayout(panel)
