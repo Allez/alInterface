@@ -100,6 +100,42 @@ local CreateColorPicker = function(parent)
 	end)
 end
 
+local CreateDropDown = function(parent)
+	local widget = CreateFrame("Frame", nil, parent)
+	widget:SetSize(200, 40)
+	widget.button = CreateFrame("Button", nil, widget, "UIDropDownMenuTemplate")
+	widget.button:ClearAllPoints()
+	widget.button:SetPoint("BOTTOM")
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label:SetHeight(20)
+	widget.label:SetJustifyH("LEFT")
+	widget.label:SetPoint("TOPLEFT", 3, 0)
+	widget.SetItems = function(items)
+		widget.items = items
+	end
+	widget.SetCallback = function(func)
+		widget.Callback = func
+	end
+	local initialize = function(self, level)
+		local info = UIDropDownMenu_CreateInfo()
+		for i, v in pairs(items) do
+			info = UIDropDownMenu_CreateInfo()
+			info.text = v
+			info.value = v
+			info.func = function(self)
+				UIDropDownMenu_SetSelectedID(widget.button, self:GetID())
+				widget:Callback(self.value)
+			end)
+			UIDropDownMenu_AddButton(info, level)
+		end
+	end
+	UIDropDownMenu_Initialize(widget.button, initialize)
+	UIDropDownMenu_SetWidth(widget.button, widget:GetWidth())
+	UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth())
+	UIDropDownMenu_SetSelectedID(widget.button, 1)
+	UIDropDownMenu_JustifyText(widget.button, "LEFT")
+end
+
 local CreateEditBox = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
 	widget:SetSize(200, 40)
@@ -261,11 +297,11 @@ local CreateConfigFrame = function()
 				if type(value) == "number" or type(value) == "string" then
 					local editbox = CreateEditBox(panel)
 					editbox.label:SetText(option)
-					editbox:SetCallback(function(value)
+					editbox:SetCallback(function(val)
 						if type(value) == "number" then
-							SetValue(group,option,tonumber(value))
+							SetValue(group,option,tonumber(val))
 						else
-							SetValue(group,option,tostring(value))
+							SetValue(group,option,tostring(val))
 						end
 					end)
 					tinsert(panel.widgets, editbox)
