@@ -54,7 +54,7 @@ local CreateCheckBox = function(parent)
 		widget.Callback = func
 	end
 	widget:SetScript("OnClick", function(self)
-		self.Callback(self.chack:GetChecked() and true or false)
+		self.Callback(self.check:GetChecked() and true or false)
 	end)
 end
 
@@ -116,14 +116,64 @@ local CreateEditBox = function(parent)
 	widget.editbox:SetBackdrop(backdrop)
 	widget.editbox:SetBackdropColor(0, 0, 0, 0)
 	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-	widget.label = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	widget.label:SetText(option)
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
-	widget.Script = function(script, func)
-		widget.editbox:SetScript(script, func)
+	widget.SetCallback = function(func)
+		widget.Callback = func
 	end
+	widget.editbox:SetScript("OnTextChanged", function(self)
+		widget:Callback(self:GetText())
+	end)
+end
+
+local CreateSlider = function(parent)
+	local widget = CreateFrame("Frame", nil, parent)
+	widget:SetSize(200, 40)
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label:SetHeight(20)
+	widget.label:SetJustifyH("CENTER")
+	widget.label:SetPoint("TOP")
+	widget.slider = CreateFrame("Slider", nil, widget)
+	widget.slider:SetOrientation("HORIZONTAL")
+	widget.slider:SetHeight(15)
+	widget.slider:SetHitRectInsets(0, 0, -10, 0)
+	widget.slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+	widget.slider:SetPoint("TOP", widget.label, "BOTTOM")
+	widget.slider:SetPoint("LEFT", 3, 0)
+	widget.slider:SetPoint("RIGHT", -3, 0)
+	widget.slider:SetValue(0)
+	widget.left = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	widget.left:SetPoint("TOPLEFT")
+	widget.right = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	widget.right:SetPoint("TOPRIGHT")
+	widget.editbox = CreateFrame("EditBox", nil, widget)
+	widget.editbox:SetAutoFocus(false)
+	widget.editbox:SetMultiLine(false)
+	widget.editbox:SetSize(50, 14)
+	widget.editbox:SetFontObject(GameFontHighlightSmall)
+	widget.editbox:SetPoint("TOP", widget.slider, "BOTTOM")
+	widget.editbox:SetJustifyH("CENTER")
+	widget.editbox:EnableMouse(true)
+	widget.editbox:SetBackdrop(backdrop)
+	widget.editbox:SetBackdropColor(0, 0, 0, 0)
+	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
+	widget.SetValue = function(value)
+		widget.slider:SetValue(value)
+	end
+	widget.SetSliderValues = function(...)
+		widget.slider:SetSliderValues(...)
+	end
+	widget.SetCallback = function(func)
+		widget.Callback = func
+	end
+	widget.slider:SetScript("OnValueChanged", function(self)
+		widget.editbox:SetText(self:GetValue())
+	end)
+	widget.editbox:SetScript("OnTextChanged", function(self)
+		widget:Callback(self:GetText())
+	end)
 end
 
 local PanelLayout = function(frame)
@@ -203,11 +253,11 @@ local CreateConfigFrame = function()
 				if type(value) == "number" or type(value) == "string" then
 					local editbox = CreateEditBox(panel)
 					editbox.label:SetText(option)
-					editbox:Script("OnTextChanged", function(self)
+					editbox:SetCallback(function(value)
 						if type(value) == "number" then
-							SetValue(group,option,tonumber(self:GetText()))
+							SetValue(group,option,tonumber(value))
 						else
-							SetValue(group,option,tostring(self:GetText()))
+							SetValue(group,option,tostring(value))
 						end
 					end)
 					tinsert(panel.widgets, editbox)
