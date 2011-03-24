@@ -38,6 +38,94 @@ local SetValue = function(group, option, value)
 	UISetup[group][option] = value
 end
 
+local CreateCheckBox = function(parent)
+	local widget = CreateFrame("Button", nil, parent)
+	widget:SetSize(200, 20)
+	widget.check = CreateFrame("CheckButton", nil, widget, "InterfaceOptionsCheckButtonTemplate")
+	widget.check:SetPoint("LEFT")
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label:SetJustifyH("LEFT")
+	widget.label:SetPoint("LEFT", widget.check, "RIGHT", 3, 0)
+	widget.label:SetPoint("RIGHT", 0, 0)
+	widget.SetChecked = function(checked)
+		widget.check:SetChecked(checked)
+	end
+	widget.SetCallback = function(func)
+		widget.Callback = func
+	end
+	widget:SetScript("OnClick", function(self)
+		self.Callback(self.chack:GetChecked() and true or false)
+	end)
+end
+
+local CreateColorPicker = function(parent)
+	local widget = CreateFrame("Button", nil, parent)
+	widget:SetSize(200, 20)
+	widget.color = widget:CreateTexture(nil, "OVERLAY")
+	widget.color:SetSize(20, 20)
+	widget.color:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
+	widget.color:SetPoint("LEFT")
+	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label:SetJustifyH("LEFT")
+	widget.label:SetPoint("RIGHT", 0, 0)
+	widget.SetColor = function(...)
+		widget.color:SetVertexColor(...)
+		widget.value = {...}
+	end
+	widget.SetCallback = function(func)
+		widget.Callback = func
+	end
+	widget:SetScript("OnClick", function(self) 
+		if ColorPickerFrame:IsShown() then return end
+		local r, g, b, a = unpack(self.value)
+
+		local myColorCallback = function(restore)
+			local newR, newG, newB, newA
+			if restore then
+				newR, newG, newB, newA = unpack(restore)
+			else
+				newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+			end
+			self.Callback(newR, newG, newB, newA)
+			self.color:SetVertexColor(newR, newG, newB, newA)
+		end
+
+		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = 
+			myColorCallback, myColorCallback, myColorCallback
+		ColorPickerFrame:SetColorRGB(r, g, b)
+		ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
+		ColorPickerFrame.previousValues = {r, g, b, a}
+		ColorPickerFrame:Hide()
+		ColorPickerFrame:Show()
+	end)
+end
+
+local CreateEditBox = function(parent)
+	local widget = CreateFrame("Frame", nil, parent)
+	widget:SetSize(200, 40)
+	widget.editbox = CreateFrame("EditBox", nil, widget)
+	widget.editbox:SetAutoFocus(false)
+	widget.editbox:SetMultiLine(false)
+	widget.editbox:SetHeight(20)
+	widget.editbox:SetMaxLetters(255)
+	widget.editbox:SetTextInsets(3, 0, 0, 0)
+	widget.editbox:SetFontObject(GameFontHighlight)
+	widget.editbox:SetPoint("BOTTOMLEFT", 0, 0)
+	widget.editbox:SetPoint("BOTTOMRIGHT", 0, 0)
+	widget.editbox:SetText(value)
+	widget.editbox:SetBackdrop(backdrop)
+	widget.editbox:SetBackdropColor(0, 0, 0, 0)
+	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
+	widget.label = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	widget.label:SetText(option)
+	widget.label:SetHeight(20)
+	widget.label:SetJustifyH("LEFT")
+	widget.label:SetPoint("TOPLEFT", 3, 0)
+	widget.Script = function(script, func)
+		widget.editbox:SetScript(script, func)
+	end
+end
+
 local PanelLayout = function(frame)
 	local width = frame:GetWidth()
 	local height = frame:GetHeight()
@@ -48,9 +136,10 @@ local PanelLayout = function(frame)
 			widget:SetPoint("TOPLEFT", 10, -20)
 		else
 			if totalwidth + widget:GetWidth() < width then
-				widget:SetPoint("TOPLEFT", frame.widgets[i-1], "TOPRIGHT", 10, 0)
+				widget:SetPoint("LEFT", frame.widgets[i-1], "RIGHT", 10, 0)
 			else
 				widget:SetPoint("TOPLEFT", 10, -20*i)
+				totalwidth = 0
 			end
 		end
 		totalwidth = totalwidth + widget:GetWidth()
@@ -58,9 +147,8 @@ local PanelLayout = function(frame)
 end
 
 local CreateConfigFrame = function()
-	if _G["UIConfigFrame"] then
-		_G["UIConfigFrame"]:Show()
-		return
+	if UIConfigFrame then
+		UIConfigFrame:Show()
 	end
 
 	local offset = 0
@@ -68,14 +156,13 @@ local CreateConfigFrame = function()
 		local button = CreateFrame("Button", "UIConfigGroup"..group, groups)
 		button:SetSize(148, 20)
 		button:SetPoint("TOP", 0, -offset-1)
-		local label = button:CreateFontString(nil, "OVERLAY")
-		label:SetPoint("CENTER")
-		label:SetFont(GameFontNormal:GetFont(), 14)
+		local label = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		label:SetPoint("LEFT")
 		label:SetText(group)
 		
-		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScroll"..group, main, "UIPanelScrollFrameTemplate")
+		local scrollsettings = CreateFrame("ScrollFrame", "UIConfigScroll"..group, UIConfigFrame, "UIPanelScrollFrameTemplate")
 		scrollsettings:SetPoint("BOTTOMRIGHT", -12, 42)
-		scrollsettings:SetPoint("TOPLEFT", groups, "TOPRIGHT", 20, 0)
+		scrollsettings:SetPoint("TOPLEFT", UIConfigFrameElements, "TOPRIGHT", 20, 0)
 		scrollsettings.bg = CreateBG(scrollsettings)
 		local settings = CreateFrame("Frame", "UIConfigSettings"..group, scrollsettings)
 		settings:SetPoint("TOPLEFT")
@@ -105,86 +192,38 @@ local CreateConfigFrame = function()
 			panel.widgets = {}
 			for option, value in pairs(options) do
 				if type(value) == "boolean" then
-					local check = CreateFrame("CheckButton", "UIConfigSettings"..group..option, panel, "InterfaceOptionsCheckButtonTemplate")
-					_G[check:GetName().."Text"]:SetText(option)
-					check:SetChecked(value)
-					check:SetScript("OnClick", function(self)
-						SetValue(group, option, self:GetChecked() and true or false)
+					local button = CreateCheckBox(panel)
+					button.label:SetText(option)
+					button:SetChecked(value)
+					button:SetCallback(function(checked)
+						SetValue(group, option, checked)
 					end)
-					check:SetPoint("TOPLEFT", 5, -offsetgroup)
-					tinsert(panel.widgets, check)
+					tinsert(panel.widgets, button)
 				end
 				if type(value) == "number" or type(value) == "string" then
-					local label = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-					label:SetText(option)
-					label:SetWidth(140)
-					label:SetHeight(20)
-					label:SetJustifyH("LEFT")
-					label:SetPoint("TOPLEFT", 5, -offsetgroup)
-					local editbox = CreateFrame("EditBox", nil, panel)
-					editbox:SetAutoFocus(false)
-					editbox:SetMultiLine(false)
-					editbox:SetWidth(250)
-					editbox:SetHeight(20)
-					editbox:SetMaxLetters(255)
-					editbox:SetTextInsets(3, 0, 0, 0)
-					editbox:SetFontObject(GameFontHighlight)
-					editbox:SetPoint("LEFT", label, "RIGHT", 5, 0)
-					editbox:SetText(value)
-					editbox:SetBackdrop(backdrop)
-					editbox:SetBackdropColor(0, 0, 0, 0)
-					editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
-					editbox:SetScript("OnChar", function(self)
+					local editbox = CreateEditBox(panel)
+					editbox.label:SetText(option)
+					editbox:Script("OnTextChanged", function(self)
 						if type(value) == "number" then
 							SetValue(group,option,tonumber(self:GetText()))
 						else
 							SetValue(group,option,tostring(self:GetText()))
 						end
 					end)
+					tinsert(panel.widgets, editbox)
 				end
 				if type(value) == "table" then
-					local label = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-					label:SetText(option)
-					label:SetWidth(140)
-					label:SetHeight(20)
-					label:SetJustifyH("LEFT")
-					label:SetPoint("TOPLEFT", 5, -offsetgroup)
-					local button = CreateFrame("Button", nil, panel)
-					button:SetSize(50, 20)
-					button:SetPoint("LEFT", label, "RIGHT", 5, 0)
-					button.bg = CreateBG(button)
-					button.bg:SetBackdropBorderColor(unpack(value))
-					button.label = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-					button.label:SetText(COLOR)
-					button.label:SetPoint("CENTER")
-					button.option = option
-					button:SetScript("OnClick", function(self) 
-						if ColorPickerFrame:IsShown() then return end
-						local r, g, b, a = unpack(value)
-
-						local function myColorCallback(restore)
-							local newR, newG, newB, newA
-							if restore then
-								newR, newG, newB, newA = unpack(restore)
-							else
-								newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
-							end
-							SetValue(group, self.option, {newR, newG, newB, newA})
-							self.bg:SetBackdropBorderColor(newR, newG, newB, newA)
-						end
-
-						ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = 
-							myColorCallback, myColorCallback, myColorCallback
-						ColorPickerFrame:SetColorRGB(r, g, b)
-						ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a
-						ColorPickerFrame.previousValues = {r, g, b, a}
-						ColorPickerFrame:Hide()
-						ColorPickerFrame:Show()
+					local button = CreateColorPicker(panel)
+					button.label:SetText(option)
+					button:SetColor(unpack(value))
+					button:SetCallback(function(...)
+						local color = {...}
+						SetValue(group, option, color)
 					end)
+					tinsert(panel.widgets, button)
 				end
-				PanelLayout(panel)
-				offsetgroup = offsetgroup + 25
 			end
+			PanelLayout(panel)
 		end
 	end
 end
