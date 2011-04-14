@@ -172,7 +172,7 @@ end
 
 local CreateSlider = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(200, 50)
+	widget:SetSize(190, 40)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("CENTER")
@@ -180,7 +180,6 @@ local CreateSlider = function(parent)
 	widget.slider = CreateFrame("Slider", nil, widget)
 	widget.slider:SetOrientation("HORIZONTAL")
 	widget.slider:SetHeight(15)
-	widget.slider:SetHitRectInsets(0, 0, -10, 0)
 	widget.slider:SetBackdrop({
 		bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
 		edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
@@ -291,7 +290,7 @@ end
 
 UIConfigFrame_Create = function(self)
 	local offset = 0
-	for element, settings in pairs(UIConfig) do
+	for element, settings in pairs(UIConfigGUI) do
 		local button = CreateFrame("Button", "$parent"..element, UIConfigFrameElements, "UIConfigGroupButtonTemplate")
 		button:SetPoint("TOP", 0, -offset-1)
 		button.label:SetJustifyH("LEFT")
@@ -325,7 +324,7 @@ UIConfigFrame_Create = function(self)
 				elseif type(value.value) == "table" then
 					local button = CreateColorPicker(panel)
 					button.label:SetText(option)
-					button:SetColor(unpack(value))
+					button:SetColor(unpack(value.value))
 					button:SetCallback(function(...)
 						local color = {...}
 						SetValue(element, group, option, color)
@@ -351,7 +350,7 @@ UIConfigFrame_Create = function(self)
 				elseif type(value.value) == "string" then
 					local editbox = CreateEditBox(panel)
 					editbox.label:SetText(option)
-					editbox.editbox:SetText(value)
+					editbox.editbox:SetText(value.value)
 					editbox:SetCallback(function(val)
 						if type(value) == "number" then
 							SetValue(element, group, option,tonumber(val))
@@ -372,7 +371,6 @@ UIConfigFrame_Create = function(self)
 			end
 		end
 	end
-	self:Hide()
 end
 
 local toggle = CreateFrame("Button", "C", UIParent)
@@ -383,7 +381,7 @@ toggle:SetFrameStrata("LOW")
 toggle:SetFrameLevel(0)
 toggle.bg = CreateBG(toggle)
 toggle:SetScript("OnClick", function(self)
-	CreateConfigFrame()
+	UIConfigFrame_Create()
 end)
 tinsert(UIMovableFrames, toggle)
 
@@ -393,20 +391,20 @@ frame:RegisterEvent("PLAYER_LOGIN")
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
 		self:UnregisterEvent(event)
-		if UISetup then
-			for group, options in pairs(UISetup) do
+		for element, settings in pairs(UIConfigGUI) do
+			for group, options in pairs(settings) do
+				UIConfig[element][group] = {}
+				for option, value in pairs(options) do
+					UIConfig[element][group][option] = value.value
+				end
+			end
+		end
+		for element, settings in pairs(UISetup) do
+			for group, options in pairs(settings) do
 				for option, value in pairs(options) do
 					if UIConfig and UIConfig[group] then
 						UIConfig[group][option] = value
 					end
-				end
-			end
-		end
-	elseif event == "PLAYER_LOGIN" then
-		for element, settings in pairs(UIConfigGUI) do
-			for group, options in pairs(settings) do
-				for option, value in pairs(options) do
-					UIConfig[element][group][option] = value.value
 				end
 			end
 		end
