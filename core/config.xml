@@ -158,6 +158,7 @@
 		<Scripts>
 			<OnLoad>
 				CreateBG(self);
+				UIConfigFrame_Create(self);
 			</OnLoad>
 		</Scripts>
 	</Frame>

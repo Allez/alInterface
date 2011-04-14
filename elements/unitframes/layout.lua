@@ -3,66 +3,162 @@ local addon_name, ns = ...
 local font = 'Fonts\\VisitorR.TTF'
 local fontsize = 10
 local stdfont = GameFontNormal:GetFont()
-local texture = addon_name.."\\media\\statusbarTex"
-local glowTex = addon_name.."\\media\\glowTex"
+local texture = "Interface\\Addons\\"..addon_name.."\\media\\statusbarTex"
+local glowTex = "Interface\\Addons\\"..addon_name.."\\media\\glowTex"
 
-local cfg = {
+local config = {
 	general = {
-		smooth = true,
-		auraspiral = true,
-		auratimer = true,
-		focusdebuffs = true,
-		targetdebuffs = true,
-		petdebuffs = true,
-		totdebuffs = true,
-		colordebuff = true,
-		aggro = true,
-	},
-	fonts = {
-		
-	},
-	colors = {
-		health = {0.2, 0.2, 0.2},
-		healthbg = {0.0, 0.0, 0.0},
-		powerbg = {0.0, 0.0, 0.0},
-		castcomplete = {0.12, 0.86, 0.15},
-		casting = {1.0, 0.49, 0},
-		channeling = {1.0, 0.09, 0},
-		castfail = {0.32, 0.3, 1},
-	},
-	elements = {
-		portraits = true,
-		gcd = true,
-		eclipsebar = true,
-		holypower = true,
-		combo = true,
-		soulshards = true,
-		runes = true,
-		totembar = true,
-		reputation = true,
-		experience = true,
-		castbar = true,
+		smooth = {
+			order = 1,
+			value = true,
+		},
+		auraspiral = {
+			order = 2,
+			value = true,
+		},
+		auratimer = {
+			order = 3,
+			value = true,
+		},
+		focusdebuffs = {
+			order = 4,
+			value = true,
+		},
+		targetdebuffs = {
+			order = 5,
+			value = true,
+		},
+		petdebuffs = {
+			order = 6,
+			value = true,
+		},
+		totdebuffs = {
+			order = 7,
+			value = true,
+		},
+		colordebuff = {
+			order = 8,
+			value = true,
+		},
+		aggro = {
+			order = 9,
+			value = true,
+		},
 	},
 	raid = {
-		direction = {
-			type = "select",
-			value = "LEFT",
-			select = {"LEFT", "RIGHT", "UP", "DOWN"},
-		},
 		width = {
+			order = 1,
 			type = "range",
 			value = 36,
 			min = 12,
 			max = 100,
 		},
-		height = 23,
-		showpower = false,
-		raiddebuffs = true,
+		height = {
+			order = 2,
+			type = "range",
+			value = 23,
+			min = 12,
+			max = 100,
+		},
+		showpower = {
+			order = 3,
+			value = false,
+		},
+		raiddebuffs = {
+			order = 4,
+			value = true,
+		},
 	}
+	colors = {
+		health = {
+			order = 1,
+			type = "color",
+			value = {0.2, 0.2, 0.2},
+		},
+		healthbg = {
+			order = 2,
+			type = "color",
+			value = {0.0, 0.0, 0.0},
+		},
+		powerbg = {
+			order = 3,
+			type = "color",
+			value = {0.0, 0.0, 0.0},
+		},
+		castcomplete = {
+			order = 4,
+			type = "color",
+			value = {0.12, 0.86, 0.15},
+		},
+		casting = {
+			order = 5,
+			type = "color",
+			value = {1.0, 0.49, 0},
+		},
+		channeling = {
+			order = 6,
+			type = "color",
+			value = {1.0, 0.09, 0},
+		},
+		castfail = {
+			order = 7,
+			type = "color",
+			value = {0.32, 0.3, 1},
+		},
+	},
+	elements ={
+		portraits = {
+			order = 1,
+			value = true,
+		},
+		gcd = {
+			order = 2,
+			value = true,
+		},
+		eclipsebar = {
+			order = 3,
+			value = true,
+		},
+		holypower = {
+			order = 4,
+			value = true,
+		},
+		combo = {
+			order = 5,
+			value = true,
+		},
+		soulshards = {
+			order = 6,
+			value = true,
+		},
+		runes = {
+			order = 7,
+			value = true,
+		},
+		totembar = {
+			order = 8,
+			value = true,
+		},
+		reputation = {
+			order = 9,
+			value = true,
+		},
+		experience = {
+			order = 10,
+			value = true,
+		},
+		castbar = {
+			order = 11,
+			value = true,
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Unit frames"] = cfg
-end
+
+local cfg = {}
+
+UIConfigGUI.unitframes = config
+UIConfig.unitframes = cfg
+
 if true then return end
 
 local _, class = UnitClass('player')
@@ -963,7 +1059,7 @@ local CreateStyle = function(self, unit)
 	end
 
 	-- Portraits
-	if (unit == 'target' or unit == 'player') and config["Enable portraits"] then
+	if (unit == 'target' or unit == 'player') and cfg.general.portraits config["Enable portraits"] then
 		local PortHolder = CreateFrame('Frame', nil, self)
 		PortHolder:SetSize(40, 31)
 		if unit == 'player' then

@@ -1,5 +1,6 @@
 local addon_name, ns = ...
 
+UIConfigGUI = {}
 UIConfig = {}
 UISetup = {}
 
@@ -30,11 +31,14 @@ local CreateFS = function(frame, fsize, fstyle)
 	return fstring
 end
 
-local SetValue = function(group, option, value)
-	if not UISetup[group] then
-		UISetup[group] = {}
+local SetValue = function(element, group, option, value)
+	if not UISetup[element] then
+		UISetup[element] = {}
 	end
-	UISetup[group][option] = value
+	if not UISetup[element][group] then
+		UISetup[element][group] = {}
+	end
+	UISetup[element][group][option] = value
 end
 
 local CreateCheckBox = function(parent)
@@ -272,7 +276,6 @@ local CreateOptionsPanel = function(button)
 	frame.content:SetWidth(430)
 	frame.content:SetHeight(100)
 	frame:SetScrollChild(frame.content)
-	print(frame.content:GetWidth())
 	return frame
 end
 
@@ -284,11 +287,9 @@ local ShowPanel = function(self)
 	lastVisible = self.panel
 end
 
-local CreateConfigFrame = function()
-	if UIConfigFrame then
-		UIConfigFrame:Show()
-	end
 
+
+UIConfigFrame_Create = function(self)
 	local offset = 0
 	for element, settings in pairs(UIConfig) do
 		local button = CreateFrame("Button", "$parent"..element, UIConfigFrameElements, "UIConfigGroupButtonTemplate")
@@ -313,56 +314,52 @@ local CreateConfigFrame = function()
 			panel.title:SetText(group)
 			panel.widgets = {}
 			for option, value in pairs(options) do
-				if type(value) == "boolean" then
+				if type(value.value) == "boolean" then
 					local button = CreateCheckBox(panel)
 					button.label:SetText(option)
-					button:SetChecked(value)
+					button:SetChecked(value.value)
 					button:SetCallback(function(checked)
-						SetValue(group, option, checked)
+						SetValue(element, group, option, checked)
 					end)
-					tinsert(panel.widgets, button)
-				end
-				if type(value) == "number" or type(value) == "string" then
+					panel.widgets[value.order] = button
+				elseif type(value.value) == "table" then
+					local button = CreateColorPicker(panel)
+					button.label:SetText(option)
+					button:SetColor(unpack(value))
+					button:SetCallback(function(...)
+						local color = {...}
+						SetValue(element, group, option, color)
+					end)
+					panel.widgets[value.order] = button
+				elseif value.type == "select" then
+					local button = CreateDropDown(panel)
+					button.label:SetText(option)
+					button:SetItems(value.select)
+					button:SetCallback(function(val)
+						SetValue(element, group, option, val)
+					end)
+					panel.widgets[value.order] = button
+				elseif value.type == "range" then
+					local slider = CreateSlider(panel)
+					slider.label:SetText(option)
+					slider:SetSliderValues(value.min, value.max, value.step or 1)
+					slider:SetValue(value.value)
+					slider:SetCallback(function(val)
+						SetValue(element, group, option, val)
+					end)
+					panel.widgets[value.order] = slider
+				elseif type(value.value) == "string" then
 					local editbox = CreateEditBox(panel)
 					editbox.label:SetText(option)
 					editbox.editbox:SetText(value)
 					editbox:SetCallback(function(val)
 						if type(value) == "number" then
-							SetValue(group,option,tonumber(val))
+							SetValue(element, group, option,tonumber(val))
 						else
-							SetValue(group,option,tostring(val))
+							SetValue(element, group, option,tostring(val))
 						end
 					end)
-					tinsert(panel.widgets, editbox)
-				end
-				if type(value) == "table" then
-					if not value.type then
-						local button = CreateColorPicker(panel)
-						button.label:SetText(option)
-						button:SetColor(unpack(value))
-						button:SetCallback(function(...)
-							local color = {...}
-							SetValue(group, option, color)
-						end)
-						tinsert(panel.widgets, button)
-					elseif value.type == "select" then
-						local button = CreateDropDown(panel)
-						button.label:SetText(option)
-						button:SetItems(value.select)
-						button:SetCallback(function(val)
-							SetValue(group, option, val)
-						end)
-						tinsert(panel.widgets, button)
-					elseif value.type == "range" then
-						local slider = CreateSlider(panel)
-						slider.label:SetText(option)
-						slider:SetSliderValues(value.min, value.max, value.step or 1)
-						slider:SetValue(value.value)
-						slider:SetCallback(function(val)
-							SetValue(group, option, val)
-						end)
-						tinsert(panel.widgets, slider)
-					end
+					panel.widgets[value.order] = editbox
 				end
 			end
 			PanelLayout(panel)
@@ -375,6 +372,7 @@ local CreateConfigFrame = function()
 			end
 		end
 	end
+	self:Hide()
 end
 
 local toggle = CreateFrame("Button", "C", UIParent)
@@ -391,18 +389,31 @@ tinsert(UIMovableFrames, toggle)
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("VARIABLES_LOADED")
-frame:SetScript("OnEvent", function(self, event, addon)
-	self:UnregisterEvent(event)
-	if UISetup then
-		for group, options in pairs(UISetup) do
-			for option, value in pairs(options) do
-				if UIConfig and UIConfig[group] then
-					UIConfig[group][option] = value
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:SetScript("OnEvent", function(self, event)
+	if event == "VARIABLES_LOADED" then
+		self:UnregisterEvent(event)
+		if UISetup then
+			for group, options in pairs(UISetup) do
+				for option, value in pairs(options) do
+					if UIConfig and UIConfig[group] then
+						UIConfig[group][option] = value
+					end
+				end
+			end
+		end
+	elseif event == "PLAYER_LOGIN" then
+		for element, settings in pairs(UIConfigGUI) do
+			for group, options in pairs(settings) do
+				for option, value in pairs(options) do
+					UIConfig[element][group][option] = value.value
 				end
 			end
 		end
 	end
 end)
 
-SlashCmdList["UICONFIG"] = CreateConfigFrame
+SlashCmdList["UICONFIG"] = function()
+	UIConfigFrame:Show()
+end
 SLASH_UICONFIG1 = "/uiconfig"
