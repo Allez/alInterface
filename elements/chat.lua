@@ -8,7 +8,7 @@ local config = {
 	["Tab font"] = 'Fonts\\VisitorR.TTF',
 }
 if UIConfig then
-	UIConfig["Chat"] = config
+	--UIConfig["Chat"] = config
 end
 
 local backdrop = {

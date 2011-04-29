@@ -1,5 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file='mover.lua' />
 	<Script file='core.lua' />
-	<Script file='config.lua' />
 </Ui>

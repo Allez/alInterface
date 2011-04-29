@@ -12,7 +12,7 @@ local config = {
 	["Font style"] = font_style,
 }
 if UIConfig then
-	UIConfig["Raid manager"] = config
+	--UIConfig["Raid manager"] = config
 end
 
 local backdrop = {
@@ -21,10 +21,12 @@ local backdrop = {
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 }
 
-CompactRaidFrameManager:UnregisterAllEvents()
 CompactRaidFrameManager:Hide()
-CompactRaidFrameContainer:UnregisterAllEvents()
+CompactRaidFrameManager:UnregisterAllEvents()
+CompactRaidFrameManager:SetScript("OnUpdate", nil)
 CompactRaidFrameContainer:Hide()
+CompactRaidFrameContainer:UnregisterAllEvents()
+CompactRaidFrameContainer:SetScript("OnUpdate", nil)
 
 local CreateBG = CreateBG or function(parent)
 	local bg = CreateFrame('Frame', nil, parent)

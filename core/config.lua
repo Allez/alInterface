@@ -5,6 +5,7 @@ UIConfig = {}
 UISetup = {}
 
 local lastVisible = nil
+local created = false
 
 local backdrop = {
 	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -56,8 +57,8 @@ local CreateCheckBox = function(parent)
 	widget.SetCallback = function(self, func)
 		widget.Callback = func
 	end
-	widget:SetScript("OnClick", function(self)
-		self.Callback(self.check:GetChecked() and true or false)
+	widget.check:SetScript("OnClick", function(self)
+		widget.Callback(self:GetChecked() and true or false)
 	end)
 	return widget
 end
@@ -106,6 +107,7 @@ local CreateColorPicker = function(parent)
 	return widget
 end
 
+local dropcount = 1
 local CreateDropDown = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
 	widget:SetSize(200, 40)
@@ -113,7 +115,7 @@ local CreateDropDown = function(parent)
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
 	widget.label:SetPoint("TOPLEFT", 3, 0)
-	widget.button = CreateFrame("Button", "Dropdown1", widget, "UIDropDownMenuTemplate")
+	widget.button = CreateFrame("Button", "Dropdown"..dropcount, widget, "UIDropDownMenuTemplate")
 	widget.button:ClearAllPoints()
 	widget.button:SetPoint("TOPLEFT", widget.label, "BOTTOMLEFT", -20, 0)
 	local initialize = function(self, level)
@@ -129,7 +131,7 @@ local CreateDropDown = function(parent)
 			UIDropDownMenu_AddButton(info, level)
 		end
 	end
-	widget.SetItems = function(items)
+	widget.SetItems = function(self, items)
 		widget.items = items
 		UIDropDownMenu_Initialize(widget.button, initialize)
 		UIDropDownMenu_SetWidth(widget.button, widget:GetWidth()-20)
@@ -140,6 +142,7 @@ local CreateDropDown = function(parent)
 	widget.SetCallback = function(self, func)
 		widget.Callback = func
 	end
+	dropcount = dropcount + 1
 	return widget
 end
 
@@ -172,7 +175,7 @@ end
 
 local CreateSlider = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(190, 40)
+	widget:SetSize(190, 45)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("CENTER")
@@ -256,7 +259,7 @@ local PanelLayout = function(frame)
 		end
 		totalwidth = totalwidth + widget:GetWidth()
 	end
-	totalheight = totalheight + row + offset + 3
+	totalheight = totalheight + row + offset + 10
 	frame:SetHeight(totalheight)
 end
 
@@ -275,6 +278,7 @@ local CreateOptionsPanel = function(button)
 	frame.content:SetWidth(430)
 	frame.content:SetHeight(100)
 	frame:SetScrollChild(frame.content)
+	frame:Hide()
 	return frame
 end
 
@@ -289,12 +293,16 @@ end
 
 
 UIConfigFrame_Create = function(self)
+	if created then
+		UIConfigFrame:Show()
+		return
+	end
 	local offset = 0
 	for element, settings in pairs(UIConfigGUI) do
 		local button = CreateFrame("Button", "$parent"..element, UIConfigFrameElements, "UIConfigGroupButtonTemplate")
 		button:SetPoint("TOP", 0, -offset-1)
 		button.label:SetJustifyH("LEFT")
-		button.label:SetText(element)
+		button.label:SetText(L[element] or element)
 
 		button.panel = CreateOptionsPanel(button)
 		button.panel:SetPoint("BOTTOMRIGHT", UIConfigFrame, "BOTTOMRIGHT", -12, 42)
@@ -310,12 +318,12 @@ UIConfigFrame_Create = function(self)
 			CreateBG(panel)
 			panel.title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 			panel.title:SetPoint("BOTTOMLEFT", panel, "TOPLEFT", 0, 5)
-			panel.title:SetText(group)
+			panel.title:SetText(L[group] or group)
 			panel.widgets = {}
 			for option, value in pairs(options) do
 				if type(value.value) == "boolean" then
 					local button = CreateCheckBox(panel)
-					button.label:SetText(option)
+					button.label:SetText(L[option] or option)
 					button:SetChecked(value.value)
 					button:SetCallback(function(checked)
 						SetValue(element, group, option, checked)
@@ -323,7 +331,7 @@ UIConfigFrame_Create = function(self)
 					panel.widgets[value.order] = button
 				elseif type(value.value) == "table" then
 					local button = CreateColorPicker(panel)
-					button.label:SetText(option)
+					button.label:SetText(L[option] or option)
 					button:SetColor(unpack(value.value))
 					button:SetCallback(function(...)
 						local color = {...}
@@ -332,7 +340,7 @@ UIConfigFrame_Create = function(self)
 					panel.widgets[value.order] = button
 				elseif value.type == "select" then
 					local button = CreateDropDown(panel)
-					button.label:SetText(option)
+					button.label:SetText(L[option] or option)
 					button:SetItems(value.select)
 					button:SetCallback(function(val)
 						SetValue(element, group, option, val)
@@ -340,7 +348,7 @@ UIConfigFrame_Create = function(self)
 					panel.widgets[value.order] = button
 				elseif value.type == "range" then
 					local slider = CreateSlider(panel)
-					slider.label:SetText(option)
+					slider.label:SetText(L[option] or option)
 					slider:SetSliderValues(value.min, value.max, value.step or 1)
 					slider:SetValue(value.value)
 					slider:SetCallback(function(val)
@@ -349,7 +357,7 @@ UIConfigFrame_Create = function(self)
 					panel.widgets[value.order] = slider
 				elseif type(value.value) == "string" then
 					local editbox = CreateEditBox(panel)
-					editbox.label:SetText(option)
+					editbox.label:SetText(L[option] or option)
 					editbox.editbox:SetText(value.value)
 					editbox:SetCallback(function(val)
 						if type(value) == "number" then
@@ -371,6 +379,8 @@ UIConfigFrame_Create = function(self)
 			end
 		end
 	end
+	created = true
+	UIConfigFrame:Show()
 end
 
 local toggle = CreateFrame("Button", "C", UIParent)
@@ -402,8 +412,9 @@ frame:SetScript("OnEvent", function(self, event)
 		for element, settings in pairs(UISetup) do
 			for group, options in pairs(settings) do
 				for option, value in pairs(options) do
-					if UIConfig and UIConfig[group] then
-						UIConfig[group][option] = value
+					if UIConfig and UIConfig[element][group] then
+						UIConfig[element][group][option] = value
+						UIConfigGUI[element][group][option].value = value
 					end
 				end
 			end

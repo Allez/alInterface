@@ -1,12 +1,21 @@
 -- Based on LightCT by ALZA
 
 local config = {
-	["Show outgoing damage"] = true,
-	["Show outgoing healing"] = true,
+	general = {
+		outgoingdamage = {
+			order = 1,
+			value = true,
+		},
+		outgoinghealing = {
+			order = 2,
+			value = true,
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Combat text"] = config
-end
+
+local cfg = {}
+UIConfigGUI.combattext = config
+UIConfig.combattext = cfg
 
 local frames = {}
 
@@ -121,16 +130,16 @@ local OnEvent = function(self, event, ...)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		frames[3]:AddMessage(ENTERING_COMBAT, 1, 0.15, 0.15) 
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		if not config["Show outgoing damage"] and not config["Show outgoing healing"] then
+		if not cfg.general.outgoingdamage and not cfg.general.outgoinghealing then
 			self:UnregisterEvent(event)
 			self:SetScript("OnUpdate", nil)
 			return
 		end
-		local timestamp, eventType, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
+		local timestamp, eventType, _, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags = ...
 		if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == 0 or sourceGUID == destGUID then return end
-		if config["Show outgoing damage"] then
+		if cfg.general.outgoingdamage then
 			if eventType=="SWING_DAMAGE" then
-				local amount, _, _, _, _, absorbed, critical = select(9, ...)
+				local amount, _, _, _, _, absorbed, critical = select(10, ...)
 				if not amount then return end
 				local msg = amount
 				local icon
@@ -142,7 +151,7 @@ local OnEvent = function(self, event, ...)
 				end
 				frames[4]:AddMessage(msg.." |T"..icon..":16:16:0:0:64:64:5:59:5:59|t", 1, 1, 1)
 			elseif eventType=="RANGE_DAMAGE" or eventType=="SPELL_DAMAGE" or eventType=="SPELL_PERIODIC_DAMAGE" or eventType=="DAMAGE_SHIELD" then
-				local spellId, _, spellSchool, amount, _, _, _, _, absorbed, critical = select(9, ...)
+				local spellId, _, spellSchool, amount, _, _, _, _, absorbed, critical = select(10, ...)
 				if not amount then return end
 				if queue[spellId] then
 					queue[spellId].count = queue[spellId].count + 1
@@ -158,7 +167,7 @@ local OnEvent = function(self, event, ...)
 					}
 				end
 			elseif eventType=="SWING_MISSED" then
-				local missType = select(9, ...)
+				local missType = select(10, ...)
 				local icon
 				if bit.band(sourceFlags, filterGuard) == filterGuard or sourceGUID == UnitGUID("pet") then
 					icon = PET_ATTACK_TEXTURE
@@ -167,14 +176,14 @@ local OnEvent = function(self, event, ...)
 				end
 				frames[4]:AddMessage(missType.." |T"..icon..":16:16:0:0:64:64:5:59:5:59|t", 1, 1, 1)
 			elseif eventType=="RANGE_MISSED" or eventType=="SPELL_MISSED" then
-				local spellId, _, _, missType = select(9, ...)
+				local spellId, _, _, missType = select(10, ...)
 				local icon = GetSpellTexture(spellId)
 				frames[4]:AddMessage(missType.." |T"..icon..":16:16:0:0:64:64:5:59:5:59|t", 1, 1, 1)
 			end
 		end
-		if config["Show outgoing healing"] then
+		if cfg.general.outgoinghealing then
 			if eventType=="SPELL_HEAL" or eventType=="SPELL_PERIODIC_HEAL" then
-				local spellId, _, _, amount, _, _, _, _, absorbed, critical = select(9, ...)
+				local spellId, _, _, amount, _, _, _, _, absorbed, critical = select(10, ...)
 				if not amount then return end
 				if queue[spellId] then
 					queue[spellId].count = queue[spellId].count + 1

@@ -17,8 +17,57 @@ local config = {
 	["Unusable color"] = {0.4, 0.4, 0.4},
 }
 if UIConfig then
-	UIConfig["Action buttons"] = config
+	--UIConfig["Action buttons"] = config
 end
+
+local config = {
+	general = {
+		hidemacro = {
+			order = 1,
+			value = true,
+		},
+		hidehotkey = {
+			order = 2,
+			value = false,
+		},
+	},
+	colors = {
+		checked = {
+			order = 1,
+			type = "color",
+			value = {0, 144, 255},
+		},
+		equipped = {
+			order = 2,
+			type = "color",
+			value = {0, 0.5, 0},
+		},
+		hover = {
+			order = 3,
+			type = "color",
+			value = {144, 255, 0},
+		},
+		outofmana = {
+			order = 4,
+			type = "color",
+			value = {0.1, 0.3, 1},
+		},
+		outofrange = {
+			order = 5,
+			type = "color",
+			value = {0.8, 0.1, 0.1},
+		},
+		unusable = {
+			order = 6,
+			type = "color",
+			value = {0.4, 0.4, 0.4},
+		},
+	},
+}
+
+local cfg = {}
+UIConfigGUI.buttons = config
+UIConfig.buttons = cfg
 
 local LibKeyBound = LibStub("LibKeyBound-1.0")
 local origColor
@@ -48,11 +97,11 @@ end
 local modSetBorderColor = function(button)
 	if not button.bd then return end
 	if button.hover then
-		button.bd:SetBackdropBorderColor(unpack(config["Hover color"]))
+		button.bd:SetBackdropBorderColor(unpack(cfg.colors.hover))
 	elseif button.checked then
-		button.bd:SetBackdropBorderColor(unpack(config["Checked color"]))
+		button.bd:SetBackdropBorderColor(unpack(cfg.colors.checked))
 	elseif button.equipped then
-		button.bd:SetBackdropBorderColor(unpack(config["Equipped color"]))
+		button.bd:SetBackdropBorderColor(unpack(cfg.colors.equipped))
 	else
 		button.bd:SetBackdropBorderColor(unpack(origColor))
 	end
@@ -83,7 +132,7 @@ local setStyle = function(bname)
 
 	if macro then 
 		macro:SetFont(button_font, 10, "OUTLINEMONOCHROME")
-		if config["Hide macro"] then
+		if cfg.general.hidemacro then
 			macro:Hide()
 		end
 	end
@@ -93,7 +142,7 @@ local setStyle = function(bname)
 		hotkey:ClearAllPoints()
 		hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", 2, 2)
 		hotkey:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
-		if config["Hide hotkey"] then
+		if cfg.general.hidehotkey then
 			hotkey:Hide()
 			hotkey.Show = function() end
 		end
@@ -210,16 +259,16 @@ local modActionButton_UpdateUsable = function(self)
 	local icon = _G[name.."Icon"]
 	local isUsable, notEnoughMana = IsUsableAction(action)
 	if ActionHasRange(action) and IsActionInRange(action) == 0 then
-		icon:SetVertexColor(unpack(config["Out of range color"]))
+		icon:SetVertexColor(unpack(cfg.colors.outofrange))
 		return
 	elseif notEnoughMana then
-		icon:SetVertexColor(unpack(config["Out of mana color"]))
+		icon:SetVertexColor(unpack(cfg.colors.outofmana))
 		return
 	elseif isUsable then
 		icon:SetVertexColor(1, 1, 1, 1)
 		return
 	else
-		icon:SetVertexColor(unpack(config["Unusable color"]))
+		icon:SetVertexColor(unpack(cfg.colors.unusable))
 		return
 	end
 end

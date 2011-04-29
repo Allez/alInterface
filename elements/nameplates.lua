@@ -7,7 +7,7 @@ local config = {
 	["Font style"] = 'OUTLINEMONOCHROME',
 }
 if UIConfig then
-	UIConfig["Nameplates"] = config
+	--UIConfig["Nameplates"] = config
 end
 
 local caelNamePlates = CreateFrame("Frame", nil, UIParent)
@@ -127,7 +127,8 @@ local CreateFrame = function(frame)
 
 	frame.healthBar, frame.castBar = frame:GetChildren()
 	local healthBar, castBar = frame.healthBar, frame.castBar
-	local glowRegion, overlayRegion, castbarOverlay, shieldedRegion, spellIconRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
+	local _, castbarOverlay, shieldedRegion, spellIconRegion = castBar:GetRegions()
+	local glowRegion, overlayRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
 
 	frame.oldname = nameTextRegion
 	nameTextRegion:Hide()

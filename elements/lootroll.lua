@@ -1,25 +1,48 @@
--- Config start
-local anchor = "TOPLEFT"
-local x, y = 12, -155
-local size = 20
-local width = 260
-local spacing = 6
-local font = 'Fonts\\VisitorR.TTF'
-local font_size = 10
-local font_style = "OUTLINEMONOCHROME"
--- Config end
 
 local config = {
-	["Font"] = font,
-	["Font size"] = font_size,
-	["Font style"] = font_style,
-	["Spacing"] = spacing,
-	["Width"] = width,
-	["Height"] = size,
+	general = {
+		width = {
+			order = 1,
+			value = 260,
+			type = "range",
+			min = 100,
+			max = 500,
+		},
+		height = {
+			order = 2,
+			value = 20,
+			type = "range",
+			min = 5,
+			max = 50,
+		},
+		spacing = {
+			order = 3,
+			value = 6,
+			type = "range",
+			min = 0,
+			max = 30,
+		},
+	},
+	fonts = {
+		size = {
+			order = 1,
+			value = 10,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		style = {
+			order = 2,
+			value = "OUTLINEMONOCHROME",
+			type = "select",
+			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Loot Roll"] = config
-end
+
+local cfg = {}
+UIConfigGUI.lootroll = config
+UIConfig.lootroll = cfg
 
 local lootFrames = {}
 local backdrop = {
@@ -29,8 +52,8 @@ local backdrop = {
 }
 
 local anchorframe = CreateFrame("Frame", "Loot_Roll", UIParent)
-anchorframe:SetSize(width, size)
-anchorframe:SetPoint(anchor, x, y)
+anchorframe:SetSize(260, 20)
+anchorframe:SetPoint("TOPLEFT", 12, -155)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
 
 local CreateBG = CreateBG or function(parent)
@@ -69,13 +92,13 @@ end
 
 local CreateLootFrame = function()
 	local frame = CreateFrame("StatusBar", nil, UIParent)
-	frame:SetWidth(config["Width"])
-	frame:SetHeight(config["Height"])
+	frame:SetWidth(cfg.general.width)
+	frame:SetHeight(cfg.general.height)
 	frame.bg = CreateBG(frame)
 	frame:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	frame.button = CreateFrame("Button", nil, frame)
-	frame.button:SetWidth(config["Height"])
-	frame.button:SetHeight(config["Height"])
+	frame.button:SetWidth(cfg.general.height)
+	frame.button:SetHeight(cfg.general.height)
 	frame.button:SetPoint("RIGHT", frame, "LEFT", -5, 0)
 	frame.button.bg = CreateBG(frame.button)
 	frame.button:SetScript("OnEnter", OnEnter)
@@ -120,10 +143,10 @@ local CreateLootFrame = function()
 	frame.name = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	frame.name:SetPoint("LEFT", frame.pass, "RIGHT", 3, 1)
 	frame.name:SetPoint("RIGHT", frame, "RIGHT", -3, 1)
-	frame.name:SetFont(config["Font"], config["Font size"], config["Font style"])
+	frame.name:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	frame.name:SetShadowOffset(0, 0)
 	frame.name:SetJustifyH("LEFT")
-	frame:SetPoint("TOPLEFT", anchorframe, config["Height"] + 5, - (#lootFrames * (config["Height"] + 2 + config["Spacing"])))
+	frame:SetPoint("TOPLEFT", anchorframe, cfg.general.height + 5, - (#lootFrames * (cfg.general.height + 2 + cfg.general.spacing)))
 	frame:Hide()
 	tinsert(lootFrames, frame)
 	return frame

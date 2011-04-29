@@ -1,20 +1,20 @@
 
--- Config start
-local anchor = "BOTTOMRIGHT"
-local x, y = -12, 180
-local anchorcursor = false
--- Config end
-
 local config = {
-	["Anchor cursor"] = anchorcursor,
+	general = {
+		anchorcursor = {
+			order = 1,
+			value = false,
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Tooltip"] = config
-end
+
+local cfg = {}
+UIConfigGUI.tooltip = config
+UIConfig.tooltip = cfg
 
 local anchorframe = CreateFrame("Frame", "Tooltip anchor", UIParent)
 anchorframe:SetSize(150, 20)
-anchorframe:SetPoint(anchor, x, y)
+anchorframe:SetPoint("BOTTOMRIGHT", -12, 180)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
 
 local backdrop = {
@@ -239,7 +239,7 @@ hooksecurefunc("SetItemRef", function(link, text, button)
 end)
 
 hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
-	if not config["Anchor cursor"] then
+	if not cfg.general.anchorcursor then
 		tooltip:SetOwner(parent, "ANCHOR_NONE")
 		tooltip:SetPoint("BOTTOMRIGHT", anchorframe, 0, 0)
 	else

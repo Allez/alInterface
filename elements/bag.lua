@@ -1,24 +1,59 @@
--- Config start
-local font = 'Fonts\\VisitorR.TTF'
-local font_size = 10
-local font_style = 'OUTLINEMONOCHROME'
-local button_size = 25
-local spacing = 7
--- Config end
 
 local config = {
-	["Button size"] = button_size,
-	["Button spacing"] = spacing,
-	["Bag bar"] = true,
-	["Font"] = font,
-	["Font size"] = font_size,
-	["Font style"] = font_style,
-	["Bank columns"] = 12,
-	["Bags columns"] = 8,
+	general = {
+		buttonsize = {
+			order = 1,
+			value = 25,
+			type = "range",
+			min = 10,
+			max = 60,
+		},
+		spacing = {
+			order = 2,
+			value = 7,
+			type = "range",
+			min = 0,
+			max = 30,
+		},
+		bankcolumns = {
+			order = 3,
+			value = 12,
+			type = "range",
+			min = 2,
+			max = 20,
+		},
+		bagcolumns = {
+			order = 4,
+			value = 8,
+			type = "range",
+			min = 2,
+			max = 20,
+		},
+		bagbar = {
+			order = 5,
+			value = true,
+		},
+	},
+	fonts = {
+		size = {
+			order = 1,
+			value = 10,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		style = {
+			order = 2,
+			value = "OUTLINEMONOCHROME",
+			type = "select",
+			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Bags and bank"] = config
-end
+
+local cfg = {}
+UIConfigGUI.bags = config
+UIConfig.bags = cfg
 
 local _, ns = ...
 
@@ -53,7 +88,7 @@ function addon:OnInit()
 	local onlyBank = function(item) return item.bagID == -1 or item.bagID >= 5 and item.bagID <= 11 end
 
 	local main = container:New("Main", {
-		Columns = config["Bags columns"],
+		Columns = cfg.general.bagcolumns,
 		Scale = 1,
 		Bags = "backpack+bags",
 	})
@@ -61,7 +96,7 @@ function addon:OnInit()
 	main:SetPoint("RIGHT", -100, 0)
 
 	local bank = container:New("Bank", {
-		Columns = config["Bank columns"],
+		Columns = cfg.general.bankcolumns,
 		Scale = 1,
 		Bags = "bankframe+bank",
 	})
@@ -82,13 +117,13 @@ function button:OnCreate()
 	self:SetHighlightTexture("")
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
-	self:SetSize(config["Button size"], config["Button size"])
+	self:SetSize(cfg.general.buttonsize, cfg.general.buttonsize)
 	self.bg = CreateBG(self)
 	self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	self.Icon:SetPoint("TOPLEFT")
 	self.Icon:SetPoint("BOTTOMRIGHT")
 	self.Count:SetPoint("BOTTOMRIGHT", -1, 3)
-	self.Count:SetFont(config["Font"], config["Font size"], config["Font style"])
+	self.Count:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	self:HookScript('OnEnter', function()
 		self.oldColor = {self.bg:GetBackdropBorderColor()}
 		self.bg:SetBackdropBorderColor(1, 1, 1)
@@ -112,7 +147,7 @@ end
 
 function container:OnContentsChanged()
 	self:SortButtons("bagSlot")
-	local width, height = self:LayoutButtons("grid", self.Settings.Columns, config["Button spacing"], 7, -7)
+	local width, height = self:LayoutButtons("grid", self.Settings.Columns, cfg.general.spacing, 7, -7)
 	self:SetSize(width + 14, height + 34)
 end
 
@@ -156,15 +191,15 @@ function container:OnCreate(name, settings)
 	infoFrame:SetHeight(25)
 
 	local space = self:SpawnPlugin("TagDisplay", "[space:free/max] free", infoFrame)
-	space:SetFont(config["Font"], config["Font size"], config["Font style"])
+	space:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	space:SetPoint("LEFT", infoFrame, "LEFT")
 	space.bags = ns.cargBags:ParseBags(settings.Bags)
 
 	local tagDisplay = self:SpawnPlugin("TagDisplay", "[currencies] [ammo] [money]", infoFrame)
-	tagDisplay:SetFont(config["Font"], config["Font size"], config["Font style"])
+	tagDisplay:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	tagDisplay:SetPoint("RIGHT", infoFrame, "RIGHT", -7, 0)
 
-	if config["Bag bar"] then
+	if cfg.general.bagbar then
 		local bagBar = self:SpawnPlugin("BagBar", settings.Bags)
 		local width, height = bagBar:LayoutButtons("grid", 1, 7, 7, -7)
 		bagBar.highlightFunction = highlightFunction
@@ -186,7 +221,7 @@ function bag:OnCreate()
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
 	self:SetCheckedTexture("")
-	self:SetSize(config["Button size"], config["Button size"])
+	self:SetSize(cfg.general.buttonsize, cfg.general.buttonsize)
 	self.bg = CreateBG(self)
 	self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	self.Icon:SetPoint("TOPLEFT", 1, -1)

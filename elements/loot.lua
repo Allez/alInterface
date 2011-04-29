@@ -1,22 +1,42 @@
--- Config start
-local width = 150
-local slotSize = 25
-local x, y = 300, -300
-local anchor = "TOPLEFT"
-local font = 'Fonts\\VisitorR.TTF'
-local font_size = 10
-local font_style = "OUTLINEMONOCHROME"
--- Config end
+local addon_name, ns = ...
 
 local config = {
-	["Font"] = font,
-	["Font size"] = font_size,
-	["Font style"] = font_style,
-	["Slot size"] = slotSize,
+	general = {
+		width = {
+			order = 1,
+			value = 150,
+			type = "range",
+			min = 50,
+			max = 400,
+		},
+		slotsize = {
+			order = 2,
+			value = 25,
+			type = "range",
+			min = 10,
+			max = 50,
+		},
+	},
+	fonts = {
+		size = {
+			order = 1,
+			value = 10,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		style = {
+			order = 2,
+			value = "OUTLINEMONOCHROME",
+			type = "select",
+			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Loot"] = config
-end
+
+local cfg = {}
+UIConfigGUI.loot = config
+UIConfig.loot = cfg
 
 local lootSlots = {}
 local backdrop = {
@@ -26,13 +46,13 @@ local backdrop = {
 }
 
 local anchorframe = CreateFrame("Frame", "ItemLoot", UIParent)
-anchorframe:SetSize(width, 15)
-anchorframe:SetPoint(anchor, x, y)
+anchorframe:SetSize(150, 15)
+anchorframe:SetPoint("TOPLEFT", 300, -300)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
 
 local CreateFS = function(frame)
 	local fstring = frame:CreateFontString(nil, 'ARTWORK')
-	fstring:SetFont(config["Font"], config["Font size"], config["Font style"])
+	fstring:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	return fstring
 end
 
@@ -74,9 +94,8 @@ end
 
 local CreateLootSlot = function(self, id)
 	local slot = CreateFrame("Button", nil, self)
-	slot:SetPoint("TOPLEFT", 3, -20 - (id - 1) * (config["Slot size"] + 5))
-	slot:SetWidth(config["Slot size"])
-	slot:SetHeight(config["Slot size"])
+	slot:SetPoint("TOPLEFT", 3, -20 - (id - 1) * (cfg.general.slotsize + 5))
+	slot:SetSize(cfg.general.slotsize, cfg.general.slotsize)
 	slot.bg = CreateBG(slot)
 	slot.texture = slot:CreateTexture(nil, "BORDER")
 	slot.texture:SetAllPoints()
@@ -121,11 +140,11 @@ local UpdateLootSlot = function(self, id)
 end
 
 local OnEvent = function(self, event, ...)
-	if event == "ADDON_LOADED" then
-		local name = ...
-		if name == "alLootFrames" then
+	if event == "VARIABLES_LOADED" then
+		--local name = ...
+		--if name == addon_name then
 			self:UnregisterEvent("ADDON_LOADED")
-			self:SetWidth(width)
+			self:SetWidth(cfg.general.width)
 			self.bg = CreateBG(self)
 			self:SetPoint("TOP", anchorframe, 0, 0)
 			self:SetFrameStrata("HIGH")
@@ -143,7 +162,7 @@ local OnEvent = function(self, event, ...)
 			self.button:SetScript("OnClick", function()
 				CloseLoot()
 			end)
-		end
+		--end
 	elseif event == "LOOT_OPENED" then
 		local autoLoot = ...
 		self:Show()
@@ -153,7 +172,7 @@ local OnEvent = function(self, event, ...)
 			self.title:SetText(ITEMS)
 		end
 		local numLootItems = GetNumLootItems()
-		self:SetHeight(numLootItems * (config["Slot size"] + 5) + 20)
+		self:SetHeight(numLootItems * (cfg.general.slotsize + 5) + 20)
 		if GetCVar("lootUnderMouse") == "1" then
 			local x, y = GetCursorPosition()
 			x = x / self:GetEffectiveScale()

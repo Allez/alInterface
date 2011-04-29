@@ -1,23 +1,36 @@
--- Config start
-local size = 23
-local spacing = 7
-local showgrid = true
--- Config end
 
 local config = {
-	["Button size"] = size,
-	["Spacing"] = spacing,
-	["Show grid"] = showgrid,
+	general = {
+		buttonsize = {
+			order = 1,
+			value = 23,
+			type = "range",
+			min = 12,
+			max = 70,
+		},
+		spacing = {
+			order = 2,
+			value = 7,
+			type = "range",
+			min = 0,
+			max = 30,
+		},
+		grid = {
+			order = 3,
+			value = true,
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Action bars"] = config
-end
+
+local cfg = {}
+UIConfigGUI.actionbars = config
+UIConfig.actionbars = cfg
 
 local bars = {}
 
 SetButtons = function(bar, bsize)
-	local size = config["Button size"]
-	local spacing = config["Spacing"]
+	local size = cfg.general.buttonsize
+	local spacing = cfg.general.spacing
 	for i, button in pairs(bar.buttons) do
 		local row = math.ceil(bar.rows * i / #bar.buttons)
 		local col = math.ceil(i / bar.rows)

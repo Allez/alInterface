@@ -98,12 +98,12 @@ local config = {
 		channeling = {
 			order = 6,
 			type = "color",
-			value = {1.0, 0.09, 0},
+			value = {0.32, 0.3, 1},
 		},
 		castfail = {
 			order = 7,
 			type = "color",
-			value = {0.32, 0.3, 1},
+			value = {1.0, 0.09, 0},
 		},
 	},
 	elements ={

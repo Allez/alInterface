@@ -1,3 +1,4 @@
+
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
 
@@ -155,7 +156,7 @@ CreateBG = function(parent, noparent)
 		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
 	bg:SetBackdropColor(0, 0, 0, .65) 
-    bg:SetBackdropBorderColor(.43, .4, .4, 1)
+    bg:SetBackdropBorderColor(.35, .3, .3, 1)
 	bg.border = CreateFrame("Frame", nil, bg)
 	bg.border:SetPoint("TOPLEFT", 1, -1)
 	bg.border:SetPoint("BOTTOMRIGHT", -1, 1)

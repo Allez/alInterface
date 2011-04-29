@@ -1,26 +1,48 @@
 
--- Config start
-local width = 150
-local height = 14
-local spacing = 7
-local anchor = "TOP"
-local x, y = 0, -100
-local font = 'Fonts\\VisitorR.TTF'
-local font_size = 10
-local font_style = 'OUTLINEMONOCHROME'
--- Config end
-
 local config = {
-	["Font"] = font,
-	["Font size"] = font_size,
-	["Font style"] = font_style,
-	["Spacing"] = spacing,
-	["Width"] = width,
-	["Height"] = height,
+	general = {
+		width = {
+			order = 1,
+			value = 150,
+			type = "range",
+			min = 50,
+			max = 500,
+		},
+		height = {
+			order = 2,
+			value = 14,
+			type = "range",
+			min = 5,
+			max = 50,
+		},
+		spacing = {
+			order = 3,
+			value = 7,
+			type = "range",
+			min = 0,
+			max = 30,
+		},
+	},
+	fonts = {
+		size = {
+			order = 1,
+			value = 10,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		style = {
+			order = 2,
+			value = "OUTLINEMONOCHROME",
+			type = "select",
+			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
+		},
+	},
 }
-if UIConfig then
-	UIConfig["Threat Meter"] = config
-end
+
+local cfg = {}
+UIConfigGUI.mirrortimer = config
+UIConfig.mirrortimer = cfg
 
 local backdrop = {
 	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -29,8 +51,8 @@ local backdrop = {
 }
 
 local anchorframe = CreateFrame("Frame", "Mirror_Timer", UIParent)
-anchorframe:SetSize(width, height)
-anchorframe:SetPoint(anchor, x, y)
+anchorframe:SetSize(14, 7)
+anchorframe:SetPoint("TOP", 0, -100)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
 
 local CreateBG = CreateBG or function(parent)
@@ -48,15 +70,15 @@ local mirrorTimers = {}
 
 local CreateMirrorTimer = function()
 	local mtimer = CreateFrame("StatusBar", nil, UIParent)
-	mtimer:SetWidth(config["Width"])
-	mtimer:SetHeight(config["Height"])
-	mtimer:SetPoint("TOP", anchorframe, 0, - (#mirrorTimers * (config["Height"] + config["Spacing"])))
+	mtimer:SetWidth(cfg.general.width)
+	mtimer:SetHeight(cfg.general.height)
+	mtimer:SetPoint("TOP", anchorframe, 0, - (#mirrorTimers * (cfg.general.height + cfg.general.spacing)))
 	mtimer.bg = CreateBG(mtimer)
 	mtimer:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 	mtimer.label = mtimer:CreateFontString(nil, "ARTWORK")
 	mtimer.label:SetPoint("LEFT", 2, 0)
 	mtimer.label:SetPoint("RIGHT", -2, 0)
-	mtimer.label:SetFont(config["Font"], config["Font size"], config["Font style"])
+	mtimer.label:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	mtimer.label:SetJustifyH('CENTER')
 	mtimer:Hide()
 	tinsert(mirrorTimers, mtimer)
