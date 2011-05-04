@@ -911,7 +911,7 @@ local CreateStyle = function(self, unit)
 
 	-- Combo points
 	if unit == 'target' and cfg.elements.combo then
-		local cpoints = CreateFS(self, 16, 'OUTLINE', stdfont)
+		local cpoints = CreateFS(self, 20)
 		cpoints:SetPoint('CENTER', UIParent, 'CENTER', -200, 0)
 		cpoints:SetTextColor(1, 1, 1)
 		cpoints:SetJustifyH('RIGHT')
