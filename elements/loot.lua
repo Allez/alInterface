@@ -17,21 +17,6 @@ local config = {
 			max = 50,
 		},
 	},
-	fonts = {
-		size = {
-			order = 1,
-			value = 10,
-			type = "range",
-			min = 8,
-			max = 20,
-		},
-		style = {
-			order = 2,
-			value = "OUTLINEMONOCHROME",
-			type = "select",
-			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
-		},
-	},
 }
 
 local cfg = {}
@@ -49,23 +34,6 @@ local anchorframe = CreateFrame("Frame", "ItemLoot", UIParent)
 anchorframe:SetSize(150, 15)
 anchorframe:SetPoint("TOPLEFT", 300, -300)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
-
-local CreateFS = function(frame)
-	local fstring = frame:CreateFontString(nil, 'ARTWORK')
-	fstring:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
-	return fstring
-end
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
 
 local OnClick = function(self)
 	if IsModifiedClick() then
@@ -220,7 +188,7 @@ end
 
 local addon = CreateFrame("frame", nil, UIParent)
 addon:SetScript('OnEvent', OnEvent)
-addon:RegisterEvent("ADDON_LOADED")
+addon:RegisterEvent("VARIABLES_LOADED")
 addon:RegisterEvent("LOOT_OPENED")
 addon:RegisterEvent("LOOT_SLOT_CLEARED")
 addon:RegisterEvent("LOOT_SLOT_CHANGED")

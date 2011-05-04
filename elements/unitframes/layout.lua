@@ -46,62 +46,117 @@ local config = {
 		},
 	},
 	raid = {
-		width = {
+		enable = {
 			order = 1,
+			value = true,
+		},
+		showparty = {
+			order = 2,
+			value = false,
+		},
+		numgroups = {
+			order = 3,
+			type = "range",
+			value = 8,
+			min = 1,
+			max = 8,
+		},
+		unitpergroup = {
+			order = 4,
+			type = "range",
+			value = 5,
+			min = 1,
+			max = 40,
+		},
+		growth = {
+			order = 5,
+			value = "LEFT",
+			type = "select",
+			select = {"UP", "DOWN", "LEFT", "RIGHT"},
+		},
+		hgroups = {
+			order = 6,
+			value = false,
+		},
+		width = {
+			order = 7,
 			type = "range",
 			value = 36,
 			min = 12,
 			max = 100,
 		},
 		height = {
-			order = 2,
+			order = 8,
 			type = "range",
 			value = 23,
 			min = 12,
 			max = 100,
 		},
-		showpower = {
-			order = 3,
-			value = false,
+		spacing = {
+			order = 9,
+			type = "range",
+			value = 7,
+			min = 1,
+			max = 20,
 		},
 		raiddebuffs = {
-			order = 4,
+			order = 10,
+			value = true,
+		},
+		showpower = {
+			order = 11,
+			value = false,
+		},
+		tankframes = {
+			order = 12,
 			value = true,
 		},
 	},
 	colors = {
-		health = {
+		healthbyclass = {
 			order = 1,
+			value = true,
+		},
+		powerbyclass = {
+			order = 2,
+			value = false,
+		},
+		namebyclass = {
+			order = 3,
+			value = false,
+		},
+		health = {
+			order = 4,
 			type = "color",
 			value = {0.2, 0.2, 0.2},
 		},
 		healthbg = {
-			order = 2,
+			order = 5,
 			type = "color",
 			value = {0.0, 0.0, 0.0},
 		},
 		powerbg = {
-			order = 3,
+			order = 6,
 			type = "color",
 			value = {0.0, 0.0, 0.0},
 		},
 		castcomplete = {
-			order = 4,
+			order = 7,
 			type = "color",
 			value = {0.12, 0.86, 0.15},
 		},
 		casting = {
-			order = 5,
+			order = 8,
 			type = "color",
 			value = {1.0, 0.49, 0},
 		},
 		channeling = {
-			order = 6,
+			order = 9,
 			type = "color",
 			value = {0.32, 0.3, 1},
 		},
 		castfail = {
-			order = 7,
+			order = 10,
 			type = "color",
 			value = {1.0, 0.09, 0},
 		},
@@ -158,8 +213,6 @@ local cfg = {}
 
 UIConfigGUI.unitframes = config
 UIConfig.unitframes = cfg
---if true then return end
-
 
 local _, class = UnitClass('player')
 
@@ -259,25 +312,6 @@ local CreateShadow = function(parent)
 	shadow:SetBackdropColor(0, 0, 0, 0)
 	shadow:SetBackdropBorderColor(0, 0, 0)
 	return shadow
-end
-
-local CreateBG = CreateBG or function(parent, noparent)
-	local bg = CreateFrame('Frame', nil, noparent and UIParent or parent)
-	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1, 1)
-	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.6)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
-local CreateFS = function(frame, fsize, fstyle, sfont)
-	local fstring = frame:CreateFontString(nil, 'OVERLAY')
-	fstring:SetFont(sfont or font, fsize, fstyle)
-	fstring:SetShadowColor(0, 0, 0, 1)
-	fstring:SetShadowOffset(0, 0)
-	return fstring
 end
 
 local menu = function(self)
@@ -609,9 +643,9 @@ local CreateStyle = function(self, unit)
 	self.Health.Smooth = cfg.general.smooth
 	self.Health.PostUpdate = PostUpdateBar
 
-	self.Health.colorTapping = true
-	self.Health.colorClass = true or unit == 'arenatarget'
-	self.Health.colorReaction = true
+	self.Health.colorTapping = not cfg.colors.healthbyclass
+	self.Health.colorClass = cfg.colors.healthbyclass or unit == 'arenatarget'
+	self.Health.colorReaction = cfg.colors.healthbyclass
 
 	self.Health.bg = self.Health:CreateTexture(nil, 'BACKGROUND')
 	self.Health.bg:SetTexture(texture)
@@ -655,10 +689,10 @@ local CreateStyle = function(self, unit)
 	self.Power.Smooth = cfg.general.smooth
 	self.Power.PostUpdate = PostUpdateBar
 
-	self.Power.colorPower = true--not config["Classcolored power bar"]
+	self.Power.colorPower = not cfg.colors.powerbyclass
 	self.Power.colorReaction = true
 	self.Power.colorHappiness = unit == 'pet'
-	self.Power.colorClass = false--config["Classcolored power bar"]
+	self.Power.colorClass = cfg.colors.powerbyclass
 
 	self.Power.bg = self.Power:CreateTexture(nil, 'BACKGROUND')
 	self.Power.bg:SetTexture(texture)
@@ -700,40 +734,34 @@ local CreateStyle = function(self, unit)
 
 	-- Info text
 	if unit == 'target' then
-		local Info = CreateFS(self.Power, config["Info font size"] or 10, 'OUTLINEMONOCHROME')
+		local Info = CreateFS(self.Power)
 		Info:SetPoint('LEFT', self.Power, 3, 1)
 		self:Tag(Info, ' ')
 	end
 
 	if unit == 'target' or unit == 'player' or unit == 'arena' then
-		local power = CreateFS(self.Power, config["Power font size"] or 10, 'OUTLINEMONOCHROME')
+		local power = CreateFS(self.Power)
 		power:SetPoint('CENTER', self.Power, 3, 1)
 		self:Tag(power, '[allez:druid][allez:power]')
 	end
 
 	if unit == 'target' or unit == 'player' or unit == 'focus' or unit == 'targettarget' or 
-		unit == 'focustarget' or unit == 'boss' or unit == 'arena' or unit == 'party' and not config["Heal layout"] then
-		local name = CreateFS(self.Health, config["Default font size"] or 10, 'OUTLINEMONOCHROME')
+		unit == 'focustarget' or unit == 'boss' or unit == 'arena' or unit == 'party' then
+		local name = CreateFS(self.Health)
 		name:SetPoint('LEFT', 3, 1)
 		name:SetPoint('RIGHT', -60, 1)
 		name:SetJustifyH'LEFT'
-		self:Tag(name, (unit == 'target' and '[allez:level][rare] ' or '') .. (config["Classcolored unit name"] and '[allez:name]' or '[name]'))
+		self:Tag(name, (unit == 'target' and '[allez:level][rare] ' or '') .. (cfg.colors.namebyclass and '[allez:name]' or '[name]'))
 	end
 
-	--if unit == 'target' or unit == 'player' or unit == 'party' then
-	--	local level = CreateFS(self.Health, config["Default font size"], 'OUTLINEMONOCHROME')
-	--	level:SetPoint('TOP', 3, 2)
-	--	self:Tag(level, '[allez:level][rare]')
-	--end
-
-	if unit == 'raid' or unit == 'tank' or (unit == 'party' and config["Heal layout"]) then
-		local name = CreateFS(self.Health, config["Default font size"] or 10, 'OUTLINEMONOCHROME')
+	if unit == 'raid' or unit == 'tank' then
+		local name = CreateFS(self.Health)
 		name:SetPoint('CENTER', 1, 1)
-		self:Tag(name, config["Classcolored unit name"] and '[raidnameclass]' or '[raidname]')
+		self:Tag(name, cfg.colors.namebyclass and '[raidnameclass]' or '[raidname]')
 	end
 
-	if not (unit == 'arenatarget' or unit == 'raid' or unit == 'tank' or (unit == 'party' and config["Heal layout"])) then
-		local health = CreateFS(self.Health, config["Default font size"] or 10, 'OUTLINEMONOCHROME')
+	if not (unit == 'arenatarget' or unit == 'raid' or unit == 'tank') then
+		local health = CreateFS(self.Health)
 		health:SetPoint('RIGHT', -2, 1)
 		health:SetJustifyH'RIGHT'
 		self:Tag(health, '[allez:health]')
@@ -771,7 +799,7 @@ local CreateStyle = function(self, unit)
 			self.EclipseBar.SolarBar:SetSize(self.EclipseBar:GetWidth(), self.EclipseBar:GetHeight())
 			self.EclipseBar.SolarBar:SetStatusBarTexture(texture)
 			self.EclipseBar.SolarBar:SetStatusBarColor(0.90, 0.92, 0.30)
-			self.EclipseBar.Text = CreateFS(self.EclipseBar.LunarBar, config["Default font size"] or 10, 'OUTLINEMONOCHROME')
+			self.EclipseBar.Text = CreateFS(self.EclipseBar.LunarBar)
 			self.EclipseBar.Text:SetPoint("CENTER", self.EclipseBar, 0, 1)
 			self:Tag(self.EclipseBar.Text, '[pereclipse] %')
 		end
@@ -973,10 +1001,10 @@ local CreateStyle = function(self, unit)
 		self.RaidDebuffs.icon = self.RaidDebuffs:CreateTexture(nil, 'OVERLAY')
 		self.RaidDebuffs.icon:SetTexCoord(.07,.93,.07,.93)
 		self.RaidDebuffs.icon:SetAllPoints(self.RaidDebuffs)
-		self.RaidDebuffs.time = CreateFS(self.RaidDebuffs, config["Aura font size"] or 10, 'OUTLINEMONOCHROME')
+		self.RaidDebuffs.time = CreateFS(self.RaidDebuffs)
 		self.RaidDebuffs.time:SetPoint('CENTER', self.RaidDebuffs, 'CENTER', 0, 0)
 		self.RaidDebuffs.time:SetTextColor(1, .9, 0)
-		self.RaidDebuffs.count = CreateFS(self.RaidDebuffs, config["Aura font size"] or 10, 'OUTLINEMONOCHROME')
+		self.RaidDebuffs.count = CreateFS(self.RaidDebuffs)
 		self.RaidDebuffs.count:SetPoint('BOTTOMRIGHT', self.RaidDebuffs, 'BOTTOMRIGHT', 2, 0)
 	end
 
@@ -995,12 +1023,12 @@ local CreateStyle = function(self, unit)
 		self.Castbar:SetStatusBarColor(1.0, 0.49, 0)
 		self.Castbar.bg = CreateBG(self.Castbar)
 
-		self.Castbar.Text = CreateFS(self.Castbar, config["Castbar font size"] or 10, 'OUTLINEMONOCHROME')
+		self.Castbar.Text = CreateFS(self.Castbar)
 		self.Castbar.Text:SetPoint('LEFT', 2, 1)
 		self.Castbar.Text:SetPoint('RIGHT', -50, 1)
 		self.Castbar.Text:SetJustifyH('LEFT')
 
-		self.Castbar.Time = CreateFS(self.Castbar, config["Castbar font size"] or 10, 'OUTLINEMONOCHROME')
+		self.Castbar.Time = CreateFS(self.Castbar)
 		self.Castbar.Time:SetPoint('RIGHT', -2, 1)
 
 		self.Castbar.CastingColor = cfg.colors.casting
@@ -1026,11 +1054,7 @@ local CreateStyle = function(self, unit)
 			self.Castbar.Shield:SetBackdropBorderColor(1, 0, 0, 1)
 			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
 		elseif unit == 'player' then
-			if config["Heal layout"] then
-				self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 300)
-			else
-				self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 150)
-			end
+			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 300)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
 			self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
 			self.Castbar.SafeZone:SetTexture(texture)
@@ -1115,7 +1139,7 @@ local CreateStyle = function(self, unit)
 		self.Reputation:SetHeight(5)
 		self.Reputation.PostUpdate = UpdateReputationColor
 		self.Reputation.bg = CreateBG(self.Reputation)
-		self.Reputation.Text = CreateFS(self.Reputation, config["Info font size"] or 10, 'OUTLINEMONOCHROME')
+		self.Reputation.Text = CreateFS(self.Reputation)
 		self.Reputation.Text:SetPoint('CENTER', self.Reputation, 0, 1)
 		self:Tag(self.Reputation.Text, '[currep] / [maxrep] - [reputation]')
 	end
@@ -1133,7 +1157,7 @@ local CreateStyle = function(self, unit)
 		self.Experience.Rested:SetStatusBarTexture(texture)
 		self.Experience.Rested:SetStatusBarColor(0, 0.4, 1, 0.6)
 		self.Experience.bg = CreateBG(self.Experience)
-		self.Experience.Text = CreateFS(self.Experience, config["Info font size"] or 10, 'OUTLINEMONOCHROME')
+		self.Experience.Text = CreateFS(self.Experience)
 		self.Experience.Text:SetPoint('CENTER', self.Experience, 0, 1)
 		self:Tag(self.Experience.Text, '[curxp] / [maxxp]')
 	end
@@ -1190,13 +1214,8 @@ oUF:Factory(function(self)
 	local target = self:Spawn('target', addon_name..'_Target')
 	target:SetSize(215, 27)
 	if UIMovableFrames then tinsert(UIMovableFrames, target) end
-	if not config["Heal layout"] then
-		player:SetPoint('BOTTOM', UIParent, -190, 240)
-		target:SetPoint('BOTTOM', UIParent, 190, 240)
-	else
-		player:SetPoint('BOTTOM', UIParent, -265, 250)
-		target:SetPoint('BOTTOM', UIParent, 265, 250)
-	end
+	player:SetPoint('BOTTOM', UIParent, -190, 240)
+	target:SetPoint('BOTTOM', UIParent, 190, 240)
 
 	local targettarget = self:Spawn('targettarget', addon_name..'_ToT')
 	targettarget:SetPoint('BOTTOMRIGHT', target, 'TOPRIGHT', 0, 9)
@@ -1218,7 +1237,7 @@ oUF:Factory(function(self)
 	focustarget:SetSize(103, 24)
 	if UIMovableFrames then tinsert(UIMovableFrames, focustarget) end
 
-	if not config["Heal layout"] then
+	if not cfg.raid.showparty then
 		local party = self:SpawnHeader(addon_name..'_Party', nil, 'custom [@raid6,exists] hide;show',
 			'oUF-initialConfigFunction', [[
 				self:SetAttribute('*type1', 'target')
@@ -1231,47 +1250,54 @@ oUF:Factory(function(self)
 			'yOffset', -14
 		)
 		party:SetPoint('BOTTOMLEFT', UIParent, 'LEFT', 12, -100)
-	else
-		local party = self:SpawnHeader(addon_name..'_Party', nil, 'custom [@raid6,exists] hide;show',
-			'oUF-initialConfigFunction', [[
-				self:SetAttribute('*type1', 'target')
-				self:SetWidth(53)
-				self:SetHeight(25)
-				self:SetAttribute('toggleForVehicle', true)
-				RegisterUnitWatch(self)
-			]],
-			'showParty', true,
-			'point', 'LEFT',
-			'xOffset', 7
-		)
-		party:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 140)
 	end
 	if UIMovableFrames then tinsert(UIMovableFrames, party) end
 
-	local tankAnchor = CreateFrame("Frame", "MainTank", UIParent)
-	tankAnchor:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 195, 11)
-	tankAnchor:SetSize(36, 23)
-	if UIMovableFrames then tinsert(UIMovableFrames, tankAnchor) end
-	local tank = self:SpawnHeader(addon_name..'_MainTank', nil, 'raid',
-		'oUF-initialConfigFunction', [[
-			self:SetAttribute('*type1', 'target')
-			self:SetWidth(36)
-			self:SetHeight(23)
-			RegisterUnitWatch(self)
-		]],
-		'showRaid', true,
-		'yOffset', -7,
-		'groupFilter', 'MAINTANK',
-		'template', 'oUF_MainTank'
-	)
-	tank:SetPoint('BOTTOM', tankAnchor)
+	if cfg.raid.tankframes then
+		local tankAnchor = CreateFrame("Frame", "MainTank", UIParent)
+		tankAnchor:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 195, 11)
+		tankAnchor:SetSize(36, 23)
+		if UIMovableFrames then tinsert(UIMovableFrames, tankAnchor) end
+		local tank = self:SpawnHeader(addon_name..'_MainTank', nil, 'raid',
+			'oUF-initialConfigFunction', [[
+				self:SetAttribute('*type1', 'target')
+				self:SetWidth(36)
+				self:SetHeight(23)
+				RegisterUnitWatch(self)
+			]],
+			'showRaid', true,
+			'yOffset', -7,
+			'groupFilter', 'MAINTANK',
+			'template', 'oUF_MainTank'
+		)
+		tank:SetPoint('BOTTOM', tankAnchor)
+	end
 
-
-	local raidAnchor = CreateFrame("Frame", "RaidFrameAnchor", UIParent)
-	if not config["Heal layout"] then
-		raidAnchor:SetSize(cfg.raid.width*8 + 7*7, cfg.raid.height*5 + 7*4)
+	if cfg.raid.enable then
+		local raidAnchor = CreateFrame("Frame", "RaidFrameAnchor", UIParent)
 		raidAnchor:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -12, 12)
-		local raid = self:SpawnHeader(addon_name..'_Raid', nil, 'custom [@raid6,exists] show;hide',
+		local colAnchors = {
+			["UP"]    = "BOTTOM",
+			["DOWN"]  = "TOP",
+			["LEFT"]  = "RIGHT",
+			["RIGHT"] = "LEFT",
+		}
+		local xoff, yoff, width, height
+		if cfg.raid.hgroups then
+			xoff = cfg.raid.spacing
+			yoff = 0
+			point = "LEFT"
+			width = cfg.raid.width*cfg.raid.unitpergroup + cfg.raid.spacing*(cfg.raid.unitpergroup-1)
+			height = cfg.raid.height*cfg.raid.numgroups + cfg.raid.spacing*(cfg.raid.numgroups-1)
+		else
+			xoff = 0
+			yoff = -cfg.raid.spacing
+			point = "TOP"
+			width = cfg.raid.width*cfg.raid.numgroups + cfg.raid.spacing*(cfg.raid.numgroups-1)
+			height = cfg.raid.height*cfg.raid.unitpergroup + cfg.raid.spacing*(cfg.raid.unitpergroup-1)
+		end
+		raidAnchor:SetSize(width, height)
+		local raid = self:SpawnHeader(addon_name..'_Raid', nil, 'party,raid',
 			'oUF-initialConfigFunction', string.format([[
 				self:SetAttribute('*type1', 'target')
 				self:SetWidth(%d)
@@ -1279,42 +1305,21 @@ oUF:Factory(function(self)
 				RegisterUnitWatch(self)
 			]], cfg.raid.width, cfg.raid.height),
 			'showRaid', true,
-			'xoffset', -7,
-			'yOffset', -7,
-			'groupFilter', '1,2,3,4,5,6,7,8',--config["Raid groups"],
+			'showParty', cfg.raid.showparty,
+			'xoffset', xoff,
+			'yOffset', yoff,
+			'point', point,
+			'groupFilter', '1,2,3,4,5,6,7,8',
 			'groupingOrder', '1,2,3,4,5,6,7,8',
 			'groupBy', 'GROUP',
-			'maxColumns', 8,
-			'unitsPerColumn', 5,
-			'columnSpacing', 7,
-			'columnAnchorPoint', 'RIGHT'		
+			'maxColumns', cfg.raid.numgroups,
+			'unitsPerColumn', cfg.raid.unitpergroup,
+			'columnSpacing', cfg.raid.spacing,
+			'columnAnchorPoint', colAnchors[cfg.raid.growth]
 		)
-		raid:SetPoint('BOTTOMRIGHT', raidAnchor, 'BOTTOMRIGHT', 0, 0)
-	else
-		raidAnchor:SetSize(config["Raid heal width"]*5 + 7*4, config["Raid heal height"]*5 + 7*4)
-		raidAnchor:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 140)
-		local raid = self:SpawnHeader(addon_name..'_Raid', nil, 'custom [@raid6,exists] show;hide',
-			'oUF-initialConfigFunction', string.format([[
-				self:SetAttribute('*type1', 'target')
-				self:SetWidth(%d)
-				self:SetHeight(%d)
-				RegisterUnitWatch(self)
-			]], config["Raid heal width"], config["Raid heal height"]),
-			'showRaid', true,
-			'xoffset', 7,
-			'yOffset', -7,
-			'groupFilter', '1,2,3,4,5',
-			'groupingOrder', '1,2,3,4,5,6,7,8',
-			'groupBy', 'GROUP',
-			'maxColumns', 8,
-			'point', 'LEFT',
-			'unitsPerColumn', 5,
-			'columnSpacing', 7,
-			'columnAnchorPoint', 'BOTTOM'		
-		)
-		raid:SetPoint('BOTTOM', raidAnchor, 'BOTTOM', 0, 0)
+		raid:SetPoint(colAnchors[cfg.raid.growth], raidAnchor, colAnchors[cfg.raid.growth], 0, 0)
+		if UIMovableFrames then tinsert(UIMovableFrames, raidAnchor) end
 	end
-	if UIMovableFrames then tinsert(UIMovableFrames, raidAnchor) end
 
 	local arena = {}
 	local arenatarget = {}

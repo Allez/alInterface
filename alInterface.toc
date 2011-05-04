@@ -1,12 +1,12 @@
-## Interface: 40000
+## Interface: 40100
 ## Author: Allez
 ## Title: |cff777777al|rInterface
 ## Notes: Interface setup
-## Version: 40000.1
+## Version: 40100.1
 ## RequiredDeps: Blizzard_CombatText
 ## OptionalDeps: DBM-Core
 ## SavedVariables: nothing
-## SavedVariablesPerCharacter: UISetup, UISavedPositions, setupUI
+## SavedVariablesPerCharacter: UISetup5, UISavedPositions, setupUI5
 
 ui.xml
 

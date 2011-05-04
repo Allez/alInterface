@@ -46,17 +46,6 @@ local types = {
 	rareelite = " R+ ",
 }
 
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
 for _, v in pairs(tooltips) do
 	v:SetBackdrop(nil)
 	v.bg = CreateBG(v)
@@ -202,7 +191,7 @@ GameTooltipStatusBar:HookScript("OnValueChanged", function(self, value)
 		if not self.text then
 			self.text = self:CreateFontString(nil, "OVERLAY")
 			self.text:SetPoint("CENTER", GameTooltipStatusBar, 0, 1)
-			self.text:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
+			self.text:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 		end
 		self.text:Show()
 		local hp = truncate(min).." / "..truncate(max)

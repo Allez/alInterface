@@ -2,7 +2,7 @@ local addon_name, ns = ...
 
 UIConfigGUI = {}
 UIConfig = {}
-UISetup = {}
+UISetup5 = {}
 
 local lastVisible = nil
 local created = false
@@ -33,13 +33,15 @@ local CreateFS = function(frame, fsize, fstyle)
 end
 
 local SetValue = function(element, group, option, value)
-	if not UISetup[element] then
-		UISetup[element] = {}
+	if not UISetup5[element] then
+		UISetup5[element] = {}
 	end
-	if not UISetup[element][group] then
-		UISetup[element][group] = {}
+	if not UISetup5[element][group] then
+		UISetup5[element][group] = {}
 	end
-	UISetup[element][group][option] = value
+	if value ~= UIConfig[element][group][option] then
+		UISetup5[element][group][option] = value
+	end
 end
 
 local CreateCheckBox = function(parent)
@@ -126,7 +128,7 @@ local CreateDropDown = function(parent)
 			info.value = v
 			info.func = function(self)
 				UIDropDownMenu_SetSelectedID(widget.button, self:GetID())
-				widget:Callback(info.value)
+				widget:Callback(v)
 			end
 			UIDropDownMenu_AddButton(info, level)
 		end
@@ -136,8 +138,14 @@ local CreateDropDown = function(parent)
 		UIDropDownMenu_Initialize(widget.button, initialize)
 		UIDropDownMenu_SetWidth(widget.button, widget:GetWidth()-20)
 		UIDropDownMenu_SetButtonWidth(widget.button, widget:GetWidth()-20)
-		UIDropDownMenu_SetSelectedID(widget.button, 1)
 		UIDropDownMenu_JustifyText(widget.button, "LEFT")
+	end
+	widget.SetValue = function(self, value)
+		for i, v in pairs(self.items) do
+			if v == value then
+				UIDropDownMenu_SetSelectedID(self.button, i)
+			end
+		end
 	end
 	widget.SetCallback = function(self, func)
 		widget.Callback = func
@@ -237,7 +245,7 @@ local PanelLayout = function(frame)
 	local row = 0
 	local first
 	local offset = 0
-	for i, widget in pairs(frame.widgets) do
+	for i, widget in ipairs(frame.widgets) do
 		if i == 1 then
 			widget:SetPoint("TOPLEFT", 10, -5)
 			row = widget:GetHeight()
@@ -342,7 +350,8 @@ UIConfigFrame_Create = function(self)
 					local button = CreateDropDown(panel)
 					button.label:SetText(L[option] or option)
 					button:SetItems(value.select)
-					button:SetCallback(function(val)
+					button:SetValue(value.value)
+					button:SetCallback(function(self, val)
 						SetValue(element, group, option, val)
 					end)
 					panel.widgets[value.order] = button
@@ -352,7 +361,7 @@ UIConfigFrame_Create = function(self)
 					slider:SetSliderValues(value.min, value.max, value.step or 1)
 					slider:SetValue(value.value)
 					slider:SetCallback(function(val)
-						SetValue(element, group, option, val)
+						SetValue(element, group, option, tonumber(val))
 					end)
 					panel.widgets[value.order] = slider
 				elseif type(value.value) == "string" then
@@ -409,7 +418,7 @@ frame:SetScript("OnEvent", function(self, event)
 				end
 			end
 		end
-		for element, settings in pairs(UISetup) do
+		for element, settings in pairs(UISetup5) do
 			for group, options in pairs(settings) do
 				for option, value in pairs(options) do
 					if UIConfig and UIConfig[element][group] then

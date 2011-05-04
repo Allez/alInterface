@@ -1,32 +1,38 @@
 
 local config = {
-	["Chat background"] = false,
-	["Chat font size"] = 14,
-	["Chat font style"] = "OUTLINE",
-	["Tab font size"] = 10,
-	["Tab font style"] = "OUTLINEMONOCHROME",
-	["Tab font"] = 'Fonts\\VisitorR.TTF',
+	general = {
+		background = {
+			order = 1,
+			value = false,
+		},
+	},
+	fonts = {
+		tabfontsize = {
+			order = 1,
+			value = 10,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		chatfontsize = {
+			order = 2,
+			value = 14,
+			type = "range",
+			min = 8,
+			max = 20,
+		},
+		style = {
+			order = 3,
+			value = "OUTLINE",
+			type = "select",
+			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE", "NONE"},
+		},
+	},
 }
-if UIConfig then
-	--UIConfig["Chat"] = config
-end
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame('Frame', nil, parent)
-	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1, 1)
-	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
+local cfg = {}
+UIConfigGUI.chat = config
+UIConfig.chat = cfg
 
 ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
 ChatFrameMenuButton:Hide()
@@ -75,8 +81,8 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
 	for i = 1, 10 do
-		if config["Chat background"] then _G["ChatFrame"..i].bg = CreateBG(_G["ChatFrame"..i]) end
-		_G["ChatFrame"..i]:SetFont("Fonts\\ARIALN.TTF", config["Chat font size"], config["Chat font style"])
+		if cfg.general.background then _G["ChatFrame"..i].bg = CreateBG(_G["ChatFrame"..i]) end
+		_G["ChatFrame"..i]:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
 		_G["ChatFrame"..i]:SetShadowColor(0, 0, 0, 0)
 	end
 	FCF_FadeInChatFrame(ChatFrame1)
@@ -84,9 +90,10 @@ frame:SetScript("OnEvent", function(self, event)
 end)
 
 FCFTab_UpdateColors = function(self, selected)
+	if not UIConfig.general.fonts then return end
 	local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 	local fs = self:GetFontString()
-	fs:SetFont(config["Tab font"], config["Tab font size"], config["Tab font style"])
+	fs:SetFont(UIConfig.general.fonts.font, cfg.fonts.tabfontsize, UIConfig.general.fonts.style)
 	fs:SetShadowOffset(0, 0)
 	if selected then
 		fs:SetTextColor(color.r, color.g, color.b)

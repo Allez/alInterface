@@ -1,3 +1,5 @@
+local WoW41 = select(4, GetBuildInfo()) == 40100
+
 local parent, ns = ...
 local oUF = ns.oUF
 
@@ -26,7 +28,7 @@ local Update = function(self, event, unit, powerType)
 		t = self.colors.tapped
 	elseif(health.colorDisconnected and not UnitIsConnected(unit)) then
 		t = self.colors.disconnected
-	elseif(health.colorHappiness and UnitIsUnit(unit, "pet") and GetPetHappiness()) then
+	elseif(not WoW41 and health.colorHappiness and UnitIsUnit(unit, "pet") and GetPetHappiness()) then
 		t = self.colors.happiness[GetPetHappiness()]
 	elseif(health.colorClass and UnitIsPlayer(unit)) or
 		(health.colorClassNPC and not UnitIsPlayer(unit)) or
@@ -67,22 +69,6 @@ local ForceUpdate = function(element)
 	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
-local OnHealthUpdate
-do
-	local UnitHealth = UnitHealth
-	OnHealthUpdate = function(self)
-		if(self.disconnected) then return end
-		local unit = self.__owner.unit
-		local health = UnitHealth(unit)
-
-		if(health ~= self.min) then
-			self.min = health
-
-			return Path(self.__owner, "OnHealthUpdate", unit)
-		end
-	end
-end
-
 local Enable = function(self, unit)
 	local health = self.Health
 	if(health) then
@@ -90,16 +76,13 @@ local Enable = function(self, unit)
 		health.ForceUpdate = ForceUpdate
 
 		if(health.frequentUpdates and not self:GetScript'OnUpdate') then
-			health:SetScript('OnUpdate', OnHealthUpdate)
-
-			-- The party frames need this to handle disconnect states correctly.
-			if(unit == 'party') then
-				self:RegisterEvent("UNIT_HEALTH", Path)
-			end
-		else
-			self:RegisterEvent("UNIT_HEALTH", Path)
+			self:RegisterEvent('UNIT_HEALTH_FREQUENT', Path)
 		end
 
+		-- XXX: 4.0.6: They overlap, but they don't! So we'll have to eat some double
+		-- updates. This will probably cost us less than actually running an OnUpdate
+		-- again.
+		self:RegisterEvent('UNIT_HEALTH', Path)
 		self:RegisterEvent("UNIT_MAXHEALTH", Path)
 		self:RegisterEvent('UNIT_CONNECTION', Path)
 		self:RegisterEvent('UNIT_POWER', Path)
@@ -118,10 +101,7 @@ end
 local Disable = function(self)
 	local health = self.Health
 	if(health) then
-		if(health:GetScript'OnUpdate') then
-			health:SetScript('OnUpdate', nil)
-		end
-
+		self:UnregisterEvent('UNIT_HEALTH_FREQUENT', Path)
 		self:UnregisterEvent('UNIT_HEALTH', Path)
 		self:UnregisterEvent('UNIT_MAXHEALTH', Path)
 		self:UnregisterEvent('UNIT_CONNECTION', Path)

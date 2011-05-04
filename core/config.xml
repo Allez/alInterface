@@ -160,7 +160,7 @@
 						CreateBG(self);
 					</OnLoad>
 					<OnClick>
-						wipe(UISetup);
+						wipe(UISetup5);
 						ReloadUI();
 					</OnClick>
 				</Scripts>

@@ -1,98 +1,237 @@
-﻿local arrowscale = 0.8
-local fontsize = 15
+﻿----------------------------------------------------------------------------------------
+--	WorldMap style(m_Map by Monolit)
+----------------------------------------------------------------------------------------
+WORLDMAP_WINDOWED_SIZE = 0.75
+local mapscale = WORLDMAP_WINDOWED_SIZE
 
-local CreateText = function(offset)
-	local text = WorldMapButton:CreateFontString(nil, 'ARTWORK')
-	text:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 3 , offset)
-	text:SetFont (GameFontNormal:GetFont(),fontsize,"LINE")
-	text:SetJustifyH('LEFT')
-	return text
+local mapbg = CreateFrame("Frame", nil, WorldMapDetailFrame)
+CreateBG(mapbg)
+
+-- Create move button for map
+local movebutton = CreateFrame ("Frame", nil, WorldMapFrameSizeUpButton)
+movebutton:SetHeight(32)
+movebutton:SetWidth(32)
+movebutton:SetPoint("TOP", WorldMapFrameSizeUpButton, "BOTTOM", -1, 4)
+movebutton:SetBackdrop({bgFile = "Interface\\AddOns\\alInterface\\Media\\Cross.tga"})
+movebutton:EnableMouse(true)
+
+movebutton:SetScript("OnMouseDown", function()
+	local maplock = GetCVar("advancedWorldMap")
+	if maplock ~= "1" or InCombatLockdown() then return end
+	WorldMapScreenAnchor:ClearAllPoints()
+	WorldMapFrame:ClearAllPoints()
+	WorldMapFrame:StartMoving()
+	WorldMapBlobFrame:Hide()
+end)
+
+movebutton:SetScript("OnMouseUp", function()
+	local maplock = GetCVar("advancedWorldMap")
+	if maplock ~= "1" or InCombatLockdown() then return end
+	WorldMapFrame:StopMovingOrSizing()
+	WorldMapScreenAnchor:StartMoving()
+	WorldMapScreenAnchor:StopMovingOrSizing()
+	WorldMapBlobFrame:Show()
+	WorldMapFrame:Hide()
+	WorldMapFrame:Show()
+end)
+
+local SmallerMap = GetCVarBool("miniWorldMap")
+if SmallerMap == nil then
+	SetCVar("miniWorldMap", 1)
 end
 
-local MouseXY = function()
-	local left, top = WorldMapDetailFrame:GetLeft(), WorldMapDetailFrame:GetTop()
-	local width, height = WorldMapDetailFrame:GetWidth(), WorldMapDetailFrame:GetHeight()
-	local scale = WorldMapDetailFrame:GetEffectiveScale()
-	local x, y = GetCursorPosition()
-	local cx = (x/scale - left) / width
-	local cy = (top - y/scale) / height
-	if cx < 0 or cx > 1 or cy < 0 or cy > 1 then
-		return
-	end
-	return cx, cy
+local MoveMap = GetCVarBool("advancedWorldMap")
+if MoveMap == nil then
+	SetCVar("advancedWorldMap", 1)
 end
 
-local OnUpdate = function(player, cursor)
-	local cx, cy = MouseXY()
-	local px, py = GetPlayerMapPosition("player")
+-- Styling World Map
+local SmallerMapSkin = function()
+	mapbg:SetScale(1 / mapscale)
+	mapbg:SetPoint("TOPLEFT", WorldMapDetailFrame, 0, 0)
+	mapbg:SetPoint("BOTTOMRIGHT", WorldMapDetailFrame, 0, 0)
+	mapbg:SetFrameStrata("MEDIUM")
+	mapbg:SetFrameLevel(20)
 
-	if cx then
-		cursor:SetFormattedText('Cursor: %.2d, %.2d', 100 * cx, 100 * cy)
-	else
-		cursor:SetText("")
-	end
+	WorldMapButton:SetAllPoints(WorldMapDetailFrame)
+	WorldMapFrame:SetFrameStrata("MEDIUM")
+	WorldMapFrame:SetClampedToScreen(true)
+	--WorldMapFrame:ClearAllPoints()
+	--WorldMapFrame:SetPoint("CENTER")
 
-	if px == 0 then
-		player:SetText("")
-	else
-		player:SetFormattedText(UnitName("player")..': %.2d, %.2d', 100 * px, 100 * py)
-	end
+	WorldMapDetailFrame:SetFrameStrata("MEDIUM")
+
+	WorldMapTitleButton:Show()
+	WorldMapTitleButton:SetFrameStrata("MEDIUM")
+	WorldMapTooltip:SetFrameStrata("TOOLTIP")
+
+	WorldMapFrameMiniBorderLeft:Hide()
+	WorldMapFrameMiniBorderRight:Hide()
+
+	WorldMapFrameSizeUpButton:ClearAllPoints()
+	WorldMapFrameSizeUpButton:SetPoint("TOPRIGHT", WorldMapButton, "TOPRIGHT", 3, -18)
+	WorldMapFrameSizeUpButton:SetFrameStrata("HIGH")
+	WorldMapFrameSizeUpButton:SetFrameLevel(18)
+
+	WorldMapFrameCloseButton:ClearAllPoints()
+	WorldMapFrameCloseButton:SetPoint("TOPRIGHT", WorldMapButton, "TOPRIGHT", 3, 3)
+	WorldMapFrameCloseButton:SetFrameStrata("HIGH")
+
+	WorldMapFrameSizeDownButton:SetPoint("TOPRIGHT", WorldMapFrameMiniBorderRight, "TOPRIGHT", -66, 7)
+
+	WorldMapFrameTitle:ClearAllPoints()
+	WorldMapFrameTitle:SetParent(WorldMapDetailFrame)
+	WorldMapFrameTitle:SetPoint("TOP", WorldMapDetailFrame, 0, -3)
+	WorldMapFrameTitle:SetFont(GameFontNormal:GetFont(), 17)
+
+	WorldMapQuestShowObjectivesText:SetFont(GameFontNormal:GetFont(), 17)
+	WorldMapQuestShowObjectivesText:ClearAllPoints()
+	WorldMapQuestShowObjectivesText:SetPoint("BOTTOMRIGHT", WorldMapButton, "BOTTOMRIGHT", 0, 4)
+
+	WorldMapQuestShowObjectives:SetParent(WorldMapDetailFrame)
+	WorldMapQuestShowObjectives:ClearAllPoints()
+	WorldMapQuestShowObjectives:SetPoint("RIGHT", WorldMapQuestShowObjectivesText, "LEFT", 0, 0)
+	WorldMapQuestShowObjectives:SetFrameStrata("TOOLTIP")
+
+	WorldMapTrackQuest:SetParent(WorldMapDetailFrame)
+	WorldMapTrackQuest:ClearAllPoints()
+	WorldMapTrackQuest:SetPoint("BOTTOMLEFT", WorldMapButton, "BOTTOMLEFT", 0, 0)
+	WorldMapTrackQuest:SetFrameStrata("TOOLTIP")
+
+	WorldMapTrackQuestText:SetFont(GameFontNormal:GetFont(), 17)
+
+	WorldMapShowDigSites:SetParent(WorldMapDetailFrame)
+	WorldMapShowDigSites:ClearAllPoints()
+	WorldMapShowDigSites:SetPoint("BOTTOM", WorldMapQuestShowObjectives, "TOP", 0, 0)
+	WorldMapShowDigSites:SetFrameStrata("TOOLTIP")
+
+	WorldMapShowDigSitesText:ClearAllPoints()
+	WorldMapShowDigSitesText:SetPoint("LEFT", WorldMapShowDigSites, "RIGHT", 0, 0)
+	WorldMapShowDigSitesText:SetFont(GameFontNormal:GetFont(), 17)
+
+	WorldMapFrameAreaLabel:SetFontObject("GameFontNormal")
+	WorldMapFrameAreaLabel:SetTextColor(0.9, 0.83, 0.64)
+	WorldMapFrameAreaLabel:SetFont(GameFontNormal:GetFont(), 40)
+
+	WorldMapLevelDropDown:SetAlpha(0)
+	WorldMapLevelDropDown:SetScale(0.00001)
+
+	-- Fix tooltip not hidding after leaving quest # tracker icon
+	hooksecurefunc("WorldMapQuestPOI_OnLeave", function() WorldMapTooltip:Hide() end)
 end
+hooksecurefunc("WorldMap_ToggleSizeDown", function() SmallerMapSkin() end)
 
-local updateFrame = CreateFrame("Frame")
-local function restoreBlobs()
-	WorldMapBlobFrame_CalculateHitTranslations()
-	if WorldMapQuestScrollChildFrame.selected and not WorldMapQuestScrollChildFrame.selected.completed then
-		WorldMapBlobFrame:DrawQuestBlob(WorldMapQuestScrollChildFrame.selected.questId, true)
-	end
-	updateFrame:SetScript("OnUpdate", nil)
+local BiggerMapSkin = function()
+	WorldMapLevelDropDown:SetAlpha(1)
+	WorldMapLevelDropDown:SetScale(1)
+
+	WorldMapQuestShowObjectivesText:ClearAllPoints()
+	WorldMapQuestShowObjectivesText:SetPoint("BOTTOMRIGHT", WorldMapButton, "BOTTOMRIGHT", 0, 4)
+
+	WorldMapQuestShowObjectives:SetParent(WorldMapDetailFrame)
+	WorldMapQuestShowObjectives:ClearAllPoints()
+	WorldMapQuestShowObjectives:SetPoint("RIGHT", WorldMapQuestShowObjectivesText, "LEFT", 0, 0)
+	WorldMapQuestShowObjectives:SetFrameStrata("TOOLTIP")
+
+	WorldMapShowDigSites:SetParent(WorldMapDetailFrame)
+	WorldMapShowDigSites:ClearAllPoints()
+	WorldMapShowDigSites:SetPoint("BOTTOM", WorldMapQuestShowObjectives, "TOP", 0, 0)
+	WorldMapShowDigSites:SetFrameStrata("TOOLTIP")
+
+	WorldMapShowDigSitesText:ClearAllPoints()
+	WorldMapShowDigSitesText:SetPoint("LEFT", WorldMapShowDigSites, "RIGHT", 0, 0)
 end
+hooksecurefunc("WorldMap_ToggleSizeUp", function() BiggerMapSkin() end)
 
-local OnEvent = function(self, event, ...)
-	if event == 'PLAYER_LOGIN' then
-		local player = CreateText(3)
-		local cursor = CreateText(fontsize+4)
-		local elapsed = 0
-		WorldMap_ToggleSizeUp()
-		self:SetScript('OnUpdate', function(self, u)
-			elapsed = elapsed + u
-			if elapsed > 0.1 then
-				OnUpdate(player, cursor)
-				elapsed = 0
-			end
-		end)
-		PlayerArrowFrame:SetModelScale(arrowscale)
-		PlayerArrowEffectFrame:SetModelScale(arrowscale)
+mapbg:SetScript("OnShow", function(self)
+	local SmallerMap = GetCVarBool("miniWorldMap")
+	if SmallerMap == nil then
+		BiggerMapSkin()
+	end
+	self:SetScript("OnShow", function() end)
+end)
+
+local addon = CreateFrame("Frame")
+addon:RegisterEvent("PLAYER_ENTERING_WORLD")
+addon:RegisterEvent("PLAYER_REGEN_ENABLED")
+addon:RegisterEvent("PLAYER_REGEN_DISABLED")
+addon:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		SetCVar("questPOI", 1)
 		BlackoutWorld:Hide()
-		UIPanelWindows["WorldMapFrame"] = nil
-		WorldMapFrame:SetAttribute("UIPanelLayout-enabled", false)
-		WorldMapFrame:SetParent(UIParent)
-		WorldMapFrame:SetToplevel(true)
-		BlackoutWorld:Hide()
-		WorldMapFrame:EnableKeyboard(false)
-		WorldMapFrame:EnableMouse(false)
-		WorldMapFrameSizeDownButton:Disable()
-	elseif event == 'PLAYER_REGEN_DISABLED' then
-		WorldMapBlobFrame:SetParent(nil)
-		WorldMapBlobFrame:Hide()
-		WorldMapBlobFrame.Hide = function() end
+		BlackoutWorld.Show = function() end
+		BlackoutWorld.Hide = function() end
 		WorldMapBlobFrame.Show = function() end
-		WorldMapBlobFrame.SetScale = function() end
-	elseif event == 'PLAYER_REGEN_ENABLED' then
-		WorldMapBlobFrame:SetParent(WorldMapFrame)
-		WorldMapBlobFrame:ClearAllPoints()
-		WorldMapBlobFrame:SetPoint("TOPLEFT", WorldMapDetailFrame)
-		WorldMapBlobFrame.Hide = nil
-		WorldMapBlobFrame.Show = nil
-		WorldMapBlobFrame.SetScale = nil
-		if WorldMapQuestScrollChildFrame.selected then
-			WorldMapBlobFrame:DrawQuestBlob(WorldMapQuestScrollChildFrame.selected.questId, false)
+		WorldMapBlobFrame.Hide = function() end
+		WorldMapQuestPOI_OnLeave = function()
+			WorldMapTooltip:Hide()
 		end
+		WorldMap_ToggleSizeDown()
+		if FeedbackUIMapTip then 
+			FeedbackUIMapTip:Hide()
+			FeedbackUIMapTip.Show = function() end
+		end
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		WorldMapFrameSizeUpButton:Disable()
+		WorldMap_ToggleSizeDown()
+		WorldMapBlobFrame:DrawBlob(WORLDMAP_SETTINGS.selectedQuestId, false)
+		WorldMapBlobFrame:DrawBlob(WORLDMAP_SETTINGS.selectedQuestId, true)
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		WorldMapFrameSizeUpButton:Enable()
 	end
+end)
+
+----------------------------------------------------------------------------------------
+--	Creating coords
+----------------------------------------------------------------------------------------
+local coords = CreateFrame("Frame", "CoordsFrame", WorldMapFrame)
+coords.PlayerText = WorldMapButton:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+coords.PlayerText:SetFont(GameFontNormal:GetFont(), 17)
+coords.PlayerText:SetJustifyH("LEFT")
+coords.PlayerText:SetText(UnitName("player")..": 0,0")
+if (IsAddOnLoaded("_NPCScan.Overlay")) then
+	coords.PlayerText:SetPoint("TOPLEFT", WorldMapButton, "TOPLEFT", 3, -25)
+else
+	coords.PlayerText:SetPoint("TOPLEFT", WorldMapButton, "TOPLEFT", 3, -3)
 end
 
-local addon = CreateFrame('Frame')
-addon:SetScript('OnEvent', OnEvent)
-addon:RegisterEvent('PLAYER_LOGIN')
-addon:RegisterEvent('PLAYER_REGEN_DISABLED')
-addon:RegisterEvent('PLAYER_REGEN_ENABLED')
+coords.MouseText = WorldMapButton:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+coords.MouseText:SetFont(GameFontNormal:GetFont(), 17)
+coords.MouseText:SetJustifyH("LEFT")
+coords.MouseText:SetPoint("TOPLEFT", coords.PlayerText, "BOTTOMLEFT", 0, -3)
+coords.MouseText:SetText("Cursor : 0,0")
+
+local int = 0
+coords:SetScript("OnUpdate", function(self, elapsed)
+	int = int + 1
+
+	if int >= 3 then
+		local inInstance, _ = IsInInstance()
+		local x,y = GetPlayerMapPosition("player")
+		x = math.floor(100 * x)
+		y = math.floor(100 * y)
+		if x ~= 0 and y ~= 0 then
+			self.PlayerText:SetText(UnitName("player")..": "..x..","..y)
+		else
+			self.PlayerText:SetText(UnitName("player")..": ".."|cffff0000Out of bounds|r")
+		end
+
+		local scale = WorldMapDetailFrame:GetEffectiveScale()
+		local width = WorldMapDetailFrame:GetWidth()
+		local height = WorldMapDetailFrame:GetHeight()
+		local centerX, centerY = WorldMapDetailFrame:GetCenter()
+		local x, y = GetCursorPosition()
+		local adjustedX = (x / scale - (centerX - (width/2))) / width
+		local adjustedY = (centerY + (height/2) - y / scale) / height	
+
+		if (adjustedX >= 0 and adjustedY >= 0 and adjustedX <= 1 and adjustedY <= 1) then
+			adjustedX = math.floor(100 * adjustedX)
+			adjustedY = math.floor(100 * adjustedY)
+			coords.MouseText:SetText("Cursor: "..adjustedX..","..adjustedY)
+		else
+			coords.MouseText:SetText("Cursor: ".."|cffff0000Out of bounds|r")
+		end
+
+		int = 0
+	end
+end)

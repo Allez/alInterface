@@ -23,21 +23,6 @@ local config = {
 			max = 30,
 		},
 	},
-	fonts = {
-		size = {
-			order = 1,
-			value = 10,
-			type = "range",
-			min = 8,
-			max = 20,
-		},
-		style = {
-			order = 2,
-			value = "OUTLINEMONOCHROME",
-			type = "select",
-			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
-		},
-	},
 }
 
 local cfg = {}
@@ -55,17 +40,6 @@ local anchorframe = CreateFrame("Frame", "Loot_Roll", UIParent)
 anchorframe:SetSize(260, 20)
 anchorframe:SetPoint("TOPLEFT", 12, -155)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
 
 local OnUpdate = function(self, elapsed)
 	self:SetValue(GetLootRollTimeLeft(self.rollId))
@@ -91,6 +65,7 @@ local OnButtonClick = function(self)
 end
 
 local CreateLootFrame = function()
+	local size = cfg.general.height
 	local frame = CreateFrame("StatusBar", nil, UIParent)
 	frame:SetWidth(cfg.general.width)
 	frame:SetHeight(cfg.general.height)
@@ -140,11 +115,9 @@ local CreateLootFrame = function()
 	frame.pass:SetScript("OnClick", OnButtonClick)
 	frame.pass:SetPoint("LEFT", frame.dis, "RIGHT", 3, 0)
 	frame.pass.rollType = 0
-	frame.name = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	frame.name = CreateFS(frame)
 	frame.name:SetPoint("LEFT", frame.pass, "RIGHT", 3, 1)
 	frame.name:SetPoint("RIGHT", frame, "RIGHT", -3, 1)
-	frame.name:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
-	frame.name:SetShadowOffset(0, 0)
 	frame.name:SetJustifyH("LEFT")
 	frame:SetPoint("TOPLEFT", anchorframe, cfg.general.height + 5, - (#lootFrames * (cfg.general.height + 2 + cfg.general.spacing)))
 	frame:Hide()

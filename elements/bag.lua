@@ -1,6 +1,26 @@
 
 local config = {
 	general = {
+		bankcolumns = {
+			order = 1,
+			value = 12,
+			type = "range",
+			min = 2,
+			max = 20,
+		},
+		bagcolumns = {
+			order = 2,
+			value = 8,
+			type = "range",
+			min = 2,
+			max = 20,
+		},
+		bagbar = {
+			order = 3,
+			value = true,
+		},
+	},
+	sizes = {
 		buttonsize = {
 			order = 1,
 			value = 25,
@@ -14,39 +34,6 @@ local config = {
 			type = "range",
 			min = 0,
 			max = 30,
-		},
-		bankcolumns = {
-			order = 3,
-			value = 12,
-			type = "range",
-			min = 2,
-			max = 20,
-		},
-		bagcolumns = {
-			order = 4,
-			value = 8,
-			type = "range",
-			min = 2,
-			max = 20,
-		},
-		bagbar = {
-			order = 5,
-			value = true,
-		},
-	},
-	fonts = {
-		size = {
-			order = 1,
-			value = 10,
-			type = "range",
-			min = 8,
-			max = 20,
-		},
-		style = {
-			order = 2,
-			value = "OUTLINEMONOCHROME",
-			type = "select",
-			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
 		},
 	},
 }
@@ -63,24 +50,7 @@ local container = addon:GetContainerClass()
 local bag = addon:GetClass("BagButton", true, "BagButton")
 button:Scaffold("Default")
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
 addon:RegisterBlizzard()
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
 
 function addon:OnInit()
 	local onlyBags = function(item) return item.bagID >= 0 and item.bagID <= 4 end
@@ -117,13 +87,13 @@ function button:OnCreate()
 	self:SetHighlightTexture("")
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
-	self:SetSize(cfg.general.buttonsize, cfg.general.buttonsize)
+	self:SetSize(cfg.sizes.buttonsize, cfg.sizes.buttonsize)
 	self.bg = CreateBG(self)
 	self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	self.Icon:SetPoint("TOPLEFT")
 	self.Icon:SetPoint("BOTTOMRIGHT")
 	self.Count:SetPoint("BOTTOMRIGHT", -1, 3)
-	self.Count:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
+	self.Count:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 	self:HookScript('OnEnter', function()
 		self.oldColor = {self.bg:GetBackdropBorderColor()}
 		self.bg:SetBackdropBorderColor(1, 1, 1)
@@ -147,7 +117,7 @@ end
 
 function container:OnContentsChanged()
 	self:SortButtons("bagSlot")
-	local width, height = self:LayoutButtons("grid", self.Settings.Columns, cfg.general.spacing, 7, -7)
+	local width, height = self:LayoutButtons("grid", self.Settings.Columns, cfg.sizes.spacing, 7, -7)
 	self:SetSize(width + 14, height + 34)
 end
 
@@ -191,12 +161,12 @@ function container:OnCreate(name, settings)
 	infoFrame:SetHeight(25)
 
 	local space = self:SpawnPlugin("TagDisplay", "[space:free/max] free", infoFrame)
-	space:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
+	space:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 	space:SetPoint("LEFT", infoFrame, "LEFT")
 	space.bags = ns.cargBags:ParseBags(settings.Bags)
 
 	local tagDisplay = self:SpawnPlugin("TagDisplay", "[currencies] [ammo] [money]", infoFrame)
-	tagDisplay:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
+	tagDisplay:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 	tagDisplay:SetPoint("RIGHT", infoFrame, "RIGHT", -7, 0)
 
 	if cfg.general.bagbar then
@@ -221,7 +191,7 @@ function bag:OnCreate()
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
 	self:SetCheckedTexture("")
-	self:SetSize(cfg.general.buttonsize, cfg.general.buttonsize)
+	self:SetSize(cfg.sizes.buttonsize, cfg.sizes.buttonsize)
 	self.bg = CreateBG(self)
 	self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	self.Icon:SetPoint("TOPLEFT", 1, -1)

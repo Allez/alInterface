@@ -3,29 +3,9 @@ local scale = 0.89
 local anchor = "TOPRIGHT"
 local pos_x = -12
 local pos_y = -12
-local font = 'Fonts\\VisitorR.TTF'
-local font_size = 10
-local font_style = 'OUTLINEMONOCHROME'
 -- Config end
 
 function GetMinimapShape() return "SQUARE" end
-
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame('Frame', nil, parent)
-	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1/scale, 1/scale)
-	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1/scale, -1/scale)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
 
 local frames = {
 	MinimapZoomIn,
@@ -124,7 +104,7 @@ local function OnEvent(self, event, ...)
 			LoadAddOn("Blizzard_TimeManager")
 		end
 		TimeManagerClockTicker:SetPoint('BOTTOM', Minimap, 'BOTTOM', 0, 1)
-		TimeManagerClockTicker:SetFont(font, font_size/scale, font_style)
+		TimeManagerClockTicker:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size/scale, UIConfig.general.fonts.style)
 		TimeManagerClockTicker:SetShadowOffset(0, 0)
 		TimeManagerClockButton:GetRegions():Hide()
 		TimeManagerClockButton:SetWidth(40)
@@ -155,7 +135,7 @@ local function OnEvent(self, event, ...)
 		MinimapZoneText:ClearAllPoints()
 		MinimapZoneText:SetPoint("LEFT", 2, 1)
 		MinimapZoneText:SetPoint("RIGHT", -2, 1)
-		MinimapZoneText:SetFont(font, font_size, font_style)
+		MinimapZoneText:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 		
 		Minimap:SetScript("OnEnter", function(self)
 			UIFrameFadeIn(zoneTextFrame, 0.3, 0, 1)

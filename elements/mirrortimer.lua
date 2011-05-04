@@ -23,48 +23,16 @@ local config = {
 			max = 30,
 		},
 	},
-	fonts = {
-		size = {
-			order = 1,
-			value = 10,
-			type = "range",
-			min = 8,
-			max = 20,
-		},
-		style = {
-			order = 2,
-			value = "OUTLINEMONOCHROME",
-			type = "select",
-			select = {"OUTLINEMONOCHROME", "OUTLINE", "THICKOUTLINE"},
-		},
-	},
 }
 
 local cfg = {}
 UIConfigGUI.mirrortimer = config
 UIConfig.mirrortimer = cfg
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
 local anchorframe = CreateFrame("Frame", "Mirror_Timer", UIParent)
-anchorframe:SetSize(14, 7)
+anchorframe:SetSize(150, 14)
 anchorframe:SetPoint("TOP", 0, -100)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame('Frame', nil, parent)
-	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1, 1)
-	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
 
 local mirrorTimers = {}
 
@@ -75,10 +43,9 @@ local CreateMirrorTimer = function()
 	mtimer:SetPoint("TOP", anchorframe, 0, - (#mirrorTimers * (cfg.general.height + cfg.general.spacing)))
 	mtimer.bg = CreateBG(mtimer)
 	mtimer:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	mtimer.label = mtimer:CreateFontString(nil, "ARTWORK")
+	mtimer.label = CreateFS(mtimer)
 	mtimer.label:SetPoint("LEFT", 2, 0)
 	mtimer.label:SetPoint("RIGHT", -2, 0)
-	mtimer.label:SetFont(UIConfig.general.fonts.font, cfg.fonts.size, cfg.fonts.style)
 	mtimer.label:SetJustifyH('CENTER')
 	mtimer:Hide()
 	tinsert(mirrorTimers, mtimer)

@@ -93,7 +93,7 @@ local SetupUI = function()
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL3")
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL4")
 	ToggleChatColorNamesByClassGroup(true, "CHANNEL5")
-	setupUI = true
+	setupUI5 = true
 	ReloadUI()
 end
 
@@ -138,7 +138,7 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, addon)
 	self:UnregisterEvent(event)
-	if not setupUI then
+	if not setupUI5 then
 		StaticPopup_Show("SETUP_UI")
 	end
 end)
@@ -178,4 +178,16 @@ CreateBG = function(parent, noparent)
 	})
 	bg.border2:SetBackdropBorderColor(0, 0, 0, 0.9)
 	return bg
+end
+
+CreateFS = function(frame, fsize, fstyle)
+	local fstring = frame:CreateFontString(nil, 'OVERLAY')
+	fstring:SetFont(UIConfig.general.fonts.font, fsize or UIConfig.general.fonts.size, fstyle or UIConfig.general.fonts.style)
+	fstring:SetShadowColor(0, 0, 0, 1)
+	if UIConfig.general.fonts.shadow then
+		fstring:SetShadowOffset(.5, -0.5)
+	else
+		fstring:SetShadowOffset(0, 0)
+	end
+	return fstring
 end

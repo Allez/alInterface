@@ -1,24 +1,5 @@
--- Config start
-local button_font = 'Fonts\\VisitorR.TTF'
-local hide_hotkey = false
-local hide_macro = true
-local update_timer = TOOLTIP_UPDATE_TIME
--- Config end
 
-local config = {
-	["Font"] = button_font,
-	["Hide hotkey"] = hide_hotkey,
-	["Hide macro"] = hide_macro,
-	["Checked color"] = {0, 144, 255},
-	["Equipped color"] = {0, 0.5, 0},
-	["Hover color"] = {144, 255, 0},
-	["Out of mana color"] = {0.1, 0.3, 1},
-	["Out of range color"] = {0.8, 0.1, 0.1},
-	["Unusable color"] = {0.4, 0.4, 0.4},
-}
-if UIConfig then
-	--UIConfig["Action buttons"] = config
-end
+local update_timer = TOOLTIP_UPDATE_TIME
 
 local config = {
 	general = {
@@ -131,14 +112,14 @@ local setStyle = function(bname)
 	end
 
 	if macro then 
-		macro:SetFont(button_font, 10, "OUTLINEMONOCHROME")
+		macro:SetFont(UIConfig.general.fonts.font, 10, UIConfig.general.fonts.style)
 		if cfg.general.hidemacro then
 			macro:Hide()
 		end
 	end
 
 	if hotkey then
-		hotkey:SetFont(button_font, 10, "OUTLINEMONOCHROME")
+		hotkey:SetFont(UIConfig.general.fonts.font, 10, UIConfig.general.fonts.style)
 		hotkey:ClearAllPoints()
 		hotkey:SetPoint("TOPRIGHT", button, "TOPRIGHT", 2, 2)
 		hotkey:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
@@ -149,7 +130,7 @@ local setStyle = function(bname)
 	end
 
 	if count then
-		count:SetFont(button_font, 10, "OUTLINEMONOCHROME")
+		count:SetFont(UIConfig.general.fonts.font, 10, UIConfig.general.fonts.style)
 		count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, 0)
 	end
 
