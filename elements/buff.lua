@@ -1,21 +1,4 @@
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", parent, "TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.7)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
 local GetFormattedTime = function(s)
 	if s >= 86400 then
 		return format('%dd', floor(s/86400 + 0.5))
@@ -43,18 +26,22 @@ end
 
 ConsolidatedBuffs.SetPoint = function() end
 
-for i = 1, 3 do
-	_G["TempEnchant"..i].bg = CreateBG(_G["TempEnchant"..i])
-	_G["TempEnchant"..i]:SetSize(26, 26)	
-	_G["TempEnchant"..i.."Border"]:Hide()
-	_G["TempEnchant"..i.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	_G["TempEnchant"..i.."Icon"]:SetPoint("TOPLEFT", _G["TempEnchant"..i])
-	_G["TempEnchant"..i.."Icon"]:SetPoint("BOTTOMRIGHT", _G["TempEnchant"..i])
-	_G["TempEnchant"..i.."Duration"]:ClearAllPoints()
-	_G["TempEnchant"..i.."Duration"]:SetPoint("CENTER")
-	_G["TempEnchant"..i.."Duration"]:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
-	_G["TempEnchant"..i.."Duration"]:SetShadowOffset(0, 0)
-end
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("VARIABLES_LOADED")
+frame:SetScript("OnEvent", function(self, event)
+	for i = 1, 3 do
+		_G["TempEnchant"..i].bg = CreateBG(_G["TempEnchant"..i])
+		_G["TempEnchant"..i]:SetSize(26, 26)	
+		_G["TempEnchant"..i.."Border"]:Hide()
+		_G["TempEnchant"..i.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+		_G["TempEnchant"..i.."Icon"]:SetPoint("TOPLEFT", _G["TempEnchant"..i])
+		_G["TempEnchant"..i.."Icon"]:SetPoint("BOTTOMRIGHT", _G["TempEnchant"..i])
+		_G["TempEnchant"..i.."Duration"]:ClearAllPoints()
+		_G["TempEnchant"..i.."Duration"]:SetPoint("CENTER")
+		_G["TempEnchant"..i.."Duration"]:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
+		_G["TempEnchant"..i.."Duration"]:SetShadowOffset(0, 0)
+	end
+end)
 
 local setStyle = function(bname)
 	local buff     = _G[bname]
@@ -74,12 +61,12 @@ local setStyle = function(bname)
 
 		duration:ClearAllPoints()
 		duration:SetPoint("CENTER", 2, 0)
-		duration:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
+		duration:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 		duration:SetShadowOffset(0, 0)
 
 		count:ClearAllPoints()
 		count:SetPoint("BOTTOMRIGHT", 1, 1)
-		count:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
+		count:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 		count:SetShadowOffset(0, 0)
 	end
 	if border then border:Hide() end
