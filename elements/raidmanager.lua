@@ -81,10 +81,12 @@ frame:SetScript("OnEvent", function(self, event)
 	worldmarker:SetPoint("LEFT", readycheck, "RIGHT", 5, 0)
 	worldmarker:SetSize(40, 20)
 	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetAllPoints(worldmarker)
-	worldmarker:SetAttribute("type", "macro")
-	worldmarker:SetAttribute("macrotext", [=[
-	/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
-	]=])
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetParent(worldmarker)
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetAlpha(0)
+	--worldmarker:SetAttribute("type", "macro")
+	--worldmarker:SetAttribute("macrotext", [=[
+	--/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
+	--]=])
 	worldmarker.texture = worldmarker:CreateTexture(nil, "OVERLAY")
 	worldmarker.texture:SetTexture("Interface\\RaidFrame\\Raid-WorldPing")
 	worldmarker.texture:SetSize(18, 18)
