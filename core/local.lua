@@ -1,5 +1,4 @@
-﻿
-if GetLocale() == "ruRU" then
+﻿if GetLocale() == "ruRU" then
 	L = {
 		width = "Ширина",
 		height = "Высота",
@@ -19,10 +18,10 @@ if GetLocale() == "ruRU" then
 		smooth = "Плавное изменение полос",
 		auraspiral = "Спираль аур",
 		auratimer = "Таймер аур",
-		focusdebuffs = "Отрицательные эффекты на фокусе",
-		targetdebuffs = "Отрицательные эффекты на цели",
-		petdebuffs = "Отрицательные эффекты на питомце",
-		totdebuffs = "Отрицательные эффекты на цели цели",
+		focusdebuffs = "Дебафы на фокусе",
+		targetdebuffs = "Дебафы на цели",
+		petdebuffs = "Дебафы на питомце",
+		totdebuffs = "Дебафы на цели цели",
 		colordebuff = "Цвет эффектов по типу",
 		aggro = "Индикотор угрозы",
 		portraits = "Портреты",
@@ -40,7 +39,7 @@ if GetLocale() == "ruRU" then
 		fonts = "Шрифты",
 		size = "Размер",
 		style = "Стиль",
-		spacing = "Промежуток",
+		spacing = "Отступ",
 		outgoingdamage = "Исходящий урон",
 		outgoinghealing = "Исходящее исцеление",
 		buttonsize = "Размер кнопки",
@@ -57,7 +56,7 @@ if GetLocale() == "ruRU" then
 		outofmana = "Нехватка маны",
 		outofrange = "Вне зоны видимости",
 		unusable = "Заблокировано",
-		unitframes = "Рамки",
+		unitframes = "Рамки портретов",
 		actionbars = ACTIONBAR_LABEL,
 		loot = "Окно добычи",
 		lootroll = "Групповое окно добычи",
@@ -98,6 +97,11 @@ if GetLocale() == "ruRU" then
 		mergeheal = "Объединить лечение и поглощение",
 		maxfights = "Сохраняемые сражения",
 		sizes = "Размеры",
+		nameplates = UNIT_NAMEPLATES,
+		showincombat = "Показывать только в бою",
+		healthbyclass = "Здоровье цветом класса",
+		powerbyclass = "Энергия цветом класса",
+		namebyclass = "Имя цветом класса",
 	}
 else
 	L = {
@@ -198,5 +202,10 @@ else
 		mergeheal = "Merge healing and absorbs",
 		maxfights = "Saved fights",
 		sizes = "Sizes",
+		nameplates = UNIT_NAMEPLATES,
+		showincombat = "Show only in combat",
+		healthbyclass = "Health bar by class",
+		powerbyclass = "Power bar by class",
+		namebyclass = "Name by class",
 	}
 end

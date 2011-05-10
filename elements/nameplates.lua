@@ -1,14 +1,48 @@
+
 local config = {
-	["Texture"] = "Interface\\TargetingFrame\\UI-StatusBar",
-	["Width"] = 80,
-	["Height"] = 9,
-	["Font"] = 'Fonts\\VisitorR.TTF',
-	["Font size"] = 10,
-	["Font style"] = 'OUTLINEMONOCHROME',
+	general = {
+		showincombat = {
+			order = 1,
+			value = true,
+		},
+	},
+	sizes = {
+		width = {
+			order = 1,
+			value = 80,
+			type = "range",
+			min = 50,
+			max = 500,
+		},
+		height = {
+			order = 2,
+			value = 9,
+			type = "range",
+			min = 5,
+			max = 20,
+		},
+	},
+	castbar = {
+		width = {
+			order = 1,
+			value = 80,
+			type = "range",
+			min = 50,
+			max = 500,
+		},
+		height = {
+			order = 2,
+			value = 9,
+			type = "range",
+			min = 5,
+			max = 20,
+		},
+	},
 }
-if UIConfig then
-	--UIConfig["Nameplates"] = config
-end
+
+local cfg = {}
+UIConfigGUI.nameplates = config
+UIConfig.nameplates = cfg
 
 local caelNamePlates = CreateFrame("Frame", nil, UIParent)
 caelNamePlates:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
@@ -20,11 +54,10 @@ local font, fontSize, fontOutline
 local select = select
 
 local IsValidFrame = function(frame)
-	if frame:GetName() then
-		return
+	if frame:GetName():find("NamePlate%d") then
+		overlayRegion = select(2, frame:GetRegions())
+		return overlayRegion and overlayRegion:GetObjectType() == "Texture" and overlayRegion:GetTexture() == overlayTexture
 	end
-	overlayRegion = select(2, frame:GetRegions())
-	return overlayRegion and overlayRegion:GetObjectType() == "Texture" and overlayRegion:GetTexture() == overlayTexture
 end
 
 local UpdateTime = function(self, curValue)
@@ -44,13 +77,13 @@ local UpdateFrame = function(self)
 
 	self.healthBar:ClearAllPoints()
 	self.healthBar:SetPoint("CENTER", self.healthBar:GetParent())
-	self.healthBar:SetHeight(config["Height"] * UIParent:GetEffectiveScale())
-	self.healthBar:SetWidth(config["Width"])
+	self.healthBar:SetHeight(cfg.sizes.height * UIParent:GetEffectiveScale())
+	self.healthBar:SetWidth(cfg.sizes.width)
 
 	self.castBar:ClearAllPoints()
 	self.castBar:SetPoint("TOP", self.healthBar, "BOTTOM", 0, -4)
-	self.castBar:SetHeight(config["Height"] * UIParent:GetEffectiveScale())
-	self.castBar:SetWidth(config["Width"])
+	self.castBar:SetHeight(cfg.castbar.height * UIParent:GetEffectiveScale())
+	self.castBar:SetWidth(cfg.castbar.width)
 
 	self.highlight:ClearAllPoints()
 	self.highlight:SetAllPoints(self.healthBar)
@@ -268,15 +301,19 @@ caelNamePlates:SetScript("OnUpdate", OnUpdate)
 
 caelNamePlates:RegisterEvent("PLAYER_REGEN_ENABLED")
 function caelNamePlates:PLAYER_REGEN_ENABLED()
-	SetCVar("nameplateShowEnemies", 0)
+	if cfg.general.showincombat then
+		SetCVar("nameplateShowEnemies", 0)
+	end
 end
 
 caelNamePlates:RegisterEvent("PLAYER_REGEN_DISABLED")
 function caelNamePlates.PLAYER_REGEN_DISABLED()
-	SetCVar("nameplateShowEnemies", 1)
+	if cfg.general.showincombat then
+		SetCVar("nameplateShowEnemies", 1)
+	end
 end
 
-caelNamePlates:RegisterEvent("PLAYER_LOGIN")
-function caelNamePlates:PLAYER_LOGIN()
-	font, fontSize, fontOutline = config["Font"], UIParent:GetEffectiveScale()*config["Font size"], config["Font style"]
+caelNamePlates:RegisterEvent("VARIABLES_LOADED")
+function caelNamePlates:VARIABLES_LOADED()
+	font, fontSize, fontOutline = UIConfig.general.fonts.font, UIParent:GetEffectiveScale()*UIConfig.general.fonts.size, UIConfig.general.fonts.style
 end

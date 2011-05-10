@@ -1,7 +1,5 @@
 local addon_name, ns = ...
 
-local font = 'Fonts\\VisitorR.TTF'
-local fontsize = 10
 local stdfont = GameFontNormal:GetFont()
 local texture = "Interface\\Addons\\"..addon_name.."\\media\\statusbarTex"
 local glowTex = "Interface\\Addons\\"..addon_name.."\\media\\glowTex"
@@ -427,9 +425,9 @@ local PostCreateAuraIcon = function(self, button)
 	button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	button.icon:SetDrawLayer('ARTWORK')
 	button.overlay:SetTexture(nil)
-	button.remaining = CreateFS(button, 10, 'OUTLINEMONOCHROME')
+	button.remaining = CreateFS(button, 10)
 	button.remaining:SetPoint('CENTER', 1, 1)
-	button.count:SetFont(font, 10, 'OUTLINEMONOCHROME')
+	button.count:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 end
 
 local ticks = {}
@@ -603,6 +601,32 @@ local UpdateEclipseBarVisibility = function(self)
 	end
 end
 
+local UpdateComboPoint = function(self, event, unit)
+	if unit == 'pet' then return end
+
+	local cp
+	if UnitHasVehicleUI('player') then
+		cp = GetComboPoints('vehicle', 'target')
+	else
+		cp = GetComboPoints('player', 'target')
+	end
+
+	local cpoints = self.CPoints
+	if cp == 0 then
+		cpoints:Hide()
+		return
+	else
+		cpoints:Show()
+	end
+	for i = 1, MAX_COMBO_POINTS do
+		if i <= cp then
+			cpoints[i]:Show()
+		else
+			cpoints[i]:Hide()
+		end
+	end 
+end
+
 local CreateStyle = function(self, unit)
 	self.colors = colors
 	self.menu = menu
@@ -629,10 +653,6 @@ local CreateStyle = function(self, unit)
 	self.Health:SetStatusBarTexture(texture)
 	self.Health:SetStatusBarColor(unpack(cfg.colors.health))
 	if unit == 'raid' and cfg.raid.showpower then
-		self.Health:SetPoint("TOPLEFT")
-		self.Health:SetPoint("TOPRIGHT")
-		self.Health:SetHeight(self:GetHeight() - 3)
-	elseif unit == 'party' then
 		self.Health:SetPoint("TOPLEFT")
 		self.Health:SetPoint("TOPRIGHT")
 		self.Health:SetHeight(self:GetHeight() - 3)
@@ -674,9 +694,17 @@ local CreateStyle = function(self, unit)
 		self.Power:SetFrameLevel(self.Health:GetFrameLevel()+2)
 		self.Power.background = CreateBG(self.Power)
 	elseif unit == 'party' then
-		self.Power:SetPoint("BOTTOMLEFT")
-		self.Power:SetPoint("BOTTOMRIGHT")
-		self.Power:SetHeight(2)
+		if not cfg.raid.showparty then
+			self.Power:SetPoint('BOTTOMRIGHT', self.Health, -10, -3)
+			self.Power:SetHeight(3)
+			self.Power:SetWidth(100)
+			self.Power:SetFrameLevel(self.Health:GetFrameLevel()+2)
+			self.Power.background = CreateBG(self.Power)
+		else
+			self.Power:SetPoint("BOTTOMLEFT")
+			self.Power:SetPoint("BOTTOMRIGHT")
+			self.Power:SetHeight(2)
+		end
 	elseif unit == 'raid' and cfg.raid.showpower then
 		self.Power:SetPoint("BOTTOMLEFT")
 		self.Power:SetPoint("BOTTOMRIGHT")
@@ -779,7 +807,7 @@ local CreateStyle = function(self, unit)
 			self.GCD.Height = 6
 			self.GCD.Width = 15
 		end
-		
+
 		if class == 'DRUID' and cfg.elements.eclipsebar then
 			self.EclipseBar = CreateFrame('Frame', addon_name.."_EclipseBar", self)
 			self.EclipseBar:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
@@ -831,7 +859,7 @@ local CreateStyle = function(self, unit)
 			self.TotemBar:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOP', self, 'BOTTOM', 0, -10)
 			self.TotemBar:SetSize(130, 5)
 			self.TotemBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.TotemBar.bg = CreateBG(self.TotemBar, true)
+			self.TotemBar.bg = CreateBG(self.TotemBar)
 			for i = 1, 4 do
 				self.TotemBar[i] = CreateFrame('StatusBar', nil, self.TotemBar)
 				self.TotemBar[i]:SetStatusBarTexture(texture)
@@ -854,7 +882,7 @@ local CreateStyle = function(self, unit)
 			self.SoulShards:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOP', self, 'BOTTOM', 0, -10)
 			self.SoulShards:SetSize(130, 5)
 			self.SoulShards:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.SoulShards.bg = CreateBG(self.SoulShards, true)
+			self.SoulShards.bg = CreateBG(self.SoulShards)
 			for i = 1, 3 do
 				self.SoulShards[i] = CreateFrame('StatusBar', nil, self.SoulShards)
 				self.SoulShards[i]:SetStatusBarTexture(texture)
@@ -877,7 +905,7 @@ local CreateStyle = function(self, unit)
 			self.HolyPower:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
 			self.HolyPower:SetSize(130, 5)
 			self.HolyPower:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.HolyPower.bg = CreateBG(self.HolyPower, true)
+			self.HolyPower.bg = CreateBG(self.HolyPower)
 			for i = 1, 3 do
 				self.HolyPower[i] = CreateFrame('StatusBar', nil, self.HolyPower)
 				self.HolyPower[i]:SetStatusBarTexture(texture)
@@ -911,17 +939,33 @@ local CreateStyle = function(self, unit)
 
 	-- Combo points
 	if unit == 'target' and cfg.elements.combo then
-		local cpoints = CreateFS(self, 20)
-		cpoints:SetPoint('CENTER', UIParent, 'CENTER', -200, 0)
-		cpoints:SetTextColor(1, 1, 1)
-		cpoints:SetJustifyH('RIGHT')
-		self:Tag(cpoints, '[cpoints]')
+		self.CPoints = CreateFrame("Frame", nil, self)
+		self.CPoints:SetPoint('TOPRIGHT', self.Health, -10, 4)
+		self.CPoints:SetSize(130, 5)
+		self.CPoints:SetFrameLevel(self.CPoints:GetFrameLevel()+2)
+		self.CPoints.bg = CreateBG(self.CPoints)
+		for i = 1, 5 do
+			self.CPoints[i] = CreateFrame("StatusBar", nil, self.CPoints)
+			self.CPoints[i]:SetSize(self.CPoints:GetWidth() / 5 - 0.85, 5)
+			self.CPoints[i]:SetStatusBarTexture(texture)
+			if i == 1 then
+				self.CPoints[i]:SetPoint("LEFT", self.CPoints)
+			else
+				self.CPoints[i]:SetPoint("LEFT", self.CPoints[i-1], "RIGHT", 1, 0)
+			end
+		end
+		self.CPoints[1]:SetStatusBarColor(0.9, 0.1, 0.1)
+		self.CPoints[2]:SetStatusBarColor(0.9, 0.1, 0.1)
+		self.CPoints[3]:SetStatusBarColor(0.9, 0.9, 0.1)
+		self.CPoints[4]:SetStatusBarColor(0.9, 0.9, 0.1)
+		self.CPoints[5]:SetStatusBarColor(0.1, 0.9, 0.1)
+		self.CPoints.Override = UpdateComboPoint
 	end
 
 	-- Auras
-	if (unit == 'focus' and cfg.elements.focusdebuffs) or 
-	   (unit == 'targettarget' and cfg.elements.totdebuffs) or 
-	   (unit == 'pet' and cfg.elements.petdebuffs) then
+	if (unit == 'focus' and cfg.general.focusdebuffs) or 
+	   (unit == 'targettarget' and cfg.general.totdebuffs) or 
+	   (unit == 'pet' and cfg.general.petdebuffs) then
 		self.Debuffs = CreateFrame('Frame', addon_name..unit.."_Debuffs", self)
 		self.Debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 6)
 		self.Debuffs:SetHeight(22)
@@ -1054,7 +1098,7 @@ local CreateStyle = function(self, unit)
 			self.Castbar.Shield:SetBackdropBorderColor(1, 0, 0, 1)
 			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
 		elseif unit == 'player' then
-			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 300)
+			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 150)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
 			self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
 			self.Castbar.SafeZone:SetTexture(texture)
@@ -1066,6 +1110,7 @@ local CreateStyle = function(self, unit)
 			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
 		else
 			self.Castbar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.Castbar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
 			self.Castbar:SetHeight(7)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
 			self.Castbar.Button:SetSize(7, 7)
@@ -1352,3 +1397,33 @@ oUF:Factory(function(self)
 		if UIMovableFrames then tinsert(UIMovableFrames, boss[i]) end
 	end
 end)
+
+SlashCmdList["DPS"] = function()
+	UISetValue('unitframes','raid','showparty',false)
+	UISetup5.unitframes.raid = nil
+	UISavedPositions["UF_Target"] = nil
+	UISavedPositions["UF_Player"] = nil
+	UISavedPositions["UF_Castbar_player"] = nil
+	UISavedPositions["RaidFrameAnchor"] = nil
+	ReloadUI()
+end
+SLASH_DPS1 = "/default"
+
+SlashCmdList["HEAL"] = function()
+	UISetValue('unitframes','raid','showparty',true)
+	UISetValue('unitframes','raid','numgroups',5)
+	UISetValue('unitframes','raid','unitpergroup',5)
+	UISetValue('unitframes','raid','growth',"DOWN")
+	UISetValue('unitframes','raid','hgroups',true)
+	UISetValue('unitframes','raid','width',53)
+	UISetValue('unitframes','raid','height',25)
+	UISetValue('unitframes','raid','spacing',7)
+	UISetValue('unitframes','raid','showpower',true)
+
+	UISavedPositions["UF_Target"] = {"BOTTOM", "UIParent", "BOTTOM", 265, 260}
+	UISavedPositions["UF_Player"] = {"BOTTOM", "UIParent", "BOTTOM", -265, 260}
+	UISavedPositions["UF_Castbar_player"] = {"BOTTOM", "UIParent", "BOTTOM", 13, 300}
+	UISavedPositions["RaidFrameAnchor"] = {"BOTTOM", "UIParent", "BOTTOM", -0.5, 136}
+	ReloadUI()
+end
+SLASH_HEAL1 = "/heal"

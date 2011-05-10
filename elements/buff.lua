@@ -1,4 +1,3 @@
-
 local GetFormattedTime = function(s)
 	if s >= 86400 then
 		return format('%dd', floor(s/86400 + 0.5))

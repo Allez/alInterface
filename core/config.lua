@@ -1,48 +1,29 @@
 local addon_name, ns = ...
 
+local realm = GetCVar("realmName")
+local name  = UnitName("player")
+
 UIConfigGUI = {}
 UIConfig = {}
 UISetup5 = {}
+UISetupAll = {}
+UIProfiles = {}
 
 local lastVisible = nil
 local created = false
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame('Frame', nil, parent)
-	bg:SetPoint('TOPLEFT', parent, 'TOPLEFT', -1, 1)
-	bg:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
-local CreateFS = function(frame, fsize, fstyle)
-	local fstring = frame:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
-	fstring:SetFont('Fonts\\VisitorR.TTF', fsize, fstyle)
-	fstring:SetShadowColor(0, 0, 0, 1)
-	fstring:SetShadowOffset(0, 0)
-	return fstring
-end
-
 local SetValue = function(element, group, option, value)
+	if value == UIConfig[element][group][option] then return end
 	if not UISetup5[element] then
 		UISetup5[element] = {}
 	end
 	if not UISetup5[element][group] then
 		UISetup5[element][group] = {}
 	end
-	if value ~= UIConfig[element][group][option] then
-		UISetup5[element][group][option] = value
-	end
+	UISetup5[element][group][option] = value
 end
+
+UISetValue = SetValue
 
 local CreateCheckBox = function(parent)
 	local widget = CreateFrame("Button", nil, parent)
@@ -409,7 +390,6 @@ frame:RegisterEvent("VARIABLES_LOADED")
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
-		self:UnregisterEvent(event)
 		for element, settings in pairs(UIConfigGUI) do
 			for group, options in pairs(settings) do
 				UIConfig[element][group] = {}

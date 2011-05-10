@@ -180,12 +180,12 @@ CreateBG = function(parent, noparent)
 	return bg
 end
 
-CreateFS = function(frame, fsize, fstyle)
+CreateFS = function(frame, fsize, fstyle, font)
 	local fstring = frame:CreateFontString(nil, 'OVERLAY')
-	fstring:SetFont(UIConfig.general.fonts.font, fsize or UIConfig.general.fonts.size, fstyle or UIConfig.general.fonts.style)
+	fstring:SetFont(font or UIConfig.general.fonts.font, fsize or UIConfig.general.fonts.size, fstyle or UIConfig.general.fonts.style)
 	fstring:SetShadowColor(0, 0, 0, 1)
 	if UIConfig.general.fonts.shadow then
-		fstring:SetShadowOffset(.5, -0.5)
+		fstring:SetShadowOffset(0.5, -0.5)
 	else
 		fstring:SetShadowOffset(0, 0)
 	end
