@@ -1,4 +1,3 @@
-
 CompactRaidFrameManager:Hide()
 CompactRaidFrameManager:UnregisterAllEvents()
 CompactRaidFrameManager:SetScript("OnUpdate", nil)
