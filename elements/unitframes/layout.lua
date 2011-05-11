@@ -593,11 +593,13 @@ local PostUpdateBar = function(self, unit, min, max)
 	end
 end
 
-local UpdateEclipseBarVisibility = function(self)
-	if self:IsShown() then
-		self.__owner.Debuffs:SetPoint('TOPLEFT', self.__owner, 'BOTTOMLEFT', 0, -21)
+local EclipseDirChange = function(self)
+	if GetEclipseDirection() == "sun" then
+		self.Dir:SetText('|cff4478BC>>>|r')
+	elseif GetEclipseDirection() == "moon" then
+		self.Dir:SetText('|cffE5994C<<<|r')
 	else
-		self.__owner.Debuffs:SetPoint('TOPLEFT', self.__owner, 'BOTTOMLEFT', 0, -10)
+		self.Dir:SetText("")
 	end
 end
 
@@ -813,8 +815,6 @@ local CreateStyle = function(self, unit)
 			self.EclipseBar:SetSize(130, 5)
 			self.EclipseBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.EclipseBar:SetFrameStrata('MEDIUM')
-			--self.EclipseBar:SetScript('OnShow', UpdateEclipseBar)
-			--self.EclipseBar:SetScript('OnHide', UpdateEclipseBar)
 			self.EclipseBar.bg = CreateBG(self.EclipseBar)
 			self.EclipseBar.LunarBar = CreateFrame('StatusBar', nil, self.EclipseBar)
 			self.EclipseBar.LunarBar:SetPoint('LEFT', self.EclipseBar)
@@ -826,8 +826,11 @@ local CreateStyle = function(self, unit)
 			self.EclipseBar.SolarBar:SetSize(self.EclipseBar:GetWidth(), self.EclipseBar:GetHeight())
 			self.EclipseBar.SolarBar:SetStatusBarTexture(texture)
 			self.EclipseBar.SolarBar:SetStatusBarColor(0.90, 0.92, 0.30)
+			self.EclipseBar.Dir = CreateFS(self.EclipseBar.LunarBar)
+			self.EclipseBar.Dir:SetPoint("CENTER", self.EclipseBar, "CENTER", -6, 1)
+			self.EclipseBar.PostUpdatePower = EclipseDirChange
 			self.EclipseBar.Text = CreateFS(self.EclipseBar.LunarBar)
-			self.EclipseBar.Text:SetPoint("CENTER", self.EclipseBar, 0, 1)
+			self.EclipseBar.Text:SetPoint("LEFT", self.EclipseBar.Dir, "RIGHT", 2, 0)
 			self:Tag(self.EclipseBar.Text, '[pereclipse] %')
 		end
 
