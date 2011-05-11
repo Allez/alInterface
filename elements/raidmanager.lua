@@ -1,9 +1,3 @@
-CompactRaidFrameManager:Hide()
-CompactRaidFrameManager:UnregisterAllEvents()
-CompactRaidFrameManager:SetScript("OnUpdate", nil)
-CompactRaidFrameContainer:Hide()
-CompactRaidFrameContainer:UnregisterAllEvents()
-CompactRaidFrameContainer:SetScript("OnUpdate", nil)
 
 local main = CreateFrame("Frame", nil, UIParent)
 main:SetSize(212, 102)
@@ -80,12 +74,8 @@ frame:SetScript("OnEvent", function(self, event)
 	worldmarker:SetPoint("LEFT", readycheck, "RIGHT", 5, 0)
 	worldmarker:SetSize(40, 20)
 	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetAllPoints(worldmarker)
-	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetParent(worldmarker)
-	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetAlpha(0)
-	--worldmarker:SetAttribute("type", "macro")
-	--worldmarker:SetAttribute("macrotext", [=[
-	--/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
-	--]=])
+	worldmarker:SetAttribute("type", "macro")
+	worldmarker:SetAttribute("macrotext", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton")
 	worldmarker.texture = worldmarker:CreateTexture(nil, "OVERLAY")
 	worldmarker.texture:SetTexture("Interface\\RaidFrame\\Raid-WorldPing")
 	worldmarker.texture:SetSize(18, 18)
@@ -126,6 +116,12 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("RAID_ROSTER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" then
+		CompactRaidFrameManager:Hide()
+		CompactRaidFrameManager:UnregisterAllEvents()
+		CompactRaidFrameContainer:Hide()
+		CompactRaidFrameContainer:UnregisterAllEvents()
+	end
 	if UnitIsRaidOfficer("player") then
 		toggle:Show()
 	else
