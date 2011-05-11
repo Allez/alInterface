@@ -719,7 +719,6 @@ local CreateStyle = function(self, unit)
 
 	self.Power.colorPower = not cfg.colors.powerbyclass
 	self.Power.colorReaction = true
-	self.Power.colorHappiness = unit == 'pet'
 	self.Power.colorClass = cfg.colors.powerbyclass
 
 	self.Power.bg = self.Power:CreateTexture(nil, 'BACKGROUND')
@@ -810,12 +809,12 @@ local CreateStyle = function(self, unit)
 
 		if class == 'DRUID' and cfg.elements.eclipsebar then
 			self.EclipseBar = CreateFrame('Frame', addon_name.."_EclipseBar", self)
-			self.EclipseBar:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.EclipseBar:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.EclipseBar:SetSize(130, 5)
 			self.EclipseBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.EclipseBar:SetFrameStrata('MEDIUM')
-			--self.EclipseBar:SetScript('OnShow', UpdateEclipseBarVisibility)
-			--self.EclipseBar:SetScript('OnHide', UpdateEclipseBarVisibility)
+			--self.EclipseBar:SetScript('OnShow', UpdateEclipseBar)
+			--self.EclipseBar:SetScript('OnHide', UpdateEclipseBar)
 			self.EclipseBar.bg = CreateBG(self.EclipseBar)
 			self.EclipseBar.LunarBar = CreateFrame('StatusBar', nil, self.EclipseBar)
 			self.EclipseBar.LunarBar:SetPoint('LEFT', self.EclipseBar)
@@ -834,7 +833,7 @@ local CreateStyle = function(self, unit)
 
 		if class == 'DEATHKNIGHT' and cfg.elements.runes then
 			self.Runes = CreateFrame('Frame', addon_name.."_RuneBar", self)
-			self.Runes:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.Runes:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.Runes:SetSize(130, 5)
 			self.Runes:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.Runes.bg = CreateBG(self.Runes)
@@ -856,7 +855,7 @@ local CreateStyle = function(self, unit)
 
 		if class == 'SHAMAN' and UnitLevel('player') >= 20 and cfg.elements.totembar then
 			self.TotemBar = CreateFrame('Frame', addon_name.."_TotemBar", self)
-			self.TotemBar:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOP', self, 'BOTTOM', 0, -10)
+			self.TotemBar:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.TotemBar:SetSize(130, 5)
 			self.TotemBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.TotemBar.bg = CreateBG(self.TotemBar)
@@ -879,7 +878,7 @@ local CreateStyle = function(self, unit)
 
 		if class == 'WARLOCK' and cfg.elements.soulshards then
 			self.SoulShards = CreateFrame('Frame', addon_name.."_SoulShards", UIParent)
-			self.SoulShards:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOP', self, 'BOTTOM', 0, -10)
+			self.SoulShards:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.SoulShards:SetSize(130, 5)
 			self.SoulShards:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.SoulShards.bg = CreateBG(self.SoulShards)
@@ -902,7 +901,7 @@ local CreateStyle = function(self, unit)
 
 		if class == 'PALADIN' and cfg.elements.holypower then
 			self.HolyPower = CreateFrame('Frame', addon_name.."_HolyPower", self)
-			self.HolyPower:SetPoint('TOPLEFT', self.Health, 10, 4)--('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			self.HolyPower:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.HolyPower:SetSize(130, 5)
 			self.HolyPower:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.HolyPower.bg = CreateBG(self.HolyPower)
@@ -981,7 +980,7 @@ local CreateStyle = function(self, unit)
 		end
 		self.Debuffs.PostCreateIcon = PostCreateAuraIcon
 		self.Debuffs.PostUpdateIcon = PostUpdateDebuff
-		if UIMovableFrames then tinsert(UIMovableFrames, self.Debuffs) end
+		tinsert(UIMovableFrames, self.Debuffs)
 	end
 
 	if unit == 'target' then
@@ -997,7 +996,7 @@ local CreateStyle = function(self, unit)
 		self.Buffs['growth-y'] = 'DOWN'
 		self.Buffs.PostCreateIcon = PostCreateAuraIcon
 		self.Buffs.PostUpdateIcon = PostUpdateBuff
-		if UIMovableFrames then tinsert(UIMovableFrames, self.Buffs) end
+		tinsert(UIMovableFrames, self.Buffs)
 
 		if cfg.general.targetdebuffs then
 			self.Debuffs = CreateFrame('Frame', addon_name.."_TargetDebuffs", self)
@@ -1012,7 +1011,7 @@ local CreateStyle = function(self, unit)
 			self.Debuffs['growth-y'] = 'UP'
 			self.Debuffs.PostCreateIcon = PostCreateAuraIcon
 			self.Debuffs.PostUpdateIcon = PostUpdateDebuff
-			if UIMovableFrames then tinsert(UIMovableFrames, self.Debuffs) end
+			tinsert(UIMovableFrames, self.Debuffs)
 		end
 	end
 
@@ -1090,13 +1089,13 @@ local CreateStyle = function(self, unit)
 			self.Castbar.Button:SetPoint('BOTTOMLEFT', self.Castbar, 'BOTTOMRIGHT', 5, 0)
 			self.Castbar.Shield = CreateShadow(self.Castbar.Button)
 			self.Castbar.Shield:SetBackdropBorderColor(1, 0, 0, 1)
-			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
+			tinsert(UIMovableFrames, self.Castbar)
 		elseif unit == 'focus' then
 			self.Castbar:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', -112 + 26, 38)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
 			self.Castbar.Shield = CreateShadow(self.Castbar.Button)
 			self.Castbar.Shield:SetBackdropBorderColor(1, 0, 0, 1)
-			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
+			tinsert(UIMovableFrames, self.Castbar)
 		elseif unit == 'player' then
 			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 150)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
@@ -1107,7 +1106,7 @@ local CreateStyle = function(self, unit)
 			self.Castbar.Lag:SetPoint('BOTTOMRIGHT', -2, -1)
 			self.Castbar.Lag:SetJustifyH('RIGHT')
 			self:RegisterEvent('UNIT_SPELLCAST_SENT', OnCastSent)
-			if UIMovableFrames then tinsert(UIMovableFrames, self.Castbar) end
+			tinsert(UIMovableFrames, self.Castbar)
 		else
 			self.Castbar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
 			self.Castbar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
@@ -1254,33 +1253,33 @@ oUF:Factory(function(self)
 
 	local player = self:Spawn('player', addon_name..'_Player')
 	player:SetSize(215, 27)
-	if UIMovableFrames then tinsert(UIMovableFrames, player) end
+	player:SetPoint('BOTTOM', UIParent, -190, 240)
+	tinsert(UIMovableFrames, player)
 
 	local target = self:Spawn('target', addon_name..'_Target')
 	target:SetSize(215, 27)
-	if UIMovableFrames then tinsert(UIMovableFrames, target) end
-	player:SetPoint('BOTTOM', UIParent, -190, 240)
 	target:SetPoint('BOTTOM', UIParent, 190, 240)
+	tinsert(UIMovableFrames, target)
 
 	local targettarget = self:Spawn('targettarget', addon_name..'_ToT')
 	targettarget:SetPoint('BOTTOMRIGHT', target, 'TOPRIGHT', 0, 9)
 	targettarget:SetSize(103, 24)
-	if UIMovableFrames then tinsert(UIMovableFrames, targettarget) end
+	tinsert(UIMovableFrames, targettarget)
 
 	local pet = self:Spawn('pet', addon_name..'_Pet')
 	pet:SetPoint('BOTTOMLEFT', player, 'TOPLEFT', 0, 9)
 	pet:SetSize(103, 24)
-	if UIMovableFrames then tinsert(UIMovableFrames, pet) end
+	tinsert(UIMovableFrames, pet)
 
 	local focus = self:Spawn('focus', addon_name..'_Focus')
 	focus:SetPoint('TOPLEFT', pet, 'TOPRIGHT', 9, 0)
 	focus:SetSize(103, 24)
-	if UIMovableFrames then tinsert(UIMovableFrames, focus) end
+	tinsert(UIMovableFrames, focus)
 
 	local focustarget = self:Spawn('focustarget', addon_name..'_FocusTarget')
 	focustarget:SetPoint('BOTTOMLEFT', target, 'TOPLEFT', 0, 9)
 	focustarget:SetSize(103, 24)
-	if UIMovableFrames then tinsert(UIMovableFrames, focustarget) end
+	tinsert(UIMovableFrames, focustarget)
 
 	if not cfg.raid.showparty then
 		local party = self:SpawnHeader(addon_name..'_Party', nil, 'custom [@raid6,exists] hide;show',
@@ -1295,14 +1294,14 @@ oUF:Factory(function(self)
 			'yOffset', -14
 		)
 		party:SetPoint('BOTTOMLEFT', UIParent, 'LEFT', 12, -100)
+		tinsert(UIMovableFrames, party)
 	end
-	if UIMovableFrames then tinsert(UIMovableFrames, party) end
 
 	if cfg.raid.tankframes then
 		local tankAnchor = CreateFrame("Frame", "MainTank", UIParent)
 		tankAnchor:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 195, 11)
 		tankAnchor:SetSize(36, 23)
-		if UIMovableFrames then tinsert(UIMovableFrames, tankAnchor) end
+		tinsert(UIMovableFrames, tankAnchor)
 		local tank = self:SpawnHeader(addon_name..'_MainTank', nil, 'raid',
 			'oUF-initialConfigFunction', [[
 				self:SetAttribute('*type1', 'target')
@@ -1363,7 +1362,7 @@ oUF:Factory(function(self)
 			'columnAnchorPoint', colAnchors[cfg.raid.growth]
 		)
 		raid:SetPoint(colAnchors[cfg.raid.growth], raidAnchor, colAnchors[cfg.raid.growth], 0, 0)
-		if UIMovableFrames then tinsert(UIMovableFrames, raidAnchor) end
+		tinsert(UIMovableFrames, raidAnchor)
 	end
 
 	local arena = {}
@@ -1379,10 +1378,8 @@ oUF:Factory(function(self)
 		arenatarget[i] = self:Spawn('arena'..i..'target', addon_name..'_Arena'..i..'target')
 		arenatarget[i]:SetPoint('LEFT', arena[i], 'RIGHT', 7, 0)
 		arenatarget[i]:SetSize(25, 25)
-		if UIMovableFrames then
-			tinsert(UIMovableFrames, arena[i])
-			tinsert(UIMovableFrames, arenatarget[i])
-		end
+		tinsert(UIMovableFrames, arena[i])
+		tinsert(UIMovableFrames, arenatarget[i])
 	end
 
 	local boss = {}
@@ -1394,7 +1391,7 @@ oUF:Factory(function(self)
 			boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 14)
 		end
 		boss[i]:SetSize(150, 23)
-		if UIMovableFrames then tinsert(UIMovableFrames, boss[i]) end
+		tinsert(UIMovableFrames, boss[i])
 	end
 end)
 
