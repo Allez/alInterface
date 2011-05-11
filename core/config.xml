@@ -9,15 +9,28 @@
 		<Size>
 			<AbsDimension x="148" y="18"/>
 		</Size>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="$parentLabel" inherits="GameFontNormal" parentKey="label">
-					<Anchors>
-						<Anchor point="LEFT" x="0" y="0"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
+		<ButtonText name="$parentLabel" justifyH="LEFT" parentKey="label" />
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<HighlightTexture file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT">	
+					<Offset>
+						<AbsDimension x="0" y="1"/>
+					</Offset>
+				</Anchor>
+				<Anchor point="BOTTOMRIGHT">	
+					<Offset>
+						<AbsDimension x="0" y="1"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</HighlightTexture>
+		<Scripts>
+			<OnClick>
+				PlaySound("igMainMenuOptionCheckBoxOn");
+			</OnClick>
+		</Scripts>
 	</Button>
 
 	<Frame name="UIConfigFrame" parent="UIParent">
