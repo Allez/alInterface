@@ -117,8 +117,8 @@ end
 
 function container:OnContentsChanged()
 	self:SortButtons("bagSlot")
-	local width, height = self:LayoutButtons("grid", self.Settings.Columns, cfg.sizes.spacing, 7, -7)
-	self:SetSize(width + 14, height + 34)
+	local width, height = self:LayoutButtons("grid", self.Settings.Columns, cfg.sizes.spacing, 7, -17)
+	self:SetSize(width + 14, height + 55)
 end
 
 local function highlightFunction(button, match)
@@ -155,9 +155,9 @@ function container:OnCreate(name, settings)
 
 	settings.Columns = settings.Columns or 14
 
-	local infoFrame = CreateFrame("Button", nil, self)
-	infoFrame:SetPoint("BOTTOMLEFT", 7, 0)
-	infoFrame:SetPoint("BOTTOMRIGHT", -7, 0)
+	local infoFrame = CreateFrame("Frame", nil, self)
+	infoFrame:SetPoint("BOTTOMLEFT", 7, 10)
+	infoFrame:SetPoint("BOTTOMRIGHT", -7, 10)
 	infoFrame:SetHeight(25)
 
 	local space = self:SpawnPlugin("TagDisplay", "[space:free/max] free", infoFrame)
@@ -169,20 +169,45 @@ function container:OnCreate(name, settings)
 	tagDisplay:SetFont(UIConfig.general.fonts.font, UIConfig.general.fonts.size, UIConfig.general.fonts.style)
 	tagDisplay:SetPoint("RIGHT", infoFrame, "RIGHT", -7, 0)
 
-	if cfg.general.bagbar then
-		local bagBar = self:SpawnPlugin("BagBar", settings.Bags)
-		local width, height = bagBar:LayoutButtons("grid", 1, 7, 7, -7)
-		bagBar.highlightFunction = highlightFunction
-		bagBar:SetSize(width + 14, height + 14)
-		bagBar.bg = CreateBG(bagBar)
-		if (name == "Bank") then
-			bagBar:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 0)
-		else
-			bagBar:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 0)
-		end
+	local bagBar = self:SpawnPlugin("BagBar", settings.Bags)
+	local width, height = bagBar:LayoutButtons("grid", 1, 7, 7, -7)
+	bagBar.highlightFunction = highlightFunction
+	bagBar:SetSize(width + 14, height + 14)
+	bagBar.bg = CreateBG(bagBar)
+	if name == "Bank" then
+		bagBar:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 0)
+	else
+		bagBar:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 0)
 	end
-
-	local search = self:SpawnPlugin("SearchBar", infoFrame)
+	if not cfg.general.bagbar then bagBar:Hide() end
+	
+	local bagToggle = CreateFrame("Button", nil, self)
+	bagToggle:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight", "ADD")
+	bagToggle:SetWidth(60)
+	bagToggle:SetHeight(12)
+	bagToggle:SetPoint("TOP", self, "TOP", 0, -1)
+	bagToggle.label = CreateFS(bagToggle)
+	bagToggle.label:SetPoint("CENTER")
+	bagToggle.label:SetText(L["bagbar"])
+	bagToggle:SetScript("OnClick", function()
+		if bagBar:IsShown() then
+			bagBar:Hide()
+			UISetValue('bags','general','bagbar',false)
+		else
+			bagBar:Show()
+			UISetValue('bags','general','bagbar',true)
+		end
+	end)
+	
+	local searchFrame = CreateFrame("Button", nil, self)
+	searchFrame:SetPoint("BOTTOMLEFT", 7, 3)
+	searchFrame:SetPoint("BOTTOMRIGHT", -7, 3)
+	searchFrame:SetHeight(12)
+	searchFrame:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight", "ADD")
+	searchFrame.label = CreateFS(searchFrame)
+	searchFrame.label:SetPoint("CENTER")
+	searchFrame.label:SetText(L["search"] or "Search")
+	local search = self:SpawnPlugin("SearchBar", searchFrame)
 	search.highlightFunction = highlightFunction
 end
 
