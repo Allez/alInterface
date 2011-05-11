@@ -27,7 +27,7 @@ UISetValue = SetValue
 
 local CreateCheckBox = function(parent)
 	local widget = CreateFrame("Button", nil, parent)
-	widget:SetSize(200, 20)
+	widget:SetSize(190, 20)
 	widget.check = CreateFrame("CheckButton", nil, widget, "InterfaceOptionsCheckButtonTemplate")
 	widget.check:SetPoint("LEFT")
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -48,7 +48,7 @@ end
 
 local CreateColorPicker = function(parent)
 	local widget = CreateFrame("Button", nil, parent)
-	widget:SetSize(200, 20)
+	widget:SetSize(190, 20)
 	widget.color = widget:CreateTexture(nil, "OVERLAY")
 	widget.color:SetSize(20, 20)
 	widget.color:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
@@ -93,7 +93,7 @@ end
 local dropcount = 1
 local CreateDropDown = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(200, 40)
+	widget:SetSize(190, 40)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
@@ -137,7 +137,7 @@ end
 
 local CreateEditBox = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(200, 40)
+	widget:SetSize(190, 40)
 	widget.editbox = CreateFrame("EditBox", nil, widget)
 	widget.editbox:SetAutoFocus(false)
 	widget.editbox:SetMultiLine(false)
@@ -147,7 +147,11 @@ local CreateEditBox = function(parent)
 	widget.editbox:SetFontObject(GameFontHighlight)
 	widget.editbox:SetPoint("BOTTOMLEFT", 0, 0)
 	widget.editbox:SetPoint("BOTTOMRIGHT", 0, 0)
-	widget.editbox:SetBackdrop(backdrop)
+	widget.editbox:SetBackdrop({
+		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeSize = 1,
+		insets = { left = 1, right = 1, top = 1, bottom = 1}
+	})
 	widget.editbox:SetBackdropColor(0, 0, 0, 0)
 	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -195,7 +199,11 @@ local CreateSlider = function(parent)
 	widget.editbox:SetPoint("TOP", widget.slider, "BOTTOM")
 	widget.editbox:SetJustifyH("CENTER")
 	widget.editbox:EnableMouse(true)
-	widget.editbox:SetBackdrop(backdrop)
+	widget.editbox:SetBackdrop({
+		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeSize = 1,
+		insets = { left = 1, right = 1, top = 1, bottom = 1}
+	})
 	widget.editbox:SetBackdropColor(0, 0, 0, 0)
 	widget.editbox:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 	widget.SetValue = function(self, value)
@@ -273,10 +281,12 @@ end
 
 local ShowPanel = function(self)
 	if lastVisible then
-		lastVisible:Hide()
+		lastVisible.panel:Hide()
+		lastVisible:UnlockHighlight()
 	end
 	self.panel:Show()
-	lastVisible = self.panel
+	self:LockHighlight()
+	lastVisible = self
 end
 
 
@@ -290,13 +300,12 @@ UIConfigFrame_Create = function(self)
 	for element, settings in pairs(UIConfigGUI) do
 		local button = CreateFrame("Button", "$parent"..element, UIConfigFrameElements, "UIConfigGroupButtonTemplate")
 		button:SetPoint("TOP", 0, -offset-1)
-		button.label:SetJustifyH("LEFT")
 		button.label:SetText(L[element] or element)
-
 		button.panel = CreateOptionsPanel(button)
 		button.panel:SetPoint("BOTTOMRIGHT", UIConfigFrame, "BOTTOMRIGHT", -12, 42)
 		button.panel:SetPoint("TOPLEFT", UIConfigFrameElements, "TOPRIGHT", 20, 0)
-		button:SetScript("OnClick", ShowPanel)
+		button:GetHighlightTexture():SetVertexColor(0.3, 0.3, 0.79)
+		button:HookScript("OnClick", ShowPanel)
 		CreateBG(button.panel)
 		offset = offset + button:GetHeight()
 		button.panel.groups = {}
