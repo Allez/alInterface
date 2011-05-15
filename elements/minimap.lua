@@ -1,9 +1,8 @@
--- Config start
+local addon_name, ns = ...
 local scale = 0.89
 local anchor = "TOPRIGHT"
 local pos_x = -12
 local pos_y = -12
--- Config end
 
 function GetMinimapShape() return "SQUARE" end
 
@@ -96,7 +95,7 @@ local function OnEvent(self, event, ...)
 		MiniMapMailFrame:ClearAllPoints()
 		MiniMapMailFrame:SetParent(Minimap)
 		MiniMapMailFrame:SetPoint('BOTTOMRIGHT', 0, -4)
-		MiniMapMailIcon:SetTexture("Interface\\Addons\\alMinimap\\mail")
+		MiniMapMailIcon:SetTexture("Interface\\Addons\\"..addon_name.."\\media\\mail")
 
 		MinimapCluster:EnableMouse(false)
 
