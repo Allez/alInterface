@@ -73,7 +73,7 @@ local UpdateFrame = function(self)
 	end
 
 	self.healthBar:ClearAllPoints()
-	self.healthBar:SetPoint("CENTER", self.healthBar:GetParent())
+	self.healthBar:SetPoint("CENTER", self)
 	self.healthBar:SetHeight(cfg.sizes.height * UIParent:GetEffectiveScale())
 	self.healthBar:SetWidth(cfg.sizes.width)
 

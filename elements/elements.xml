@@ -14,4 +14,5 @@
 	<Script file='nameplates.lua' />
 	<Script file='raidmanager.lua' />
 	<Script file='tooltip.lua' />
+	<Script file='stats.lua' />
 </Ui>

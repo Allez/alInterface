@@ -3,24 +3,20 @@
 ----------------------------------------------------------------------------------------
 local addon_name, ns = ...
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
 local function SetModifiedBackdrop(self)
-	self:SetBackdropBorderColor(1, 1, 0, 1)
+	self.bg:SetBackdropBorderColor(1, 1, 0, 1)
 end
 
 local function SetOriginalBackdrop(self)
-	self:SetBackdropBorderColor(0, 0, 0, 1)
+	self.bg:SetBackdropBorderColor(0.35, 0.3, 0.3, 1)
 end
 
 local SkinPanel = function(frame)
-	frame:SetBackdrop(backdrop)
-	frame:SetBackdropColor(0, 0, 0, 0.5)
-	frame:SetBackdropBorderColor(0, 0, 0, 1) 
+	frame:SetBackdrop(nil)
+	local skin = CreateFrame("Frame", nil, frame)
+	skin:SetPoint("TOPLEFT", frame, 3, -2)
+	skin:SetPoint("BOTTOMRIGHT", frame, -3, 2)
+	frame.bg = CreateBG(skin)
 end
 
 local function SkinButton(f)
@@ -31,6 +27,15 @@ local function SkinButton(f)
 	SkinPanel(f)
 	f:HookScript("OnEnter", SetModifiedBackdrop)
 	f:HookScript("OnLeave", SetOriginalBackdrop)
+end
+
+local CleanFrame = function(frame)
+	for i=1, frame:GetNumRegions() do
+		local region = select(i, frame:GetRegions())
+		if region:GetObjectType() == "Texture" then
+			region:SetTexture(nil)
+		end
+	end
 end
 
 local SkinBlizzUI = CreateFrame("Frame")
@@ -52,8 +57,6 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 			"LFDDungeonReadyStatus",
 			"BNToastFrame",
 			"TicketStatusFrameButton",
-			"DropDownList1MenuBackdrop",
-			"DropDownList2MenuBackdrop",
 			"DropDownList1Backdrop",
 			"DropDownList2Backdrop",
 			"LFDSearchStatus",
@@ -128,6 +131,7 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 		
 		-- Reskin all esc/menu buttons
 		local BlizzardMenuButtons = {
+			"Help",
 			"Options",
 			"SoundOptions",
 			"UIOptions",
@@ -217,36 +221,6 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 		
-		-- Button position or text
-		_G["VideoOptionsFrameCancel"]:ClearAllPoints()
-		_G["VideoOptionsFrameCancel"]:SetPoint("RIGHT", _G["VideoOptionsFrameApply"], "LEFT", -4, 0)	 
-		_G["VideoOptionsFrameOkay"]:ClearAllPoints()
-		_G["VideoOptionsFrameOkay"]:SetPoint("RIGHT", _G["VideoOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["AudioOptionsFrameOkay"]:ClearAllPoints()
-		_G["AudioOptionsFrameOkay"]:SetPoint("RIGHT", _G["AudioOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["InterfaceOptionsFrameOkay"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameOkay"]:SetPoint("RIGHT", _G["InterfaceOptionsFrameCancel"], "LEFT", -4, 0)
-		_G["ColorPickerOkayButton"]:ClearAllPoints()
-		_G["ColorPickerOkayButton"]:SetPoint("BOTTOMLEFT", _G["ColorPickerFrame"], "BOTTOMLEFT", 6, 6)		 
-		_G["ColorPickerCancelButton"]:ClearAllPoints()
-		_G["ColorPickerCancelButton"]:SetPoint("BOTTOMRIGHT", _G["ColorPickerFrame"], "BOTTOMRIGHT", -6, 6)
-		_G["ReadyCheckFrameYesButton"]:SetParent(_G["ReadyCheckFrame"])
-		_G["ReadyCheckFrameNoButton"]:SetParent(_G["ReadyCheckFrame"]) 
-		_G["ReadyCheckFrameYesButton"]:SetPoint("RIGHT", _G["ReadyCheckFrame"], "CENTER", -6, 0)
-		_G["ReadyCheckFrameNoButton"]:SetPoint("LEFT", _G["ReadyCheckFrameYesButton"], "RIGHT", 6, 0)
-		_G["ReadyCheckFrameText"]:SetParent(_G["ReadyCheckFrame"])	
-		_G["ReadyCheckFrameText"]:ClearAllPoints()
-		_G["ReadyCheckFrameText"]:SetPoint("TOP", 0, -12)
-		_G["InterfaceOptionsFrameTab1"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameTab1"]:SetPoint("TOPLEFT", _G["InterfaceOptionsFrameCategories"], "TOPLEFT", 10, 27)
-		_G["InterfaceOptionsFrameTab2"]:ClearAllPoints()
-		_G["InterfaceOptionsFrameTab2"]:SetPoint("TOPLEFT", _G["InterfaceOptionsFrameTab1"], "TOPRIGHT", 6, 0)
-		_G["ChatConfigFrameDefaultButton"]:SetWidth(125)
-		_G["ChatConfigFrameDefaultButton"]:ClearAllPoints()
-		_G["ChatConfigFrameDefaultButton"]:SetPoint("TOP", _G["ChatConfigCategoryFrame"], "BOTTOM", 0, -4)
-		_G["ChatConfigFrameOkayButton"]:ClearAllPoints()
-		_G["ChatConfigFrameOkayButton"]:SetPoint("TOPRIGHT", _G["ChatConfigBackgroundFrame"], "BOTTOMRIGHT", 0, -4)
-		
 		-- Others
 		_G["ReadyCheckListenerFrame"]:SetAlpha(0)
 		_G["ReadyCheckFrame"]:HookScript("OnShow", function(self) if UnitIsUnit("player", self.initiator) then self:Hide() end end)
@@ -273,5 +247,57 @@ SkinBlizzUI:SetScript("OnEvent", function(self, event, addon)
 		_G["InterfaceOptionsFrameTab2MiddleDisabled"]:SetAlpha(0)
 		_G["InterfaceOptionsFrameTab2RightDisabled"]:SetAlpha(0)
 		_G["InterfaceOptionsFrameTab2HighlightTexture"]:SetAlpha(0)
+	end
+	if addon == "Blizzard_MacroUI" then
+		CleanFrame(MacroFrame)
+		CleanFrame(MacroPopupFrame)
+		local MacroBD = CreateFrame("Frame", nil, MacroFrame)
+		MacroBD:SetPoint("TOPLEFT", 12, -10)
+		MacroBD:SetPoint("BOTTOMRIGHT", -33, 68)
+		SkinPanel(MacroBD)
+		SkinPanel(MacroFrameTextBackground)
+		SkinPanel(MacroPopupFrame)
+		MacroPopupScrollFrame:GetRegions():Hide()
+		select(2, MacroPopupScrollFrame:GetRegions()):Hide()
+
+		for _, v in pairs({
+			"MacroDeleteButton",
+			"MacroNewButton",
+			"MacroExitButton",
+			"MacroEditButton",
+			"MacroFrameTab1",
+			"MacroFrameTab2",
+			"MacroPopupOkayButton",
+			"MacroPopupCancelButton",
+		}) do
+			SkinButton(_G[v])
+			CleanFrame(MacroFrame)
+		end
+		
+		MacroFrameTab1:SetHeight(25)
+		MacroFrameTab2:SetHeight(25)
+
+		for i = 1, MAX_ACCOUNT_MACROS do
+			if _G["MacroButton"..i] then
+				CreateBG(_G["MacroButton"..i])
+				CleanFrame(_G["MacroButton"..i])
+			end
+			if _G["MacroButton"..i.."Icon"] then
+				_G["MacroButton"..i.."Icon"]:SetTexCoord(.08, .92, .08, .92)
+			end
+			if _G["MacroButton"..i.."Border"] then
+				_G["MacroButton"..i.."Border"]:Hide()
+			end
+			if _G["MacroPopupButton"..i] then
+				CreateBG(_G["MacroPopupButton"..i])
+				CleanFrame(_G["MacroPopupButton"..i])
+			end
+			if _G["MacroPopupButton"..i.."Icon"] then
+				_G["MacroPopupButton"..i.."Icon"]:SetTexCoord(.08, .92, .08, .92)
+			end
+			if _G["MacroPopupButton"..i.."Border"] then
+				_G["MacroPopupButton"..i.."Border"]:Hide()
+			end
+		end
 	end
 end) 

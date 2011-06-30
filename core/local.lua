@@ -102,6 +102,7 @@
 		healthbyclass = "Здоровье цветом класса",
 		powerbyclass = "Энергия цветом класса",
 		namebyclass = "Имя цветом класса",
+		search = "Поиск",
 	}
 else
 	L = {
@@ -207,5 +208,6 @@ else
 		healthbyclass = "Health bar by class",
 		powerbyclass = "Power bar by class",
 		namebyclass = "Name by class",
+		search = "Search",
 	}
 end
