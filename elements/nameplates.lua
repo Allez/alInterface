@@ -1,8 +1,12 @@
 
 local config = {
 	general = {
-		showincombat = {
+		enabled = {
 			order = 1,
+			value = true,
+		},
+		showincombat = {
+			order = 2,
 			value = true,
 		},
 	},
@@ -62,7 +66,18 @@ end
 
 local UpdateFrame = function(self)
 	local r, g, b = self.healthBar:GetStatusBarColor()
-	if g + b == 0 then	-- Hostile
+	
+	for class, color in pairs(RAID_CLASS_COLORS) do
+		local r, g, b = floor(r * 100 + 0.5) / 100, floor(g * 100 + 0.5) / 100, floor(b * 100 + 0.5) / 100
+		if RAID_CLASS_COLORS[class].r == r and RAID_CLASS_COLORS[class].g == g and RAID_CLASS_COLORS[class].b == b then
+			self.hasClass = true
+			break
+		end
+	end
+
+	if self.hasClass then
+		self.healthBar:SetStatusBarColor(r, g, b)
+	elseif g + b == 0 then	-- Hostile
 		self.healthBar:SetStatusBarColor(0.89, 0.21, 0.21)
 	elseif r + b == 0 then	-- Friendly npc
 		self.healthBar:SetStatusBarColor(0.23, 0.89, 0.23)
@@ -71,7 +86,7 @@ local UpdateFrame = function(self)
 	elseif r + g == 0 then	-- Friendly player
 		self.healthBar:SetStatusBarColor(0.21, 0.35, 0.83)
 	end
-
+	
 	self.healthBar:ClearAllPoints()
 	self.healthBar:SetPoint("CENTER", self)
 	self.healthBar:SetHeight(cfg.sizes.height * UIParent:GetEffectiveScale())
@@ -275,6 +290,10 @@ local OnEvent = function(self, event, ...)
 			SetCVar("nameplateShowEnemies", 1)
 		end
 	elseif event == "VARIABLES_LOADED" then
+		if not cfg.general.enabled then
+			self:UnregisterAllEvents()
+			self:SetScript("OnUpdate", nil)
+		end
 		font = UIConfig.general.fonts.font
 		fontSize = UIParent:GetEffectiveScale()*UIConfig.general.fonts.size
 		fontOutline = UIConfig.general.fonts.style

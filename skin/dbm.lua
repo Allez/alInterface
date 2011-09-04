@@ -1,22 +1,5 @@
 if not IsAddOnLoaded("DBM-Core") then return end
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", parent, "TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.4)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
 local SkinBars = function(self)
 	for bar in self:GetBarIterator() do
 		if not bar.injected then
@@ -94,38 +77,5 @@ local SkinBars = function(self)
 	end
 end
 
-local UploadDBM = function()
-	DBM_SavedOptions.Enabled = true
-	DBM_SavedOptions.ShowMinimapButton = false
-	DBM_SavedOptions.WarningIconLeft = false
-	DBM_SavedOptions.WarningIconRight = false
-	DBM_SavedOptions.RangeFrameX = 244
-	DBM_SavedOptions.RangeFramePoint = "LEFT"
-	DBM_SavedOptions.ShowSpecialWarnings = true
-
-	DBT_SavedOptions["DBM"].Scale = 1
-	DBT_SavedOptions["DBM"].HugeScale = 1
-	DBT_SavedOptions["DBM"].BarXOffset = 0
-	DBT_SavedOptions["DBM"].BarYOffset = -7
-	DBT_SavedOptions["DBM"].Font = 'Fonts\\VisitorR.TTF'
-	DBT_SavedOptions["DBM"].FontSize = 10
-	DBT_SavedOptions["DBM"].Width = 170
-	DBT_SavedOptions["DBM"].TimerX = 125
-	DBT_SavedOptions["DBM"].TimerY = 250
-	DBT_SavedOptions["DBM"].TimerPoint = "BOTTOMLEFT"
-	DBT_SavedOptions["DBM"].FillUpBars = true
-	DBT_SavedOptions["DBM"].IconLeft = true
-	DBT_SavedOptions["DBM"].ExpandUpwards = true
-	DBT_SavedOptions["DBM"].Texture = "Interface\\TargetingFrame\\UI-StatusBar"
-	DBT_SavedOptions["DBM"].IconRight = false
-	DBT_SavedOptions["DBM"].HugeBarXOffset = 0
-	DBT_SavedOptions["DBM"].HugeBarsEnabled = false
-end
-
 hooksecurefunc(DBT, "CreateBar", SkinBars)
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent('PLAYER_LOGIN')
-frame:SetScript('OnEvent', function(self, event)
-	UploadDBM()
-end)

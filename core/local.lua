@@ -1,4 +1,4 @@
-if GetLocale() == "ruRU" then
+﻿if GetLocale() == "ruRU" then
 	L = {
 		width = "Ширина",
 		height = "Высота",

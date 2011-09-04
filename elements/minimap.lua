@@ -49,6 +49,8 @@ local micromenu = {
 	func = function() ToggleFrame(LFDParentFrame) end},
 	{text = LOOKING_FOR_RAID,
 	func = function() ToggleFrame(LFRParentFrame) end},
+	{text = ENCOUNTER_JOURNAL,
+    func = function() ToggleFrame(EncounterJournal) end},
 	{text = HELP_BUTTON,
 	func = function() ToggleHelpFrame() end},
 }

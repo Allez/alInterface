@@ -421,6 +421,6 @@ frame:SetScript("OnEvent", function(self, event)
 end)
 
 SlashCmdList["UICONFIG"] = function()
-	UIConfigFrame:Show()
+	UIConfigFrame_Create()
 end
 SLASH_UICONFIG1 = "/uiconfig"

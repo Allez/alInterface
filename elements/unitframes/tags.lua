@@ -54,8 +54,6 @@ local getClassColor = function(unit)
 	local t
 	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 		t = oUF.colors.tapped
-	elseif UnitIsUnit(unit, "pet") and GetPetHappiness() then
-		t = oUF.colors.happiness[GetPetHappiness()]
 	elseif UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
 		t = oUF.colors.class[class]
