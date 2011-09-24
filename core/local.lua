@@ -1,4 +1,4 @@
-﻿if GetLocale() == "ruRU" then
+if GetLocale() == "ruRU" then
 	L = {
 		width = "Ширина",
 		height = "Высота",
@@ -98,6 +98,7 @@
 		maxfights = "Сохраняемые сражения",
 		sizes = "Размеры",
 		nameplates = UNIT_NAMEPLATES,
+		enabled = "Включить",
 		showincombat = "Показывать только в бою",
 		healthbyclass = "Здоровье цветом класса",
 		powerbyclass = "Энергия цветом класса",
@@ -192,7 +193,7 @@ elseif GetLocale() == "zhCN" then
 		unitpergroup = "每行每队",
 		showparty = "隐藏小队",
 		shadow = "阴影",
-		showicon = "现实图标",
+		showicon = "显示图标",
 		tankframes = "主坦克框体",
 		threat = "仇恨统计",
 		barheight = "高度",
@@ -204,6 +205,7 @@ elseif GetLocale() == "zhCN" then
 		maxfights = "保存战斗",
 		sizes = "尺寸",
 		nameplates = UNIT_NAMEPLATES,
+		enabled = "启用",
 		showincombat = "只在战斗中显示",
 		healthbyclass = "生命条按职业染色",
 		powerbyclass = "法力条按职业染色",
@@ -310,6 +312,7 @@ elseif GetLocale() == "zhTW" then
 		maxfights = "保存戰鬥",
 		sizes = "尺寸",
 		nameplates = UNIT_NAMEPLATES,
+		enabled = "啟用",
 		showincombat = "只在戰鬥中顯示",
 		healthbyclass = "生命條按照職業染色",
 		powerbyclass = "法力條按照職業染色",
@@ -416,6 +419,7 @@ else
 		maxfights = "Saved fights",
 		sizes = "Sizes",
 		nameplates = UNIT_NAMEPLATES,
+		enabled = "Enabled",
 		showincombat = "Show only in combat",
 		healthbyclass = "Health bar by class",
 		powerbyclass = "Power bar by class",
