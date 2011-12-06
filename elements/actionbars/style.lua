@@ -105,6 +105,12 @@ local setStyle = function(bname)
 	local macro     = _G[bname.."Name"]
 	local cooldown  = _G[bname.."Cooldown"]
 	local autocast  = _G[bname.."AutoCastable"]
+	local floatbg   = _G[bname.."FloatingBG"]
+	
+	if floatbg then
+		floatbg:Hide()
+		floatbg.Show = function() end
+	end
 
 	if border then
 		border:Hide()

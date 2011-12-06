@@ -11,7 +11,7 @@ end
 
 local anchorframe = CreateFrame("Frame", "PlayerBuffs", UIParent)
 anchorframe:SetSize(100, 26)
-anchorframe:SetPoint("TOPRIGHT", -145, -11)
+anchorframe:SetPoint("TOPRIGHT", -155, -11)
 if UIMovableFrames then tinsert(UIMovableFrames, anchorframe) end
 
 for _, frame in pairs({

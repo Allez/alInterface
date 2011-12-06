@@ -40,11 +40,6 @@ if SmallerMap == nil then
 	SetCVar("miniWorldMap", 1)
 end
 
-local MoveMap = GetCVarBool("advancedWorldMap")
-if MoveMap == nil then
-	SetCVar("advancedWorldMap", 1)
-end
-
 -- Styling World Map
 local SmallerMapSkin = function()
 	mapbg:SetScale(1 / mapscale)

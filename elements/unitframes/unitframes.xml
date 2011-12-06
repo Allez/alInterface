@@ -3,9 +3,7 @@
 	<Script file='modules\oUF_GCD.lua' />
 	<Script file='modules\oUF_AuraTracker.lua' />
 	<Script file='modules\oUF_CombatFeedback.lua' />
-	<Script file='modules\oUF_Experience.lua' />
 	<Script file='modules\oUF_RaidDebuffs.lua' />
-	<Script file='modules\oUF_Reputation.lua' />
 	<Script file='modules\oUF_Trinkets.lua' />
 	<Script file='modules\oUF_TotemBar.lua' />
 	<Script file='modules\oUF_DebuffHighlight.lua' />

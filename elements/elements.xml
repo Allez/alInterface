@@ -16,4 +16,5 @@
 	<Script file='tooltip.lua' />
 	<Script file='stats.lua' />
 	<Script file='timer.lua' />
+	<Script file='repexp.lua' />
 </Ui>

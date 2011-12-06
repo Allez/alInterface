@@ -383,6 +383,79 @@ local debuffFilter = {
 	87873, -- Static Shock
 	88427, -- Electrocute
 	89668, -- Lightning Rod
+-- Firelands
+	-- Beth'tilac
+	99506,	-- Widows Kiss
+	97202,	-- Fiery Web Spin
+	49026,	-- Fixate
+	97079,	-- Seeping Venom
+	-- Lord Rhyolith
+	98492,	-- Eruption
+	-- Alysrazor
+	101296,	-- Fieroblast
+	100723,	-- Gushing Wound
+	99389,	-- Imprinted
+	101729,	-- Blazing Claw
+	100640,	-- Harsh Winds
+	100555,	-- Smouldering Roots
+	-- Shannox
+	99837,	-- Crystal Prison
+	99937,	-- Jagged Tear
+	-- Baleroc
+	99403,	-- Tormented
+	99256,	-- Torment
+	99252,	-- Blaze of Glory
+	99516,	-- Countdown
+	-- Majordomo Staghelm
+	98450,	-- Searing Seeds
+	-- Ragnaros
+	99399,	-- Burning Wound
+	100293,	-- Lava Wave
+	98313,	-- Magma Blast
+	100675,	-- Dreadflame
+	99145,	-- Blazing Heat
+	100249,	-- Combustion
+	99613,	-- Molten Blast
+	-- Trash
+	99532,	-- Melt Armor
+-- Other
+	67479,	-- Impale
+	5782,	-- Fear
+	84853,	-- Dark Pool
+	91325,	-- Shadow Vortex
+-- Dragon Soul
+	-- Morchok
+	103687,	-- Crush Armor
+	103536,	-- Warning
+	103534,	-- Danger
+	108570,	-- Black Blood of the Earth
+	-- Warlord Zon'ozz
+	103434,	-- Disrupting Shadows
+	-- Yor'sahj the Unsleeping
+	105171,	-- Deep Corruption
+	-- Hagara the Stormbinder
+	104451,	-- Ice Tomb
+	109325,	-- Frostflake
+	105289,	-- Shattered Ice
+	105285,	-- Target
+	107061,	-- Ice Lance
+	-- Ultraxion
+	110080,	-- Fading Light
+	110070,	-- Fading Light
+	-- Warmaster Blackhorn
+	108043,	-- Devastate
+	108046,	-- Shockwave
+	107567,	-- Brutal Strike
+	107558,	-- Degeneration
+	-- Spine of Deathwing
+	105563,	-- Grasping Tendrils
+	105479,	-- Searing Plasma
+	105490,	-- Fiery Grip
+	-- Madness of Deathwing
+	105841,	-- Degenerative bite
+	105445,	-- Blistering heat
+	109603,	-- Tetanus
+	110141,	-- Shrapnel
 }
 
 ORD:RegisterDebuffs(debuffFilter)

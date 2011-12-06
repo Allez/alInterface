@@ -192,16 +192,8 @@ local config = {
 			order = 8,
 			value = true,
 		},
-		reputation = {
-			order = 9,
-			value = true,
-		},
-		experience = {
-			order = 10,
-			value = true,
-		},
 		castbar = {
-			order = 11,
+			order = 9,
 			value = true,
 		},
 	},
@@ -570,10 +562,6 @@ local UpdateThreat = function(self, event, unit)
 	else
 		self.background:SetBackdropBorderColor(unpack(origColor))
 	end
-end
-
-local UpdateReputationColor = function(self, unit, name, standing)
-	self:SetStatusBarColor(FACTION_BAR_COLORS[standing].r, FACTION_BAR_COLORS[standing].g, FACTION_BAR_COLORS[standing].b)
 end
 
 local PreUpdatePortrait = function(self, unit)
@@ -1175,38 +1163,6 @@ local CreateStyle = function(self, unit)
 		self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
 		self:RegisterEvent('ZONE_CHANGED_NEW_AREA', UpdateThreat)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateThreat)
-	end
-
-	-- Reputation bar
-	if unit == 'player' and UnitLevel('player') == MAX_PLAYER_LEVEL and cfg.elements.reputation then
-		self.Reputation = CreateFrame('StatusBar', addon_name.."_Reputation", self)
-		self.Reputation:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
-		self.Reputation:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
-		self.Reputation:SetStatusBarTexture(texture)
-		self.Reputation:SetHeight(5)
-		self.Reputation.PostUpdate = UpdateReputationColor
-		self.Reputation.bg = CreateBG(self.Reputation)
-		self.Reputation.Text = CreateFS(self.Reputation)
-		self.Reputation.Text:SetPoint('CENTER', self.Reputation, 0, 1)
-		self:Tag(self.Reputation.Text, '[currep] / [maxrep] - [reputation]')
-	end
-
-	-- Experience bar
-	if unit == 'player' and UnitLevel('player') ~= MAX_PLAYER_LEVEL and cfg.elements.experience then
-		self.Experience = CreateFrame('StatusBar', addon_name.."_Experience", self)
-		self.Experience:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
-		self.Experience:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
-		self.Experience:SetHeight(5)
-		self.Experience:SetStatusBarTexture(texture)
-		self.Experience:SetStatusBarColor(0.15, 0.7, 0.1)
-		self.Experience.Rested = CreateFrame('StatusBar', nil, self)
-		self.Experience.Rested:SetAllPoints(self.Experience)
-		self.Experience.Rested:SetStatusBarTexture(texture)
-		self.Experience.Rested:SetStatusBarColor(0, 0.4, 1, 0.6)
-		self.Experience.bg = CreateBG(self.Experience)
-		self.Experience.Text = CreateFS(self.Experience)
-		self.Experience.Text:SetPoint('CENTER', self.Experience, 0, 1)
-		self:Tag(self.Experience.Text, '[curxp] / [maxxp]')
 	end
 
 	-- Player icons
