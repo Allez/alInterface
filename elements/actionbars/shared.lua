@@ -72,6 +72,7 @@ for _, v in pairs({
 	PetActionBarFrame,
 	ShapeshiftBarFrame,
 	ExtraActionBarFrame,
+	MultiCastActionBarFrame,
 }) do
 	v:SetParent(UIParent)
 	v:SetWidth(0.01)
