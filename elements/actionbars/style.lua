@@ -277,6 +277,7 @@ frame:SetScript("OnEvent", function(self, event)
 		setStyle("MultiBarBottomRightButton"..i)
 		setStyle("MultiBarLeftButton"..i)
 		setStyle("MultiBarBottomLeftButton"..i)
+		setStyle("MultiCastActionButton"..i)
 	end
 
 	for i=1, 10 do
@@ -285,6 +286,8 @@ frame:SetScript("OnEvent", function(self, event)
 	end
 	
 	setStyle("ExtraActionButton1")
+	setStyle("MultiCastSummonSpellButton")
+	setStyle("MultiCastRecallSpellButton")
 end)
 
 hooksecurefunc("ActionButton_Update", modActionButton_Update)
