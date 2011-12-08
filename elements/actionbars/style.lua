@@ -53,23 +53,6 @@ UIConfig.buttons = cfg
 local LibKeyBound = LibStub("LibKeyBound-1.0")
 local origColor
 
-local backdrop = {
-	bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
-	insets = {top = 0, left = 0, bottom = 0, right = 0},
-}
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(0, 0, 0, 0.5)
-	bg:SetBackdropBorderColor(0, 0, 0, 1)
-	return bg
-end
-
 local GetHotkey = function(button)
 	local actionButtonType = button.buttonType or "ACTIONBUTTON"
 	return LibKeyBound:ToShortKey(GetBindingKey(actionButtonType..button:GetID()) or GetBindingKey("CLICK "..button:GetName()..":LeftButton"))
@@ -300,6 +283,8 @@ frame:SetScript("OnEvent", function(self, event)
 		setStyle("ShapeshiftButton"..i)
 		setStyle("PetActionButton"..i)
 	end
+	
+	setStyle("ExtraActionButton1")
 end)
 
 hooksecurefunc("ActionButton_Update", modActionButton_Update)
