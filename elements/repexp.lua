@@ -86,11 +86,13 @@ else
 	experience:RegisterEvent('PLAYER_XP_UPDATE')
 	experience:RegisterEvent('PLAYER_LEVEL_UP')
 	experience:RegisterEvent('UPDATE_EXHAUSTION')
+	experience:RegisterEvent('PLAYER_LOGIN')
 	experience.rested = CreateFrame("StatusBar", nil, experience)
 	experience.rested:SetAllPoints()
+	experience.rested:SetOrientation("VERTICAL")
 	experience.rested:SetFrameLevel(experience:GetFrameLevel() - 1)
 	experience.rested:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	experience.rested:SetStatusBarColor(0, 0.4, 1, 0.6)
+	experience.rested:SetStatusBarColor(0, 0.4, 1, 0.8)
 	CreateBG(experience)
 
 end
