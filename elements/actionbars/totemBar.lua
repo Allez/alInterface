@@ -14,9 +14,11 @@ if MultiCastActionBarFrame then
 	MultiCastActionBarFrame:SetScript("OnUpdate", nil)
 	MultiCastActionBarFrame:SetScript("OnShow", nil)
 	MultiCastActionBarFrame:SetScript("OnHide", nil)
-	MultiCastActionBarFrame:SetParent(bar)
-	MultiCastActionBarFrame:ClearAllPoints()
-	MultiCastActionBarFrame:SetPoint("BOTTOMLEFT", bar, 0, 0)
+	hooksecurefunc("MultiCastActionButton_Update", function(actionbutton) 
+		if not InCombatLockdown() then 
+			actionbutton:SetAllPoints(actionbutton.slotButton)
+		end
+	end)
 	local index = 1
 	for i = 1, NUM_MULTI_CAST_PAGES do
 		for j = 1, NUM_MULTI_CAST_BUTTONS_PER_PAGE do
@@ -24,7 +26,16 @@ if MultiCastActionBarFrame then
 			index = index + 1
 		end
 	end
+	
 	MultiCastActionBarFrame.SetParent = function() end
 	MultiCastActionBarFrame.SetPoint = function() end
-	MultiCastRecallSpellButton.SetPoint = function() end
+	
+	local frame = CreateFrame("Frame")
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	frame:SetScript("OnEvent", function(self, event)
+		self:UnregisterEvent(event)
+		if not InCombatLockdown() then
+			MultiCastRecallSpellButton.SetPoint = function() end
+		end
+	end)
 end
