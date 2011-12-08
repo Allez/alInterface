@@ -1,4 +1,3 @@
-
 local update_timer = TOOLTIP_UPDATE_TIME
 
 local config = {
@@ -191,10 +190,10 @@ end
 local buttons = 0
 local dir = "LEFT"
 local points = {
-	["LEFT"]   = {-1, 0, "RIGHT"},
-	["RIGHT"]  = {1, 0, "LEFT"},
-	["TOP"]    = {0, 1, "BOTTOM"},
-	["BOTTOM"] = {0, -1, "TOP"},
+	["LEFT"]  = {-1, 0, "RIGHT"},
+	["RIGHT"] = {1, 0, "LEFT"},
+	["UP"]    = {0, 1, "BOTTOM"},
+	["DOWN"]  = {0, -1, "TOP"},
 }
 local SetupFlyoutButton = function()
 	local last = nil
