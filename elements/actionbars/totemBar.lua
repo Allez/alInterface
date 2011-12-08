@@ -21,8 +21,8 @@ if MultiCastActionBarFrame then
 	for i = 1, NUM_MULTI_CAST_PAGES do
 		for j = 1, NUM_MULTI_CAST_BUTTONS_PER_PAGE do
 			_G["MultiCastActionButton"..index]:SetAllPoints(_G["MultiCastSlotButton"..j])
+			index = index + 1
 		end
-		index = index + 1
 	end
 	MultiCastActionBarFrame.SetParent = function() end
 	MultiCastActionBarFrame.SetPoint = function() end
