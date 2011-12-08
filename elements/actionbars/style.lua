@@ -67,14 +67,14 @@ local modSetBorderColor = function(button)
 	elseif button.equipped then
 		button.bd:SetBackdropBorderColor(unpack(cfg.colors.equipped))
 	else
-		button.bd:SetBackdropBorderColor(unpack(origColor))
+		button.bd:SetBackdropBorderColor(unpack(button.origColor))
 	end
 end
 
 local hideTex = function(button)
 	_G[button:GetName().."Flash"]:SetTexture("")
-	--button:SetHighlightTexture("")
 	button:SetPushedTexture(button:GetHighlightTexture())
+	--button:SetHighlightTexture("")
 	button:SetCheckedTexture("")
 	button:SetNormalTexture("")
 end
@@ -134,8 +134,14 @@ local setStyle = function(bname)
 		autocast:SetPoint("BOTTOMRIGHT", -0, 0)
 	end
 
-	button.bd = CreateBG(button)
-	origColor = {button.bd:GetBackdropBorderColor()}
+	if not button.bd then
+		button.bd = CreateBG(button)
+		if not button.origColor then
+			button.origColor = {button.bd:GetBackdropBorderColor()}
+		else
+			button.bd:SetBackdropBorderColor(unpack(button.origColor))
+		end
+	end
 
 	button.GetHotkey = GetHotkey
 
@@ -151,9 +157,11 @@ local setStyle = function(bname)
 		modSetBorderColor(self)
 	end)
 
-	icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, -0)
-	icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -0, 0)
+	if icon then
+		icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+		icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, -0)
+		icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -0, 0)
+	end
 end
 
 local modActionButton_UpdateState = function(button)
@@ -180,6 +188,38 @@ local modActionButton_Update = function(self)
 	modSetBorderColor(self)
 end
 
+local buttons = 0
+local dir = "LEFT"
+local points = {
+	["LEFT"]   = {-1, 0, "RIGHT"},
+	["RIGHT"]  = {1, 0, "LEFT"},
+	["TOP"]    = {0, 1, "BOTTOM"},
+	["BOTTOM"] = {0, -1, "TOP"},
+}
+local SetupFlyoutButton = function()
+	local last = nil
+	for i = 1, buttons do
+		button = _G["SpellFlyoutButton"..i]
+		if button then
+			if not InCombatLockdown() then
+				local size = ActionButton1:GetWidth()
+				local space = UIConfig.actionbars.general.spacing
+				button:SetSize(size, size)
+				if last then
+					button:ClearAllPoints()
+					button:SetPoint(points[dir][3], last, dir, space*points[dir][1], space*points[dir][2])
+				end
+				last = button
+			end			
+			setStyle(button:GetName())
+			if button:GetChecked() then
+				button:SetChecked(nil)
+			end
+		end
+	end
+end
+SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
+
 local modActionButton_UpdateFlyout = function(self)
 	local actionType = GetActionInfo(self.action)
 	if actionType == "flyout" then
@@ -188,6 +228,17 @@ local modActionButton_UpdateFlyout = function(self)
 		SpellFlyoutHorizontalBackground:SetAlpha(0)
 		SpellFlyoutVerticalBackground:SetAlpha(0)
 		SpellFlyoutBackgroundEnd:SetAlpha(0)
+		
+		for i=1, GetNumFlyouts() do
+			local x = GetFlyoutID(i)
+			local _, _, numSlots, isKnown = GetFlyoutInfo(x)
+			if isKnown then
+				buttons = numSlots
+				break
+			end
+		end
+		
+		dir = self:GetAttribute("flyoutDirection");
 	end
 end
 
@@ -285,9 +336,10 @@ frame:SetScript("OnEvent", function(self, event)
 		setStyle("PetActionButton"..i)
 	end
 	
-	setStyle("ExtraActionButton1")
 	setStyle("MultiCastSummonSpellButton")
 	setStyle("MultiCastRecallSpellButton")
+	
+	setStyle("ExtraActionButton1")
 end)
 
 hooksecurefunc("ActionButton_Update", modActionButton_Update)
@@ -298,3 +350,87 @@ hooksecurefunc("ActionButton_UpdateHotkeys", modActionButton_UpdateHotkeys)
 hooksecurefunc("ShapeshiftBar_UpdateState", modShapeshiftBar_UpdateState)
 hooksecurefunc("PetActionBar_Update", modPetActionBar_Update)
 ActionButton_OnUpdate = modActionButton_OnUpdate
+
+-- Totem bar style
+
+SLOT_EMPTY_TCOORDS = {
+	[EARTH_TOTEM_SLOT] = {
+		left	= 66 / 128,
+		right	= 96 / 128,
+		top		= 3 / 256,
+		bottom	= 33 / 256,
+	},
+	[FIRE_TOTEM_SLOT] = {
+		left	= 67 / 128,
+		right	= 97 / 128,
+		top		= 100 / 256,
+		bottom	= 130 / 256,
+	},
+	[WATER_TOTEM_SLOT] = {
+		left	= 39 / 128,
+		right	= 69 / 128,
+		top		= 209 / 256,
+		bottom	= 239 / 256,
+	},
+	[AIR_TOTEM_SLOT] = {
+		left	= 66 / 128,
+		right	= 96 / 128,
+		top		= 36 / 256,
+		bottom	= 66 / 256,
+	},
+}
+
+local bordercolors = {
+	{.23,.45,.13},   -- Earth
+	{.58,.23,.10},   -- Fire
+	{.19,.48,.60},   -- Water
+	{.42,.18,.74},   -- Air
+}
+
+local modMultiCastSpellButton_Update = function(button)
+	if not button then return end
+	_G[button:GetName().."Highlight"]:SetTexture(nil)
+	hideTex(button)
+end
+
+local modMultiCastActionButton_Update = function(button, index)
+	button.overlayTex:SetTexture(nil)
+	button.origColor = bordercolors[((index-1) % 4) + 1]
+end
+
+local modMultiCastSlotButton_Update = function(button)
+	button.overlayTex:SetTexture(nil)
+end
+
+local modMultiCastFlyoutFrame_ToggleFlyout = function(flyout)
+	flyout.top:SetTexture(nil)
+	flyout.middle:SetTexture(nil)
+
+	local last = nil
+
+	for _, button in ipairs(flyout.buttons) do
+		if not InCombatLockdown() and last then
+			button:ClearAllPoints()
+			button:SetPoint("BOTTOM", last, "TOP", 0, UIConfig.actionbars.general.spacing)
+		end			
+		if button:IsVisible() then last = button end
+		setStyle(button:GetName())
+	end
+	
+	if flyout.type == "slot" then
+		local tcoords = SLOT_EMPTY_TCOORDS[flyout.parent:GetID()]
+		flyout.buttons[1].icon:SetTexCoord(tcoords.left,tcoords.right,tcoords.top,tcoords.bottom)
+	end
+	
+	MultiCastFlyoutFrameCloseButton:ClearAllPoints()
+	MultiCastFlyoutFrameCloseButton:SetPoint("BOTTOM", last , "TOP", 0, 1)
+
+	flyout:ClearAllPoints()
+	flyout:SetPoint("BOTTOM", flyout.parent, "TOP", 0, 3)
+end
+
+hooksecurefunc("MultiCastSummonSpellButton_Update", modMultiCastSpellButton_Update)
+hooksecurefunc("MultiCastRecallSpellButton_Update", modMultiCastSpellButton_Update)
+hooksecurefunc("MultiCastActionButton_Update", modMultiCastActionButton_Update)
+hooksecurefunc("MultiCastSlotButton_Update", modMultiCastSlotButton_Update)
+hooksecurefunc("MultiCastFlyoutFrame_ToggleFlyout", modMultiCastFlyoutFrame_ToggleFlyout)
