@@ -17,4 +17,5 @@
 	<Script file='stats.lua' />
 	<Script file='timer.lua' />
 	<Script file='repexp.lua' />
+	<Script file='capture.lua' />
 </Ui>
