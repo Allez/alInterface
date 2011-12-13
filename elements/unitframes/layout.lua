@@ -12,7 +12,7 @@ local config = {
 		},
 		auraspiral = {
 			order = 2,
-			value = true,
+			value = false,
 		},
 		auratimer = {
 			order = 3,
