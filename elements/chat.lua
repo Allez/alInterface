@@ -5,6 +5,10 @@ local config = {
 			order = 1,
 			value = false,
 		},
+		tabbg = {
+			order = 2,
+			value = false,
+		},
 	},
 	fonts = {
 		tabfontsize = {
@@ -46,11 +50,11 @@ for i = 1, 10 do
 	_G[chatName.."ButtonFrame"]:Hide()
 	_G[editBox]:ClearAllPoints()
 	if i == 2 then
-		_G[editBox]:SetPoint("BOTTOMLEFT",  _G[chatName], "TOPLEFT",  0, 45)
-		_G[editBox]:SetPoint("BOTTOMRIGHT", _G[chatName], "TOPRIGHT", 0, 45)
+		_G[editBox]:SetPoint("BOTTOMLEFT",  _G[chatName], "TOPLEFT",  0, 46)
+		_G[editBox]:SetPoint("BOTTOMRIGHT", _G[chatName], "TOPRIGHT", 0, 46)
 	else
-		_G[editBox]:SetPoint("BOTTOMLEFT",  _G[chatName], "TOPLEFT",  0, 25)
-		_G[editBox]:SetPoint("BOTTOMRIGHT", _G[chatName], "TOPRIGHT", 0, 25)
+		_G[editBox]:SetPoint("BOTTOMLEFT",  _G[chatName], "TOPLEFT",  0, 26)
+		_G[editBox]:SetPoint("BOTTOMRIGHT", _G[chatName], "TOPRIGHT", 0, 26)
 	end
 	_G[editBox]:SetHeight(20)
 	_G[editBox]:SetAltArrowKeyMode(false)
@@ -81,9 +85,22 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
 	for i = 1, 10 do
-		if cfg.general.background then _G["ChatFrame"..i].bg = CreateBG(_G["ChatFrame"..i]) end
 		_G["ChatFrame"..i]:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
 		_G["ChatFrame"..i]:SetShadowColor(0, 0, 0, 0)
+	end
+	if cfg.general.background then
+		local chatbg = CreateFrame("Frame", nil, UIParent)
+		chatbg:SetAllPoints(ChatFrame1)
+		chatbg:SetFrameStrata("BACKGROUND")
+		CreateBG(chatbg)
+	end
+	if cfg.general.tabbg then
+		local tabbg = CreateFrame("Frame", nil, UIParent)
+		tabbg:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 7)
+		tabbg:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 7)
+		tabbg:SetFrameStrata("LOW")
+		tabbg:SetHeight(12)
+		CreateBG(tabbg)
 	end
 	FCF_FadeInChatFrame(ChatFrame1)
 	FCF_FadeOutChatFrame = function() end
