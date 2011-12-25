@@ -9,6 +9,20 @@ local config = {
 			order = 2,
 			value = false,
 		},
+		width = {
+			order = 3,
+			value = 380,
+			type = "range",
+			min = 100,
+			max = 900,
+		},
+		height = {
+			order = 4,
+			value = 145,
+			type = "range",
+			min = 40,
+			max = 500,
+		},
 	},
 	fonts = {
 		tabfontsize = {
@@ -88,8 +102,8 @@ frame:SetScript("OnEvent", function(self, event)
 		local frame = _G["ChatFrame"..i]
 		frame:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
 		frame:SetShadowColor(0, 0, 0, 0)
-		frame:SetSize(380, 145)
-		SetChatWindowSavedDimensions(i, 360, 145)
+		frame:SetSize(cfg.general.width, cfg.general.height)
+		SetChatWindowSavedDimensions(i, cfg.general.width, cfg.general.height)
 		if i == 1 then
 			frame:ClearAllPoints()
 			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 11)
