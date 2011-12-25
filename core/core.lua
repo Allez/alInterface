@@ -62,16 +62,7 @@ local SetupUI = function()
 	SetCVar("buffDurations",1)
 	SetCVar("useUiScale", 1)
 	SetCVar("uiScale", min(2, max(.64, 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))))
-	for i = 1, NUM_CHAT_WINDOWS do
-		local frame = _G["ChatFrame"..i]
-		frame:SetSize(380, 145)
-		SetChatWindowSavedDimensions(i, 360, 145)
-		if i == 1 then
-			frame:ClearAllPoints()
-			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 11)
-		end
-		FCF_SavePositionAndDimensions(frame)
-	end
+
 	ToggleChatColorNamesByClassGroup(true, "SAY")
 	ToggleChatColorNamesByClassGroup(true, "EMOTE")
 	ToggleChatColorNamesByClassGroup(true, "YELL")
@@ -162,9 +153,9 @@ CreateBG = function(parent, noparent)
 	bg.border:SetPoint("BOTTOMRIGHT", -1, 1)
 	bg.border:SetFrameLevel(bg:GetFrameLevel())
 	bg.border:SetBackdrop({
-	  edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	  edgeSize = 1,
-	  insets = { left = 1, right = 1, top = 1, bottom = 1}
+		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeSize = 1,
+		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
 	bg.border:SetBackdropBorderColor(0, 0, 0, 1)
 	bg.border2 = CreateFrame("Frame", nil, bg)
@@ -172,9 +163,9 @@ CreateBG = function(parent, noparent)
 	bg.border2:SetPoint("BOTTOMRIGHT", 1, -1)
 	bg.border2:SetFrameLevel(bg:GetFrameLevel())
 	bg.border2:SetBackdrop({
-	  edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	  edgeSize = 1,
-	  insets = { left = 1, right = 1, top = 1, bottom = 1}
+		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+		edgeSize = 1,
+		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
 	bg.border2:SetBackdropBorderColor(0, 0, 0, 0.9)
 	return bg
