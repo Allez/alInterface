@@ -84,9 +84,17 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
-	for i = 1, 10 do
-		_G["ChatFrame"..i]:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
-		_G["ChatFrame"..i]:SetShadowColor(0, 0, 0, 0)
+	for i = 1, NUM_CHAT_WINDOWS do
+		local frame = _G["ChatFrame"..i]
+		frame:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
+		frame:SetShadowColor(0, 0, 0, 0)
+		frame:SetSize(380, 145)
+		SetChatWindowSavedDimensions(i, 360, 145)
+		if i == 1 then
+			frame:ClearAllPoints()
+			frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 12, 11)
+		end
+		FCF_SavePositionAndDimensions(frame)
 	end
 	if cfg.general.background then
 		local chatbg = CreateFrame("Frame", nil, UIParent)
@@ -99,7 +107,7 @@ frame:SetScript("OnEvent", function(self, event)
 		tabbg:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 7)
 		tabbg:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 7)
 		tabbg:SetFrameStrata("LOW")
-		tabbg:SetHeight(12)
+		tabbg:SetHeight(13)
 		CreateBG(tabbg)
 	end
 	FCF_FadeInChatFrame(ChatFrame1)
