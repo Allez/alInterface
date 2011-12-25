@@ -15,9 +15,49 @@ local config = {
 			min = 0,
 			max = 30,
 		},
-		grid = {
+		hidemacro = {
 			order = 3,
 			value = true,
+		},
+		hidehotkey = {
+			order = 4,
+			value = false,
+		},
+		grid = {
+			order = 5,
+			value = true,
+		},
+	},
+	colors = {
+		checked = {
+			order = 1,
+			type = "color",
+			value = {0, 144, 255},
+		},
+		equipped = {
+			order = 2,
+			type = "color",
+			value = {0, 0.5, 0},
+		},
+		hover = {
+			order = 3,
+			type = "color",
+			value = {144, 255, 0},
+		},
+		outofmana = {
+			order = 4,
+			type = "color",
+			value = {0.1, 0.3, 1},
+		},
+		outofrange = {
+			order = 5,
+			type = "color",
+			value = {0.8, 0.1, 0.1},
+		},
+		unusable = {
+			order = 6,
+			type = "color",
+			value = {0.4, 0.4, 0.4},
 		},
 	},
 }
