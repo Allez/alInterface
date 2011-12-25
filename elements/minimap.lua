@@ -48,9 +48,9 @@ local micromenu = {
 	{text = LFG_TITLE,
 	func = function() ToggleFrame(LFDParentFrame) end},
 	{text = LOOKING_FOR_RAID,
-	func = function() ToggleFrame(LFRParentFrame) end},
+	func = function() ToggleRaidFrame(3) end},
 	{text = ENCOUNTER_JOURNAL,
-    func = function() ToggleFrame(EncounterJournal) end},
+    func = function() if not EncounterJournal then LoadAddOn("Blizzard_EncounterJournal") end ToggleFrame(EncounterJournal) end},
 	{text = HELP_BUTTON,
 	func = function() ToggleHelpFrame() end},
 }
