@@ -1,53 +1,6 @@
 local update_timer = TOOLTIP_UPDATE_TIME
 
-local config = {
-	general = {
-		hidemacro = {
-			order = 1,
-			value = true,
-		},
-		hidehotkey = {
-			order = 2,
-			value = false,
-		},
-	},
-	colors = {
-		checked = {
-			order = 1,
-			type = "color",
-			value = {0, 144, 255},
-		},
-		equipped = {
-			order = 2,
-			type = "color",
-			value = {0, 0.5, 0},
-		},
-		hover = {
-			order = 3,
-			type = "color",
-			value = {144, 255, 0},
-		},
-		outofmana = {
-			order = 4,
-			type = "color",
-			value = {0.1, 0.3, 1},
-		},
-		outofrange = {
-			order = 5,
-			type = "color",
-			value = {0.8, 0.1, 0.1},
-		},
-		unusable = {
-			order = 6,
-			type = "color",
-			value = {0.4, 0.4, 0.4},
-		},
-	},
-}
-
 local cfg = {}
-UIConfigGUI.buttons = config
-UIConfig.buttons = cfg
 
 local LibKeyBound = LibStub("LibKeyBound-1.0")
 local origColor
@@ -320,6 +273,7 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
+	cfg = UIConfig.actionbars
 	for i = 1, 12 do
 		setStyle("ActionButton"..i)
 		setStyle("BonusActionButton"..i)
@@ -339,16 +293,17 @@ frame:SetScript("OnEvent", function(self, event)
 	setStyle("MultiCastRecallSpellButton")
 	
 	setStyle("ExtraActionButton1")
+	
+	hooksecurefunc("ActionButton_UpdateUsable", modActionButton_UpdateUsable)
+	hooksecurefunc("ActionButton_UpdateState", modActionButton_UpdateState)
+	ActionButton_OnUpdate = modActionButton_OnUpdate
 end)
 
 hooksecurefunc("ActionButton_Update", modActionButton_Update)
-hooksecurefunc("ActionButton_UpdateUsable", modActionButton_UpdateUsable)
-hooksecurefunc("ActionButton_UpdateState", modActionButton_UpdateState)
-hooksecurefunc("ActionButton_UpdateFlyout", modActionButton_UpdateFlyout)
 hooksecurefunc("ActionButton_UpdateHotkeys", modActionButton_UpdateHotkeys)
+hooksecurefunc("ActionButton_UpdateFlyout", modActionButton_UpdateFlyout)
 hooksecurefunc("ShapeshiftBar_UpdateState", modShapeshiftBar_UpdateState)
 hooksecurefunc("PetActionBar_Update", modPetActionBar_Update)
-ActionButton_OnUpdate = modActionButton_OnUpdate
 
 -- Totem bar style
 
