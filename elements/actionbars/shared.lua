@@ -23,10 +23,6 @@ local config = {
 			order = 4,
 			value = false,
 		},
-		grid = {
-			order = 5,
-			value = true,
-		},
 	},
 	colors = {
 		checked = {
@@ -71,15 +67,16 @@ local bars = {}
 SetButtons = function(bar, bsize)
 	local size = cfg.general.buttonsize
 	local spacing = cfg.general.spacing
+	local cols = math.ceil(#bar.buttons/bar.rows)
 	for i, button in pairs(bar.buttons) do
 		local row = math.ceil(bar.rows * i / #bar.buttons)
-		local col = math.ceil(i / bar.rows)
+		local col = (i - 1) % cols + 1
 		button:ClearAllPoints()
 		button:SetWidth(size)
 		button:SetHeight(size)
 		button:SetPoint("TOPLEFT", bar, "TOPLEFT", (size+spacing)*(col-1), -(size+spacing)*(row-1))
 	end
-	bar:SetWidth((size+spacing)*math.ceil(#bar.buttons/bar.rows)-spacing)
+	bar:SetWidth((size+spacing)*cols-spacing)
 	bar:SetHeight((size+spacing)*bar.rows-spacing)
 end
 
