@@ -641,7 +641,7 @@ local CreateStyle = function(self, unit)
 	self.Health:SetPoint('TOPRIGHT', self)
 
 	self.Health:SetStatusBarTexture(texture)
-	self.Health:SetStatusBarColor(unpack(cfg.colors.health))
+	self.colors.health = cfg.colors.health
 	if unit == 'raid' and cfg.raid.showpower then
 		self.Health:SetPoint("TOPLEFT")
 		self.Health:SetPoint("TOPRIGHT")
@@ -656,10 +656,11 @@ local CreateStyle = function(self, unit)
 	self.Health.colorTapping = not cfg.colors.healthbyclass
 	self.Health.colorClass = cfg.colors.healthbyclass or unit == 'arenatarget'
 	self.Health.colorReaction = cfg.colors.healthbyclass
+	self.Health.colorHealth = not cfg.colors.healthbyclass
 
 	self.Health.bg = self.Health:CreateTexture(nil, 'BACKGROUND')
 	self.Health.bg:SetTexture(texture)
-	self.Health.bg:SetVertexColor(cfg.colors.healthbg)
+	self.Health.bg:SetVertexColor(unpack(cfg.colors.healthbg))
 	self.Health.bg:SetAllPoints()
 	self.Health.bg.multiplier = 0.15
 
