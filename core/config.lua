@@ -292,6 +292,7 @@ end
 
 
 UIConfigFrame_Create = function(self)
+	if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
 	if created then
 		UIConfigFrame:Show()
 		return
@@ -396,7 +397,7 @@ tinsert(UIMovableFrames, toggle)
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("VARIABLES_LOADED")
-frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
 		for element, settings in pairs(UIConfigGUI) do
@@ -417,6 +418,9 @@ frame:SetScript("OnEvent", function(self, event)
 				end
 			end
 		end
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		print(ERR_NOT_IN_COMBAT)
+		UIConfigFrame:Hide()
 	end
 end)
 

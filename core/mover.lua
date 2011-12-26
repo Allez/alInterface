@@ -106,9 +106,18 @@ end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:SetScript("OnEvent", function(self, event)
-	self:UnregisterEvent(event)
-	RestoreUI(self)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent(event)
+		RestoreUI(self)
+	elseif event == "PLAYER_REGEN_DISABLED" and moving then
+		print(ERR_NOT_IN_COMBAT)
+		for i, v in pairs(movers) do
+			v:Hide()
+		end
+		moving = false
+	end
 end)
 
 SlashCmdList["MoveUI"] = InitMove
