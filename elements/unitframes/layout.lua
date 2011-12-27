@@ -1089,7 +1089,7 @@ local CreateStyle = function(self, unit)
 			self.Castbar.Shield:SetBackdropBorderColor(1, 0, 0, 1)
 			tinsert(UIMovableFrames, self.Castbar)
 		elseif unit == 'player' then
-			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 150)
+			self.Castbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', 13, 145)
 			self.Castbar.Button:SetPoint('BOTTOMRIGHT', self.Castbar, 'BOTTOMLEFT', -5, 0)
 			self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
 			self.Castbar.SafeZone:SetTexture(texture)
