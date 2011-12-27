@@ -33,7 +33,7 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="UIConfigFrame" parent="UIParent">
+	<Frame name="UIConfigFrame" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH" movable="true">
 		<Size>
 			<AbsDimension x="640" y="480"/>
 		</Size>
@@ -182,9 +182,14 @@
 		<Scripts>
 			<OnLoad>
 				CreateBG(self);
-				self:SetFrameStrata("HIGH");
-				self:Hide();
+				self:SetFrameLevel(UIErrorsFrame:GetFrameLevel() - 1);
 			</OnLoad>
+			<OnMouseDown>
+				self:StartMoving();
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing();
+			</OnMouseUp>
 		</Scripts>
 	</Frame>
 </Ui>
