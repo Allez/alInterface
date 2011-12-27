@@ -19,5 +19,6 @@ VehicleLeaveButton:Hide()
 local bar = CreateBar("uiVehicleBar")
 bar:SetPoint("LEFT", 251, 0)
 bar.rows = 1
+bar.bsize = 36
 bar.buttons = {}
 tinsert(bar.buttons, VehicleLeaveButton)
