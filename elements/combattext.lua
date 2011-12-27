@@ -30,11 +30,11 @@ for i = 1, 4 do
 
 	if i == 1 then
 		f:SetJustifyH("RIGHT")
-		f:SetPoint("CENTER", UIParent, "CENTER", -145, -80)
+		f:SetPoint("BOTTOM", UIParent, "BOTTOM", -145, 370)
 		f:SetSize(84, 140)
 	elseif i == 2 then
 		f:SetJustifyH("LEFT")
-		f:SetPoint("CENTER", UIParent, "CENTER", -235, -80)
+		f:SetPoint("BOTTOM", UIParent, "BOTTOM", -235, 370)
 		f:SetSize(84, 140)
 	elseif i == 3 then
 		f:SetJustifyH("CENTER")
