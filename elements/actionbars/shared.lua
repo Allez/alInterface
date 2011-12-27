@@ -64,8 +64,8 @@ UIConfig.actionbars = cfg
 
 local bars = {}
 
-SetButtons = function(bar, bsize)
-	local size = cfg.general.buttonsize
+SetButtons = function(bar)
+	local size = bar.bsize or cfg.general.buttonsize
 	local spacing = cfg.general.spacing
 	local cols = math.ceil(#bar.buttons/bar.rows)
 	for i, button in pairs(bar.buttons) do
