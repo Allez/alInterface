@@ -1,6 +1,6 @@
 
 local bar = CreateBar("uiExtraBar")
-bar:SetPoint("BOTTOM", 0, 250)
+bar:SetPoint("BOTTOM", 0, 290)
 bar.rows = 1
 bar.buttons = {}
 tinsert(bar.buttons, _G["ExtraActionButton1"])
