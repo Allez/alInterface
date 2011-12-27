@@ -93,7 +93,7 @@ end
 local dropcount = 1
 local CreateDropDown = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(190, 40)
+	widget:SetSize(190, 50)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("LEFT")
@@ -137,7 +137,7 @@ end
 
 local CreateEditBox = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(190, 40)
+	widget:SetSize(190, 50)
 	widget.editbox = CreateFrame("EditBox", nil, widget)
 	widget.editbox:SetAutoFocus(false)
 	widget.editbox:SetMultiLine(false)
@@ -168,7 +168,7 @@ end
 
 local CreateSlider = function(parent)
 	local widget = CreateFrame("Frame", nil, parent)
-	widget:SetSize(190, 45)
+	widget:SetSize(190, 50)
 	widget.label = widget:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	widget.label:SetHeight(20)
 	widget.label:SetJustifyH("CENTER")
@@ -244,19 +244,20 @@ local PanelLayout = function(frame)
 			if totalwidth + widget:GetWidth() < width then
 				widget:SetPoint("BOTTOMLEFT", frame.widgets[i-1], "BOTTOMRIGHT", 10, 0)
 				row = math.max(row, widget:GetHeight())
-				offset = math.max(offset, widget:GetHeight()/2)
+				offset = math.max(offset, row/2)
 			else
-				widget:SetPoint("TOPLEFT", 10, -totalheight-first:GetHeight()-offset)
-				totalheight = totalheight + row + 3
+				widget:SetPoint("TOPLEFT", frame.widgets[i-2], "BOTTOMLEFT", 0, -10)
+				--widget:SetPoint("TOPLEFT", 10, -totalheight-first:GetHeight()-offset)
+				totalheight = totalheight + row + 10
 				first = widget
-				offset = widget:GetHeight()/2
 				row = widget:GetHeight()
+				offset = row/2
 				totalwidth = 0
 			end
 		end
 		totalwidth = totalwidth + widget:GetWidth()
 	end
-	totalheight = totalheight + row + offset + 10
+	totalheight = totalheight + row + 10
 	frame:SetHeight(totalheight)
 end
 
@@ -292,7 +293,6 @@ end
 
 
 UIConfigFrame_Create = function(self)
-	if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
 	if created then
 		UIConfigFrame:Show()
 		return
@@ -371,13 +371,16 @@ UIConfigFrame_Create = function(self)
 			end
 			PanelLayout(panel)
 		end
+		local contHeight = 0
 		for i, v in pairs(button.panel.groups) do
 			if i == 1 then
 				v:SetPoint("TOP", 0, -30)
 			else
 				v:SetPoint("TOP", button.panel.groups[i-1], "BOTTOM", 0, -30)
 			end
+			contHeight = contHeight + v:GetHeight() + 30
 		end
+		button.panel.content:SetHeight(contHeight)
 	end
 	created = true
 	UIConfigFrame:Show()
