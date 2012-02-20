@@ -1,4 +1,3 @@
-
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
 
@@ -171,8 +170,8 @@ CreateBG = function(parent, noparent)
 	return bg
 end
 
-CreateFS = function(frame, fsize, fstyle, font)
-	local fstring = frame:CreateFontString(nil, 'OVERLAY')
+CreateFS = function(frame, fsize, fstyle, font, fstring)
+	local fstring = fstring or frame:CreateFontString(nil, 'OVERLAY')
 	fstring:SetFont(font or UIConfig.general.fonts.font, fsize or UIConfig.general.fonts.size, fstyle or UIConfig.general.fonts.style)
 	fstring:SetShadowColor(0, 0, 0, 1)
 	if UIConfig.general.fonts.shadow then
