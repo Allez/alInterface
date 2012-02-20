@@ -71,7 +71,7 @@ local SkinBars = function(self)
 				end
 
 				if not timer.styled then	
-					CreateFS(nil, nil, nil, nil, name)
+					CreateFS(nil, nil, nil, nil, timer)
 					timer.SetFont = function() end
 					timer.styled=true
 				end
