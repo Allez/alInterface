@@ -20,6 +20,7 @@ local SkinBars = function(self)
 
 				if icon2 then
 					icon2:SetSize(15, 15)
+					icon2:SetPoint("LEFT", frame, "RIGHT", 5, 0)
 				end
 
 				if not frame.styled then
@@ -49,21 +50,28 @@ local SkinBars = function(self)
 					icon1.styled=true
 				end
 
+				if not icon2.styled then 
+					icon2:SetTexCoord(0.07, 0.93, 0.07, 0.93) 
+					icon2.frame = CreateFrame("Frame", nil, tbar) 
+					icon2.frame:SetFrameStrata("BACKGROUND") 
+					icon2.frame:SetAllPoints(icon2) 
+					icon2.frame.background = CreateBG(icon2.frame) 
+					icon2.styled=true 
+				end
+
 				if not texture.styled then
 					texture:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
 					texture.styled=true
 				end
 
 				if not name.styled then
-					name:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
-					name:SetShadowOffset(0, 0)
+					CreateFS(nil, nil, nil, nil, name)
 					name.SetFont = function() end
 					name.styled=true
 				end
 
 				if not timer.styled then	
-					timer:SetFont('Fonts\\VisitorR.TTF', 10, "OUTLINEMONOCHROME")
-					timer:SetShadowOffset(0, 0)
+					CreateFS(nil, nil, nil, nil, name)
 					timer.SetFont = function() end
 					timer.styled=true
 				end
