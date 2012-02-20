@@ -19,6 +19,11 @@ if MultiCastActionBarFrame then
 			actionbutton:SetAllPoints(actionbutton.slotButton)
 		end
 	end)
+	hooksecurefunc("MultiCastSummonSpellButton_Update", function(self) 
+		if not InCombatLockdown() then 
+			SetButtons(bar)
+		end
+	end)
 	local index = 1
 	for i = 1, NUM_MULTI_CAST_PAGES do
 		for j = 1, NUM_MULTI_CAST_BUTTONS_PER_PAGE do
