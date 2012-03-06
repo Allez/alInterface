@@ -1,14 +1,6 @@
 local _, ns = ...
-local ORD = ns.oUF_RaidDebuffs or oUF_RaidDebuffs
 
-if not ORD then return end
-
-ORD.ShowDispelableDebuff = true
-ORD.FilterDispellableDebuff = true
-ORD.MatchBySpellName = true
-ORD.SHAMAN_CAN_DECURSE = true
-
-local debuffFilter = {
+for k, v in ipairs {
 -- "Vault of Archavon"
 	--Koralon
 	67332,--Flaming Cinder (10, 25)
@@ -464,6 +456,9 @@ local debuffFilter = {
 	106385, -- Crush
 	105841, -- Degenerative bite
 	105445, -- Blistering heat
-}
-
-ORD:RegisterDebuffs(debuffFilter)
+} do
+    local spell = GetSpellInfo(v)
+    if spell then
+        ns.raid_debuffs[spell] = k+10
+    end
+end
