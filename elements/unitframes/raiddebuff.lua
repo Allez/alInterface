@@ -431,7 +431,7 @@ local debuffFilter = {
 	105259,  -- Watery Entrenchment	
 	105465,  -- Lightning Storm
 	105369,  -- Lightning Conduit
-	- Warmaster Blackhorn
+	-- Warmaster Blackhorn
 	109204, -- Twilight Barrage
 	108046, -- Shockwave
 	108043, -- Devastate
