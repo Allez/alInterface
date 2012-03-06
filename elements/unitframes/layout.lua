@@ -1041,6 +1041,11 @@ local CreateStyle = function(self, unit)
 		self.RaidDebuffs.time:SetTextColor(1, .9, 0)
 		self.RaidDebuffs.count = CreateFS(self.RaidDebuffs)
 		self.RaidDebuffs.count:SetPoint('BOTTOMRIGHT', self.RaidDebuffs, 'BOTTOMRIGHT', 2, 0)
+ 		self.RaidDebuffs.ShowDispelableDebuff = true
+		self.RaidDebuffs.FilterDispelableDebuff = true
+		self.RaidDebuffs.ShowBossDebuff = true
+		self.RaidDebuffs.MatchBySpellName = true
+		self.RaidDebuffs.Debuffs = ns.raid_debuffs
 	end
 
 	if (unit == 'raid' or unit == 'party') then
