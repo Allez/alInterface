@@ -1,4 +1,5 @@
 local _, ns = ...
+ns.raid_debuffs = {}
 
 for k, v in ipairs {
 -- "Vault of Archavon"
