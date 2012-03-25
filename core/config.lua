@@ -421,7 +421,7 @@ frame:SetScript("OnEvent", function(self, event)
 				end
 			end
 		end
-	elseif event == "PLAYER_REGEN_DISABLED" then
+	elseif event == "PLAYER_REGEN_DISABLED" and UIConfigFrame:IsShown() then
 		print(ERR_NOT_IN_COMBAT)
 		UIConfigFrame:Hide()
 	end
