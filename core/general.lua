@@ -2,8 +2,10 @@ local addon_name, ns = ...
 
 if GetLocale() == "ruRU" then
 	UI_FONT = "Interface\\Addons\\"..addon_name.."\\media\\VisitorR.TTF"
+	NORMAL_FONT = "Interface\\Addons\\"..addon_name.."\\media\\myriad.ttf"
 else
 	UI_FONT = "Interface\\Addons\\"..addon_name.."\\media\\visitor1.TTF"
+	NORMAL_FONT = "Interface\\Addons\\"..addon_name.."\\media\\myriad.ttf"
 end
 
 local config = {
@@ -28,6 +30,10 @@ local config = {
 		shadow = {
 			order = 4,
 			value = false,
+		},
+		normalfont = {
+			order = 5,
+			value = NORMAL_FONT,
 		},
 	},
 }

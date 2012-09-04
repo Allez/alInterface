@@ -100,7 +100,7 @@ frame:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G["ChatFrame"..i]
-		frame:SetFont("Fonts\\ARIALN.TTF", cfg.fonts.chatfontsize, cfg.fonts.style)
+		frame:SetFont(UIConfig.general.fonts.normalfont, cfg.fonts.chatfontsize, cfg.fonts.style)
 		frame:SetShadowColor(0, 0, 0, 0)
 		frame:SetSize(cfg.general.width, cfg.general.height)
 		SetChatWindowSavedDimensions(i, cfg.general.width, cfg.general.height)

@@ -1,8 +1,8 @@
-## Interface: 40300
+## Interface: 50001
 ## Author: Allez
 ## Title: |cff777777al|rInterface
 ## Notes: Interface setup
-## Version: 5.2.5
+## Version: 5.3
 ## RequiredDeps: Blizzard_CombatText
 ## OptionalDeps: DBM-Core, Aurora
 ## SavedVariables: nothing

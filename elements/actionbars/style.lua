@@ -41,6 +41,8 @@ local setStyle = function(bname)
 	local cooldown  = _G[bname.."Cooldown"]
 	local autocast  = _G[bname.."AutoCastable"]
 	local floatbg   = _G[bname.."FloatingBG"]
+
+	if not button then return end
 	
 	if floatbg then
 		floatbg:Hide()
@@ -211,8 +213,8 @@ local modPetActionBar_Update = function()
 end
 
 local modShapeshiftBar_UpdateState = function()    
-	for i=1, NUM_SHAPESHIFT_SLOTS do
-		local name = "ShapeshiftButton"..i
+	for i=1, NUM_STANCE_SLOTS do
+		local name = "StanceButton"..i
 		local button  = _G[name]
   
 		hideTex(button)
@@ -285,7 +287,7 @@ frame:SetScript("OnEvent", function(self, event)
 	end
 
 	for i=1, 10 do
-		setStyle("ShapeshiftButton"..i)
+		setStyle("StanceButton"..i)
 		setStyle("PetActionButton"..i)
 	end
 	
@@ -302,7 +304,7 @@ end)
 hooksecurefunc("ActionButton_Update", modActionButton_Update)
 hooksecurefunc("ActionButton_UpdateHotkeys", modActionButton_UpdateHotkeys)
 hooksecurefunc("ActionButton_UpdateFlyout", modActionButton_UpdateFlyout)
-hooksecurefunc("ShapeshiftBar_UpdateState", modShapeshiftBar_UpdateState)
+hooksecurefunc("StanceBar_UpdateState", modShapeshiftBar_UpdateState)
 hooksecurefunc("PetActionBar_Update", modPetActionBar_Update)
 
 -- Totem bar style
