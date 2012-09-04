@@ -90,7 +90,7 @@ local UpdateBuffAnchors = function()
 	local buff, previousBuff, aboveBuff
 	local numBuffs = 0
 	local slack = BuffFrame.numEnchants
-	if BuffFrame.numConsolidated > 0 then
+	if ShouldShowConsolidatedBuffFrame() then
 		slack = slack + 1
 	end
 
