@@ -184,20 +184,16 @@ local config = {
 			order = 6,
 			value = true,
 		},
-		shadoworbs = {
+		runes = {
 			order = 7,
 			value = true,
 		},
-		runes = {
+		totembar = {
 			order = 8,
 			value = true,
 		},
-		totembar = {
-			order = 9,
-			value = true,
-		},
 		castbar = {
-			order = 10,
+			order = 9,
 			value = true,
 		},
 	},
@@ -254,6 +250,7 @@ local channelingTicks = {
 	[GetSpellInfo(1120)] = 6, -- drain soul
 	[GetSpellInfo(689)] = 3, -- drain life
 	[GetSpellInfo(5740)] = 4, -- rain of fire
+	[GetSpellInfo(79268)] = 4, -- soul harvest
 	-- druid
 	[GetSpellInfo(740)] = 4, -- Tranquility
 	[GetSpellInfo(16914)] = 10, -- Hurricane
@@ -292,6 +289,7 @@ local auras = {
 	[GetSpellInfo(1038)]  = {class = 'PALADIN', point = 'BR', color = {0.93, 0.75, 0}},  -- Hand of Salvation
 	[GetSpellInfo(61295)] = {class = 'SHAMAN', point = 'TR', color = {0.7, 0.3, 0.7}},		-- Riptide 
 	[GetSpellInfo(974)]   = {class = 'SHAMAN', point = 'BL', color = {0.2, 0.7, 0.2}},		-- Earth Shield
+	[GetSpellInfo(16236)] = {class = 'SHAMAN', point = 'TL', color = {0.4, 0.7, 0.2}},		-- Ancestral Fortitude
 	[GetSpellInfo(51945)] = {class = 'SHAMAN', point = 'BR', color = {0.7, 0.4, 0}},		-- Earthliving
 }
 
@@ -871,7 +869,7 @@ local CreateStyle = function(self, unit)
 		end
 
 		if class == 'WARLOCK' and cfg.elements.soulshards then
-			--[[self.SoulShards = CreateFrame('Frame', addon_name.."_SoulShards", UIParent)
+			self.SoulShards = CreateFrame('Frame', addon_name.."_SoulShards", UIParent)
 			self.SoulShards:SetPoint('TOPLEFT', self.Health, 10, 4)
 			self.SoulShards:SetSize(130, 5)
 			self.SoulShards:SetFrameLevel(self.Health:GetFrameLevel()+2)
@@ -889,49 +887,6 @@ local CreateStyle = function(self, unit)
 					self.SoulShards[i]:SetPoint('LEFT')
 				else
 					self.SoulShards[i]:SetPoint('LEFT', self.SoulShards[i-1], 'RIGHT', 1, 0)
-				end
-			end]]
-			self.WarlockSpecBars = CreateFrame("Frame", addon_name.."_SpecBars", UIParent)
-			self.WarlockSpecBars:SetPoint('TOPLEFT', self.Health, 10, 4)
-			self.WarlockSpecBars:SetSize(130, 5)
-			self.WarlockSpecBars:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.WarlockSpecBars.bg = CreateBG(self.WarlockSpecBars)
-			for i = 1, 4 do
-				self.WarlockSpecBars[i] = CreateFrame('StatusBar', nil, self.WarlockSpecBars)
-				self.WarlockSpecBars[i]:SetStatusBarTexture(texture)
-				self.WarlockSpecBars[i]:SetSize(self.WarlockSpecBars:GetWidth() / 4 - 0.85, self.WarlockSpecBars:GetHeight())
-				self.WarlockSpecBars[i]:SetStatusBarColor(0.90, 0.42, 0.85)
-				self.WarlockSpecBars[i].bg = self.WarlockSpecBars:CreateTexture(nil, 'BACKGROUND')
-				self.WarlockSpecBars[i].bg:SetTexture(texture)
-				self.WarlockSpecBars[i].bg:SetVertexColor(0.2, 0.1, 0.2)
-				self.WarlockSpecBars[i].bg:SetAllPoints(self.WarlockSpecBars[i])
-				if i == 1 then
-					self.WarlockSpecBars[i]:SetPoint('LEFT')
-				else
-					self.WarlockSpecBars[i]:SetPoint('LEFT', self.WarlockSpecBars[i-1], 'RIGHT', 1, 0)
-				end
-			end
-		end
-
-		if class == 'PRIEST' and UnitLevel('player') >= 20 and cfg.elements.shadoworbs then
-			self.ShadowOrbs = CreateFrame('Frame', addon_name.."_ShadowOrbs", UIParent)
-			self.ShadowOrbs:SetPoint('TOPLEFT', self.Health, 10, 4)
-			self.ShadowOrbs:SetSize(130, 5)
-			self.ShadowOrbs:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.ShadowOrbs.bg = CreateBG(self.ShadowOrbs)
-			for i = 1, 3 do
-				self.ShadowOrbs[i] = CreateFrame('StatusBar', nil, ShadowOrbs)
-				self.ShadowOrbs[i]:SetStatusBarTexture(texture)
-				self.ShadowOrbs[i]:SetSize(self.ShadowOrbs:GetWidth() / 3 - 0.85, self.ShadowOrbs:GetHeight())					
-				self.ShadowOrbs[i]:SetStatusBarColor(0.70, 0.32, 0.75)
-				self.ShadowOrbs[i].bg = self.ShadowOrbs:CreateTexture(nil, 'BACKGROUND')
-				self.ShadowOrbs[i].bg:SetTexture(texture)
-				self.ShadowOrbs[i].bg:SetVertexColor(0.2, 0.1, 0.2)
-				self.ShadowOrbs[i].bg:SetAllPoints(self.ShadowOrbs[i])
-				if i == 1 then
-					self.ShadowOrbs[i]:SetPoint('LEFT')
-				else
-					self.ShadowOrbs[i]:SetPoint('LEFT', self.ShadowOrbs[i-1], 'RIGHT', 1, 0)
 				end
 			end
 		end

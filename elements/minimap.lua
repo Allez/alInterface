@@ -25,38 +25,33 @@ local frames = {
 	MiniMapMailBorder,
 	BattlegroundShine,
 	GameTimeFrame,
-	QueueStatusMinimapButtonBorder,
 }
 
 local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 local micromenu = {
-	{text = CHARACTER_BUTTON, notCheckable = 1,
+	{text = CHARACTER_BUTTON,
 	func = function() ToggleCharacter("PaperDollFrame") end},
-	{text = SPELLBOOK_ABILITIES_BUTTON, notCheckable = 1,
+	{text = SPELLBOOK_ABILITIES_BUTTON,
 	func = function() ToggleFrame(SpellBookFrame) end},
-	{text = TALENTS_BUTTON, notCheckable = 1,
+	{text = TALENTS_BUTTON,
 	func = function() if not PlayerTalentFrame then LoadAddOn("Blizzard_TalentUI") end PlayerTalentFrame_Toggle() end},
-	{text = ACHIEVEMENT_BUTTON, notCheckable = 1,
+	{text = ACHIEVEMENT_BUTTON,
 	func = function() ToggleAchievementFrame() end},
-	{text = QUESTLOG_BUTTON, notCheckable = 1,
+	{text = QUESTLOG_BUTTON,
 	func = function() ToggleFrame(QuestLogFrame) end},
-	{text = SOCIAL_BUTTON, notCheckable = 1,
+	{text = SOCIAL_BUTTON,
 	func = function() ToggleFriendsFrame(1) end},
-	{text = ACHIEVEMENTS_GUILD_TAB, notCheckable = 1,
+	{text = ACHIEVEMENTS_GUILD_TAB,
 	func = function() if IsInGuild() then if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end GuildFrame_Toggle() end end},
-	{text = PLAYER_V_PLAYER, notCheckable = 1,
+	{text = PLAYER_V_PLAYER,
 	func = function() ToggleFrame(PVPFrame) end},
-	{text = DUNGEONS_BUTTON, notCheckable = 1,
-	func = function() PVEFrame_ToggleFrame() end},
-	{text = LFG_TITLE, notCheckable = 1,
+	{text = LFG_TITLE,
 	func = function() ToggleFrame(LFDParentFrame) end},
-	{text = LOOKING_FOR_RAID, notCheckable = 1,
+	{text = LOOKING_FOR_RAID,
 	func = function() ToggleRaidFrame(3) end},
-	{text = MOUNTS_AND_PETS, notCheckable = 1,
-	func = function() TogglePetJournal() end},
-	{text = ENCOUNTER_JOURNAL, notCheckable = 1,
+	{text = ENCOUNTER_JOURNAL,
     func = function() if not EncounterJournal then LoadAddOn("Blizzard_EncounterJournal") end ToggleFrame(EncounterJournal) end},
-	{text = HELP_BUTTON, notCheckable = 1,
+	{text = HELP_BUTTON,
 	func = function() ToggleHelpFrame() end},
 }
 
@@ -91,19 +86,13 @@ local function OnEvent(self, event, ...)
 		MiniMapVoiceChatFrame:SetParent(Minimap)
 		MiniMapVoiceChatFrame:SetPoint("TOP", 0, 0)
 
-		QueueStatusMinimapButton:ClearAllPoints()
-		QueueStatusMinimapButton:SetParent(Minimap)
-		QueueStatusMinimapButton:SetPoint('BOTTOMLEFT', -2, -2)
-		
-		MiniMapInstanceDifficulty:ClearAllPoints()
-		MiniMapInstanceDifficulty:SetParent(Minimap)
-		MiniMapInstanceDifficulty:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 3, 2)
-		MiniMapInstanceDifficulty:SetScale(0.75)
+		MiniMapLFGFrame:ClearAllPoints()
+		MiniMapLFGFrame:SetParent(Minimap)
+		MiniMapLFGFrame:SetPoint('BOTTOMLEFT', -2, -2)
 
-		GuildInstanceDifficulty:ClearAllPoints()
-		GuildInstanceDifficulty:SetParent(Minimap)
-		GuildInstanceDifficulty:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -2, 2)
-		GuildInstanceDifficulty:SetScale(0.75)
+		MiniMapBattlefieldFrame:ClearAllPoints()
+		MiniMapBattlefieldFrame:SetParent(Minimap)
+		MiniMapBattlefieldFrame:SetPoint('TOPRIGHT', 3, 0)
 
 		MiniMapMailFrame:ClearAllPoints()
 		MiniMapMailFrame:SetParent(Minimap)

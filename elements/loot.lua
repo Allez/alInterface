@@ -48,7 +48,7 @@ local OnClick = function(self)
 end
 
 local OnEnter = function(self)
-	if LootSlotHasItem(self.id) then
+	if LootSlotIsItem(self.id) then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetLootItem(self.id);
 		CursorUpdate(self);

@@ -64,47 +64,47 @@ local getClassColor = function(unit)
 end
 
 
-oUF.Tags.Events['allez:health'] = "UNIT_HEALTH UNIT_MAXHEALTH"
-oUF.Tags.Methods['allez:health'] = function(unit)
+oUF.TagEvents['allez:health'] = "UNIT_HEALTH UNIT_MAXHEALTH"
+oUF.Tags['allez:health'] = function(unit)
 	local min, max = UnitHealth(unit), UnitHealthMax(unit)
 	local status = not UnitIsConnected(unit) and 'Offline' or UnitIsGhost(unit) and 'Ghost' or UnitIsDead(unit) and 'Dead'
 	return status and status or min ~= max and ('|cffff8080%s|r %d|cff0090ff%%|r'):format(truncate(min), min / max * 100) or max
 end
 
-oUF.Tags.Events['raidname'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
-oUF.Tags.Methods['raidname'] = function(unit)
+oUF.TagEvents['raidname'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
+oUF.Tags['raidname'] = function(unit)
 	local unitname = not UnitIsConnected(unit) and 'Off' or UnitIsGhost(unit) and 'Ghost' or UnitIsDead(unit) and 'Dead' or utf8sub(UnitName(unit), 4, false)
 	return unitname
 end
 
-oUF.Tags.Events['raidnameclass'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
-oUF.Tags.Methods['raidnameclass'] = function(unit)
+oUF.TagEvents['raidnameclass'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
+oUF.Tags['raidnameclass'] = function(unit)
 	local unitname = not UnitIsConnected(unit) and 'Off' or UnitIsGhost(unit) and 'Ghost' or UnitIsDead(unit) and 'Dead' or utf8sub(UnitName(unit), 4, false)
 	return ('%s%s|r'):format(hex(getClassColor(unit) or {1, 1, 1}), unitname or '')
 end
 
-oUF.Tags.Events['allez:name'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
-oUF.Tags.Methods['allez:name'] = function(unit)
+oUF.TagEvents['allez:name'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
+oUF.Tags['allez:name'] = function(unit)
 	return ('%s%s|r'):format(hex(getClassColor(unit) or {1, 1, 1}), UnitName(unit) or '')
 end
 
-oUF.Tags.Events['allez:power'] = "UNIT_POWER UNIT_MAXPOWER"
-oUF.Tags.Methods['allez:power'] = function(unit)
+oUF.TagEvents['allez:power'] = "UNIT_POWER UNIT_MAXPOWER"
+oUF.Tags['allez:power'] = function(unit)
 	local _, str = UnitPowerType(unit)
 	return UnitPower(unit)--('%s%d|r'):format(hex(colors.power[str] or {1, 1, 1}), UnitPower(unit) or '')
 end
 
-oUF.Tags.Events['allez:druid'] = "UNIT_POWER UPDATE_SHAPESHIFT_FORM"
-oUF.Tags.Methods['allez:druid'] = function(unit)
+oUF.TagEvents['allez:druid'] = "UNIT_POWER UPDATE_SHAPESHIFT_FORM"
+oUF.Tags['allez:druid'] = function(unit)
 	local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 	if UnitPowerType(unit) ~= 0 and min ~= max then
 		return ('|cff0090ff%d%%|r '):format(min / max * 100)
 	end
 end
 
-oUF.Tags.Events['allez:level'] = "UNIT_LEVEL PLAYER_LEVEL_UP"
-oUF.Tags.Methods['allez:level'] = function(unit)
+oUF.TagEvents['allez:level'] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags['allez:level'] = function(unit)
 	local level = UnitLevel(unit)
 	local diffColor = level < 0 and {r = 1, g = 0, b = 0} or GetQuestDifficultyColor(UnitLevel(unit))
-	return ('%s%s|r'):format(hex(diffColor), oUF.Tags.Methods['smartlevel'](unit))
+	return ('%s%s|r'):format(hex(diffColor), oUF.Tags['smartlevel'](unit))
 end

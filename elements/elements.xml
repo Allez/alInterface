@@ -18,7 +18,4 @@
 	<Script file='timer.lua' />
 	<Script file='repexp.lua' />
 	<Script file='capture.lua' />
-	<Script file='raidcd.lua' />
-	<Script file='enemycd.lua' />
-	<Script file='cc.lua' />
 </Ui>

@@ -1,27 +1,3 @@
---[[ Element: Sould Shards Indicator
-
- Toggles the visibility of the player's should shard indicator.
-
- Widget
-
- SoulShards - An array consisting of three UI widgets.
-
- Examples
-
-   local SoulShards = {}
-   for index = 1, SHARD_BAR_NUM_SHARDS do
-      local Shard = self:CreateTexture(nil, 'BACKGROUND')
-   
-      -- Position and size
-      Shard:SetSize(16, 16)
-      Shard:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', index * Shard:GetWidth(), 0)
-   
-      SoulShards[index] = Shard
-   end
-   
-   -- Register with oUF
-   self.SoulShards = SoulShards
-]]
 if(select(2, UnitClass('player')) ~= 'WARLOCK') then return end
 
 local parent, ns = ...
@@ -34,19 +10,19 @@ local Update = function(self, event, unit, powerType)
 	if(self.unit ~= unit or (powerType and powerType ~= 'SOUL_SHARDS')) then return end
 
 	local ss = self.SoulShards
-	if(ss.PreUpdate) then ss:PreUpdate() end
+	if(ss.PreUpdate) then ss:PreUpdate(unit) end
 
 	local num = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
 	for i = 1, SHARD_BAR_NUM_SHARDS do
 		if(i <= num) then
-			ss[i]:Show()
+			ss[i]:SetAlpha(1)
 		else
-			ss[i]:Hide()
+			ss[i]:SetAlpha(0)
 		end
 	end
 
 	if(ss.PostUpdate) then
-		return ss:PostUpdate(num)
+		return ss:PostUpdate(unit)
 	end
 end
 
@@ -64,7 +40,7 @@ local function Enable(self)
 		ss.__owner = self
 		ss.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
+		self:RegisterEvent('UNIT_POWER', Path)
 
 		return true
 	end
@@ -73,7 +49,7 @@ end
 local function Disable(self)
 	local ss = self.SoulShards
 	if(ss) then
-		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
+		self:UnregisterEvent('UNIT_POWER', Path)
 	end
 end
 

@@ -6,10 +6,7 @@ local argcheck = Private.argcheck
 
 local _QUEUE = {}
 local _FACTORY = CreateFrame'Frame'
-_FACTORY:SetScript('OnEvent', function(self, event, ...)
-	return self[event](self, event, ...)
-end)
-
+_FACTORY:SetScript('OnEvent', Private.OnEvent)
 _FACTORY:RegisterEvent'PLAYER_LOGIN'
 _FACTORY.active = true
 
