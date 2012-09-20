@@ -15,6 +15,12 @@ local SPEC_WARLOCK_AFFLICTION_GLYPH_SHARDS = 63302
 local SPEC_WARLOCK_DEMONOLOGY = SPEC_WARLOCK_DEMONOLOGY
 local LATEST_SPEC = 0
 
+local Colors = { 
+	[1] = {0.90, 0.42, 0.85, 1},
+	[2] = {95/255, 222/255,  95/255, 1},
+	[3] = {222/255, 95/255,  95/255, 1},
+}
+
 local Update = function(self, event, unit, powerType)
 	if(self.unit ~= unit or (powerType and powerType ~= "BURNING_EMBERS" and powerType ~= "SOUL_SHARDS" and powerType ~= "DEMONIC_FURY")) then return end
 
@@ -99,6 +105,8 @@ local function Visibility(self, event, unit)
 				else
 					wsb[i]:SetWidth(w - s)
 				end
+				wsb[i]:SetStatusBarColor(unpack(Colors[SPEC_WARLOCK_DESTRUCTION]))
+				if wsb[i].bg then wsb[i].bg:SetAlpha(0.15) wsb[i].bg:SetTexture(unpack(Colors[SPEC_WARLOCK_DESTRUCTION])) end
 			end
 			
 			if maxembers == 3 then wsb[4]:Hide() else wsb[4]:Show() end
@@ -117,6 +125,8 @@ local function Visibility(self, event, unit)
 				else
 					wsb[i]:SetWidth(w - s)
 				end
+				wsb[i]:SetStatusBarColor(unpack(Colors[SPEC_WARLOCK_AFFLICTION]))
+				if wsb[i].bg then wsb[i].bg:SetAlpha(0) end
 			end
 			
 			if maxshards == 3 then wsb[4]:Hide() else wsb[4]:Show() end
@@ -125,6 +135,8 @@ local function Visibility(self, event, unit)
 			wsb[3]:Hide()
 			wsb[4]:Hide()
 			wsb[1]:SetWidth(wsb:GetWidth())	
+			wsb[1]:SetStatusBarColor(unpack(Colors[SPEC_WARLOCK_DEMONOLOGY]))
+			if wsb[1].bg then wsb[1].bg:SetAlpha(0.15) wsb[1].bg:SetTexture(unpack(Colors[SPEC_WARLOCK_DEMONOLOGY])) end
 		end
 		
 		-- force an update each time we respec
@@ -158,25 +170,10 @@ local function Enable(self)
 		-- why the fuck does PLAYER_TALENT_UPDATE doesnt trigger on initial login if we register to: self or self.PluginName
 		wsb.Visibility = CreateFrame("Frame", nil, wsb)
 		wsb.Visibility:RegisterEvent("PLAYER_TALENT_UPDATE")
-		wsb.Visibility:RegisterEvent("PLAYER_ENTERING_WORLD")
 		wsb.Visibility:SetScript("OnEvent", function(frame, event, unit) Visibility(self, event, unit) end)
 
-		for i = 1, 4 do
-			local Point = wsb[i]
-			if not Point:GetStatusBarTexture() then
-				Point:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			end
-			
-			Point:SetFrameLevel(wsb:GetFrameLevel() + 1)
-			Point:GetStatusBarTexture():SetHorizTile(false)
-			
-			if Point.bg then
-				Point.bg:SetAllPoints()
-			end	
-		end
+		Visibility(self, nil, nil)
 		
-		wsb:Hide()
-
 		return true
 	end
 end

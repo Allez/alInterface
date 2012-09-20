@@ -8,6 +8,7 @@
 	<Script file='modules\oUF_TotemBar.lua' />
 	<Script file='modules\oUF_DebuffHighlight.lua' />
 	<Script file='modules\oUF_WarlockSpecBars.lua' />
+	<Script file='modules\oUF_ShadowOrbsBar.lua' />
 	<Script file='tags.lua' />
 	<Script file='raiddebuff.lua' />
 	<Script file='layout.lua' />

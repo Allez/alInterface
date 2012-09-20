@@ -2,9 +2,11 @@ local addon_name, ns = ...
 
 if GetLocale() == "ruRU" then
 	UI_FONT = "Interface\\Addons\\"..addon_name.."\\media\\VisitorR.TTF"
+	UI_FONT_SIZE = 10
 	NORMAL_FONT = "Interface\\Addons\\"..addon_name.."\\media\\myriad.ttf"
 else
 	UI_FONT = "Interface\\Addons\\"..addon_name.."\\media\\visitor1.TTF"
+	UI_FONT_SIZE = 9
 	NORMAL_FONT = "Interface\\Addons\\"..addon_name.."\\media\\myriad.ttf"
 end
 
@@ -16,7 +18,7 @@ local config = {
 		},
 		size = {
 			order = 2,
-			value = 10,
+			value = UI_FONT_SIZE,
 			type = "range",
 			min = 8,
 			max = 20,

@@ -21,12 +21,6 @@ local frames = {}
 
 for i = 1, 4 do
 	local f = CreateFrame("ScrollingMessageFrame", "CombatText_"..i, UIParent)
-	f:SetFont(GameFontNormal:GetFont(), 16, "OUTLINE")
-	f:SetShadowColor(0, 0, 0, 1)
-	f:SetFadeDuration(0.4)
-	f:SetTimeVisible(3)
-	f:SetMaxLines(100)
-	f:SetSpacing(2)
 
 	if i == 1 then
 		f:SetJustifyH("RIGHT")
@@ -49,6 +43,7 @@ for i = 1, 4 do
 	frames[i] = f
 	if UIMovableFrames then tinsert(UIMovableFrames, f) end
 end
+
 
 local tbl = {
 	["DAMAGE"] =            {frame = 1, prefix =  "-", 	arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
@@ -110,7 +105,17 @@ local OnUpdate = function(self, elapsed)
 end
 
 local OnEvent = function(self, event, ...)
-	if event == "COMBAT_TEXT_UPDATE" then
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent(event)
+		for _, v in pairs(frames) do
+			v:SetFont(UIConfig.general.fonts.normalfont, 16, "OUTLINE")
+			v:SetShadowColor(0, 0, 0, 1)
+			v:SetFadeDuration(0.4)
+			v:SetTimeVisible(3)
+			v:SetMaxLines(100)
+			v:SetSpacing(2)
+		end
+	elseif event == "COMBAT_TEXT_UPDATE" then
 		local subev, arg2, arg3 = ...
 		info = tbl[subev]
 		if info then
@@ -204,6 +209,7 @@ local OnEvent = function(self, event, ...)
 end
 
 local addon = CreateFrame("Frame")
+addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 addon:RegisterEvent("COMBAT_TEXT_UPDATE")
 addon:RegisterEvent("PLAYER_REGEN_ENABLED")
 addon:RegisterEvent("PLAYER_REGEN_DISABLED")

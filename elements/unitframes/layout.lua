@@ -914,24 +914,24 @@ local CreateStyle = function(self, unit)
 		end
 
 		if class == 'PRIEST' and UnitLevel('player') >= 20 and cfg.elements.shadoworbs then
-			self.ShadowOrbs = CreateFrame('Frame', addon_name.."_ShadowOrbs", UIParent)
-			self.ShadowOrbs:SetPoint('TOPLEFT', self.Health, 10, 4)
-			self.ShadowOrbs:SetSize(130, 5)
-			self.ShadowOrbs:SetFrameLevel(self.Health:GetFrameLevel()+2)
-			self.ShadowOrbs.bg = CreateBG(self.ShadowOrbs)
+			self.ShadowOrbsBar = CreateFrame('Frame', addon_name.."_ShadowOrbs", UIParent)
+			self.ShadowOrbsBar:SetPoint('TOPLEFT', self.Health, 10, 4)
+			self.ShadowOrbsBar:SetSize(130, 5)
+			self.ShadowOrbsBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
+			self.ShadowOrbsBar.bg = CreateBG(self.ShadowOrbsBar)
 			for i = 1, 3 do
-				self.ShadowOrbs[i] = CreateFrame('StatusBar', nil, ShadowOrbs)
-				self.ShadowOrbs[i]:SetStatusBarTexture(texture)
-				self.ShadowOrbs[i]:SetSize(self.ShadowOrbs:GetWidth() / 3 - 0.85, self.ShadowOrbs:GetHeight())					
-				self.ShadowOrbs[i]:SetStatusBarColor(0.70, 0.32, 0.75)
-				self.ShadowOrbs[i].bg = self.ShadowOrbs:CreateTexture(nil, 'BACKGROUND')
-				self.ShadowOrbs[i].bg:SetTexture(texture)
-				self.ShadowOrbs[i].bg:SetVertexColor(0.2, 0.1, 0.2)
-				self.ShadowOrbs[i].bg:SetAllPoints(self.ShadowOrbs[i])
+				self.ShadowOrbsBar[i] = CreateFrame('StatusBar', nil, self.ShadowOrbsBar)
+				self.ShadowOrbsBar[i]:SetStatusBarTexture(texture)
+				self.ShadowOrbsBar[i]:SetSize(self.ShadowOrbsBar:GetWidth() / 3 - 0.85, self.ShadowOrbsBar:GetHeight())					
+				self.ShadowOrbsBar[i]:SetStatusBarColor(0.70, 0.32, 0.75)
+				self.ShadowOrbsBar[i].bg = self.ShadowOrbsBar:CreateTexture(nil, 'BACKGROUND')
+				self.ShadowOrbsBar[i].bg:SetTexture(texture)
+				self.ShadowOrbsBar[i].bg:SetVertexColor(0.2, 0.1, 0.2)
+				self.ShadowOrbsBar[i].bg:SetAllPoints(self.ShadowOrbsBar[i])
 				if i == 1 then
-					self.ShadowOrbs[i]:SetPoint('LEFT')
+					self.ShadowOrbsBar[i]:SetPoint('LEFT')
 				else
-					self.ShadowOrbs[i]:SetPoint('LEFT', self.ShadowOrbs[i-1], 'RIGHT', 1, 0)
+					self.ShadowOrbsBar[i]:SetPoint('LEFT', self.ShadowOrbsBar[i-1], 'RIGHT', 1, 0)
 				end
 			end
 		end
@@ -1194,7 +1194,7 @@ local CreateStyle = function(self, unit)
 		self.Portrait:SetPoint("BOTTOMRIGHT", -0.5, 0)
 		self.Portrait.PreUpdate = PreUpdatePortrait
 		-- Combat text
-		self.CombatFeedbackText = CreateFS(self.Portrait, 16, 'OUTLINE', stdfont)
+		self.CombatFeedbackText = CreateFS(self.Portrait, 16, 'OUTLINE', UIConfig.general.fonts.normalfont)
 		self.CombatFeedbackText:SetPoint('CENTER')
 		-- Auras on portraits
 		self.AuraTracker = CreateFrame('Frame', nil, self)
