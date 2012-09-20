@@ -35,7 +35,7 @@ local micromenu = {
 	{text = SPELLBOOK_ABILITIES_BUTTON, notCheckable = 1,
 	func = function() ToggleFrame(SpellBookFrame) end},
 	{text = TALENTS_BUTTON, notCheckable = 1,
-	func = function() if not PlayerTalentFrame then LoadAddOn("Blizzard_TalentUI") end PlayerTalentFrame_Toggle() end},
+	func = function() if not PlayerTalentFrame then LoadAddOn("Blizzard_TalentUI") end ShowUIPanel(PlayerTalentFrame) end},
 	{text = ACHIEVEMENT_BUTTON, notCheckable = 1,
 	func = function() ToggleAchievementFrame() end},
 	{text = QUESTLOG_BUTTON, notCheckable = 1,

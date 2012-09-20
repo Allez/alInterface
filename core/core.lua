@@ -30,6 +30,28 @@ SlashCmdList["GROUPDISBAND"] = function()
 end
 SLASH_GROUPDISBAND1 = "/rd"
 
+----------------------------------------------------------------------------------------
+
+--  Test and move Blizzard Extra Action Button
+
+----------------------------------------------------------------------------------------
+
+SlashCmdList.TEST_EXTRABUTTON = function()
+	if ExtraActionBarFrame:IsShown() then
+		ExtraActionBarFrame:Hide()
+	else
+		ExtraActionBarFrame:Show()
+		ExtraActionBarFrame:SetAlpha(1)
+		ExtraActionButton1:Show()
+		ExtraActionButton1:SetAlpha(1)
+		ExtraActionButton1.icon:SetTexture("Interface\\Icons\\INV_Pet_DiseasedSquirrel")
+		ExtraActionButton1.icon:Show()
+		ExtraActionButton1.icon:SetAlpha(1)
+	end
+end
+SLASH_TEST_EXTRABUTTON1 = "/teb"
+SLASH_TEST_EXTRABUTTON2 = "/εσθ"
+
 local SetupUI = function() 
 	SetCVar("chatStyle", "classic")
 	SetCVar("chatMouseScroll", 1)
