@@ -127,10 +127,12 @@ for _, obj in pairs({
 	MainMenuBar,
 	VehicleMenuBar,
 	PossessBarFrame,
+	OverrideActionBar,
 }) do
 	if obj:GetObjectType() == 'Texture' then
 		obj:SetTexture("")
 	else
+		obj:UnregisterAllEvents()
 		obj:SetScale(0.001)
 		obj:SetAlpha(0)
 	end

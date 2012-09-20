@@ -103,14 +103,16 @@ if UIMovableFrames then tinsert(UIMovableFrames, WatchFrameAnchor) end
 
 function frame_info(f)
    local str = ""
-   if(f) then
+   if not f then f = GetMouseFocus() end
+   if f then
       local name = f:GetName() 
-      if(name) then
+      if name then
          str = str..name
          local parent = f:GetParent()
-         if(parent) then str = str.." -> ".. frame_info(parent) end
+         if parent then str = str.." -> ".. frame_info(parent) end
       else str = "no name" end   
    end
+   print(str)
    return str
 end
 
