@@ -196,6 +196,10 @@ local config = {
 			order = 9,
 			value = true,
 		},
+		harmonyorbs = {
+			order = 10,
+			value = true,
+		},
 		castbar = {
 			order = 10,
 			value = true,
@@ -936,6 +940,29 @@ local CreateStyle = function(self, unit)
 			end
 		end
 
+		if class == 'MONK' and cfg.elements.harmonyorbs then
+			self.HarmonyBar = CreateFrame('Frame', addon_name.."_HolyPower", self)
+			self.HarmonyBar:SetPoint('TOPLEFT', self.Health, 10, 4)
+			self.HarmonyBar:SetSize(130, 5)
+			self.HarmonyBar:SetFrameLevel(self.Health:GetFrameLevel()+2)
+			self.HarmonyBar.bg = CreateBG(self.HarmonyBar)
+			for i = 1, 5 do
+				self.HarmonyBar[i] = CreateFrame('StatusBar', nil, self.HarmonyBar)
+				self.HarmonyBar[i]:SetStatusBarTexture(texture)
+				self.HarmonyBar[i]:SetSize(self.HarmonyBar:GetWidth() / 5 - 0.85, self.HarmonyBar:GetHeight())					
+				self.HarmonyBar[i]:SetStatusBarColor(0.33, 0.63, 0.33)
+				self.HarmonyBar[i].bg = self.HarmonyBar:CreateTexture(nil, 'BACKGROUND')
+				self.HarmonyBar[i].bg:SetTexture(texture)
+				self.HarmonyBar[i].bg:SetVertexColor(0.1, 0.2, 0.1)
+				self.HarmonyBar[i].bg:SetAllPoints(self.HarmonyBar[i])
+				if i == 1 then
+					self.HarmonyBar[i]:SetPoint('LEFT')
+				else
+					self.HarmonyBar[i]:SetPoint('LEFT', self.HarmonyBar[i-1], 'RIGHT', 1, 0)
+				end
+			end
+		end
+		
 		if class == 'PALADIN' and cfg.elements.holypower then
 			self.HolyPower = CreateFrame('Frame', addon_name.."_HolyPower", self)
 			self.HolyPower:SetPoint('TOPLEFT', self.Health, 10, 4)

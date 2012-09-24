@@ -13,7 +13,7 @@ SLASH_CLFIX1 = "/clfix"
 SlashCmdList["GROUPDISBAND"] = function()
 	local pName = UnitName("player")
 	if UnitInRaid("player") then
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
 			if online and name ~= pName then
 				UninviteUnit(name)
@@ -31,9 +31,7 @@ end
 SLASH_GROUPDISBAND1 = "/rd"
 
 ----------------------------------------------------------------------------------------
-
 --  Test and move Blizzard Extra Action Button
-
 ----------------------------------------------------------------------------------------
 
 SlashCmdList.TEST_EXTRABUTTON = function()
