@@ -40,7 +40,7 @@ end
 local CreateTimer = function(self)
 	local text = self:CreateFontString(nil, 'OVERLAY')
 	text:SetPoint('CENTER', 0, 0)
-	text:SetFont(GameFontNormal:GetFont(), self:GetParent():GetWidth()*0.56, 'OUTLINE')
+	text:SetFont(GameFontNormal:GetFont(), self:GetParent():GetWidth()*0.6, 'OUTLINE')
 	text:SetTextColor(1, 1, 1)
 	self.text = text
 	return text

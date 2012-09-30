@@ -92,7 +92,7 @@ frame:SetScript("OnEvent", function(self, event)
 	for i = 1, 12 do
 		local button = GetButton(i)
 		button:SetAttribute("showgrid", 1)
-		button:SetParent(UIParent)
+		button:SetParent(_G["uiActionBar1"])
 		ActionButton_ShowGrid(button)
 	end
 end)

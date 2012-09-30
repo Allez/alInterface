@@ -12,11 +12,11 @@ local SetFont = function(obj, font, size, style, r, g, b, sr, sg, sb, sox, soy)
 end
 
 local UIFonts = CreateFrame("Frame", nil, UIParent)
-UIFonts:RegisterEvent("PLAYER_ENTERING_WORLD")
-UIFonts:SetScript("OnEvent", function(self, event)
-	--if addon ~= addon_name or addon == "tekticles" then return end
+UIFonts:RegisterEvent("ADDON_LOADED")
+UIFonts:SetScript("OnEvent", function(self, event, addon)
+	if addon ~= addon_name or addon == "tekticles" then return end
 
-	local NORMAL = UIConfig.general.fonts.normalfont
+	local NORMAL = UI_NORMAL_FONT
 
 	UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
 	CHAT_FONT_HEIGHTS = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20}

@@ -138,6 +138,14 @@ for _, obj in pairs({
 	end
 end
 
+--- Frames to hide while going into Pet Battle UI
+FRAMELOCK_STATES.PETBATTLES["MultiBarLeft"] = "hidden"
+FRAMELOCK_STATES.PETBATTLES["MultiBarRight"] = "hidden"
+FRAMELOCK_STATES.PETBATTLES["MultiBarBottomLeft"] = "hidden"
+FRAMELOCK_STATES.PETBATTLES["MultiBarBottomRight"] = "hidden"
+FRAMELOCK_STATES.PETBATTLES["uiActionBar1"] = "hidden"
+FRAMELOCK_STATES.PETBATTLES["PetActionBarFrame"] = "hidden"
+
 SlashCmdList["alBars"] = function(msg)
 	if not move then
 		for _, bar in pairs(bars) do

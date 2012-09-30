@@ -201,7 +201,7 @@ local config = {
 			value = true,
 		},
 		castbar = {
-			order = 10,
+			order = 11,
 			value = true,
 		},
 	},
@@ -256,8 +256,9 @@ local colors = setmetatable({
 local channelingTicks = {
 	-- warlock
 	[GetSpellInfo(1120)] = 6, -- drain soul
-	[GetSpellInfo(689)] = 3, -- drain life
+	[GetSpellInfo(689)] = 5, -- drain life
 	[GetSpellInfo(5740)] = 4, -- rain of fire
+	[GetSpellInfo(103103)] = 4, -- Malefic Grasp
 	-- druid
 	[GetSpellInfo(740)] = 4, -- Tranquility
 	[GetSpellInfo(16914)] = 10, -- Hurricane
@@ -969,10 +970,10 @@ local CreateStyle = function(self, unit)
 			self.HolyPower:SetSize(130, 5)
 			self.HolyPower:SetFrameLevel(self.Health:GetFrameLevel()+2)
 			self.HolyPower.bg = CreateBG(self.HolyPower)
-			for i = 1, 3 do
+			for i = 1, 5 do
 				self.HolyPower[i] = CreateFrame('StatusBar', nil, self.HolyPower)
 				self.HolyPower[i]:SetStatusBarTexture(texture)
-				self.HolyPower[i]:SetSize(self.HolyPower:GetWidth() / 3 - 0.85, self.HolyPower:GetHeight())					
+				self.HolyPower[i]:SetSize(self.HolyPower:GetWidth() / 5 - 0.85, self.HolyPower:GetHeight())					
 				self.HolyPower[i]:SetStatusBarColor(0.95, 0.90, 0.60)
 				self.HolyPower[i].bg = self.HolyPower:CreateTexture(nil, 'BACKGROUND')
 				self.HolyPower[i].bg:SetTexture(texture)
@@ -988,7 +989,7 @@ local CreateStyle = function(self, unit)
 	end
 
 	-- Alternative power bar
-	if unit == 'player' or unit == 'boss' then
+	if unit == 'boss' then
 		self.AltPowerBar = CreateFrame("StatusBar", nil, self.Health)
 		self.AltPowerBar:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 		self.AltPowerBar:SetHeight(4)
@@ -998,6 +999,17 @@ local CreateStyle = function(self, unit)
 		self.AltPowerBar:SetPoint("LEFT")
 		self.AltPowerBar:SetPoint("RIGHT")
 		self.AltPowerBar:SetPoint("TOP", self.Health, "TOP")
+	end
+
+	if unit == 'player' then
+		self.AltPowerBar = CreateFrame("StatusBar", unit.."AltPowerBar", self)
+		self.AltPowerBar:SetStatusBarTexture(texture)
+		self.AltPowerBar:GetStatusBarTexture():SetHorizTile(false)
+		self.AltPowerBar:SetStatusBarColor(0.8, 0.2, 0.2)
+		self.AltPowerBar:SetSize(120, 10)
+		self.AltPowerBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 335)
+		CreateBG(self.AltPowerBar)
+		tinsert(UIMovableFrames, self.AltPowerBar)
 	end
 
 	-- Combo points
@@ -1423,11 +1435,11 @@ oUF:Factory(function(self)
 	for i = 1, MAX_BOSS_FRAMES do
 		boss[i] = self:Spawn('boss'..i, addon_name..'_Boss'..i)
 		if i == 1 then
-			boss[i]:SetPoint('RIGHT', UIParent, -12, 215)
+			boss[i]:SetPoint('BOTTOMRIGHT', UIParent, 'RIGHT', -150, -70)
 		else
-			boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 14)
+			boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 26)
 		end
-		boss[i]:SetSize(150, 23)
+		boss[i]:SetSize(150, 25)
 		tinsert(UIMovableFrames, boss[i])
 	end
 end)

@@ -2,7 +2,7 @@
 ## Author: Allez
 ## Title: |cff777777al|rInterface
 ## Notes: Interface setup
-## Version: 5.3
+## Version: 5.3.3
 ## RequiredDeps: Blizzard_CombatText
 ## OptionalDeps: DBM-Core, Aurora
 ## SavedVariables: nothing
