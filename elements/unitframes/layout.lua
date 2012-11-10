@@ -776,7 +776,7 @@ local CreateStyle = function(self, unit)
 		name:SetPoint('LEFT', 3, 1)
 		name:SetPoint('RIGHT', -60, 1)
 		name:SetJustifyH'LEFT'
-		self:Tag(name, (unit == 'target' and '[allez:level][rare] ' or '') .. (cfg.colors.namebyclass and '[allez:name]' or '[name]'))
+		self:Tag(name, (unit == 'target' and '[allez:level][rare] ' or '') .. (cfg.colors.namebyclass and '[allez:cname]' or '[allez:name]'))
 	end
 
 	if unit == 'raid' or unit == 'tank' then
@@ -1414,6 +1414,18 @@ oUF:Factory(function(self)
 		tinsert(UIMovableFrames, raidAnchor)
 	end
 
+	local boss = {}
+	for i = 1, MAX_BOSS_FRAMES do
+		boss[i] = self:Spawn('boss'..i, addon_name..'_Boss'..i)
+		if i == 1 then
+			boss[i]:SetPoint('BOTTOMRIGHT', UIParent, 'RIGHT', -150, -70)
+		else
+			boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 26)
+		end
+		boss[i]:SetSize(150, 25)
+		tinsert(UIMovableFrames, boss[i])
+	end
+
 	local arena = {}
 	local arenatarget = {}
 	for i = 1, 5 do
@@ -1431,17 +1443,70 @@ oUF:Factory(function(self)
 		tinsert(UIMovableFrames, arenatarget[i])
 	end
 
-	local boss = {}
-	for i = 1, MAX_BOSS_FRAMES do
-		boss[i] = self:Spawn('boss'..i, addon_name..'_Boss'..i)
-		if i == 1 then
-			boss[i]:SetPoint('BOTTOMRIGHT', UIParent, 'RIGHT', -150, -70)
-		else
-			boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 26)
-		end
-		boss[i]:SetSize(150, 25)
-		tinsert(UIMovableFrames, boss[i])
+	local arenaprep = {}
+	for i = 1, 5 do
+		arenaprep[i] = CreateFrame('Frame', addon_name..'_ArenaPrep'..i, UIParent)
+		arenaprep[i]:SetAllPoints(_G[addon_name..'_Arena'..i])
+		arenaprep[i]:SetFrameStrata("BACKGROUND")
+		arenaprep[i].Health = CreateFrame("StatusBar", nil, arenaprep[i])
+		arenaprep[i].Health:SetAllPoints()
+		arenaprep[i].Health:SetStatusBarTexture(texture)
+		arenaprep[i].Spec = CreateFrame('Frame', nil, arenaprep[i])
+		arenaprep[i].Spec:SetSize(27, 27)
+		arenaprep[i].Spec:SetPoint('TOPRIGHT', arenaprep[i], 'TOPLEFT', -5, 0)
+		arenaprep[i].Spec.Texture = arenaprep[i].Spec:CreateTexture(nil, 'OVERLAY')
+		arenaprep[i].Spec.Texture:SetAllPoints()
+		CreateBG(arenaprep[i].Spec)
+		CreateBG(arenaprep[i])
+		arenaprep[i]:Hide()
 	end
+
+	local apupdate = CreateFrame("Frame")
+	apupdate:RegisterEvent("PLAYER_ENTERING_WORLD")
+	apupdate:RegisterEvent("ARENA_OPPONENT_UPDATE")
+	apupdate:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+	apupdate:SetScript("OnEvent", function(self, event)
+		if event == "ARENA_OPPONENT_UPDATE" then
+			for i = 1, 5 do
+				arenaprep[i]:Hide()
+			end
+		else
+			local numOpps = GetNumArenaOpponentSpecs()
+
+			if numOpps > 0 then
+				for i = 1, 5 do
+					local f = arenaprep[i]
+
+					if i <= numOpps then
+						local s = GetArenaOpponentSpec(i)
+						local icon, spec, class = "Interface\\Icons\\Spell_Shadow_SacrificialShield", "UNKNOWN", "UNKNOWN"
+
+						if s and s > 0 then
+							_, spec, _, icon, _, _, class = GetSpecializationInfoByID(s)
+						end
+
+						if class and icon then
+							local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
+							if cfg.colors.healthbyclass and color then
+								f.Health:SetStatusBarColor(color.r, color.g, color.b)
+							else
+								f.Health:SetStatusBarColor(unpack(cfg.colors.health))
+							end
+							f.Spec.Texture:SetTexture(icon)
+							f.Spec.Texture:SetTexCoord(0.07,0.93,0.07,0.93)
+							f:Show()
+						end
+					else
+						f:Hide()
+					end
+				end
+			else
+				for i = 1, 5 do
+					arenaprep[i]:Hide()
+				end
+			end
+		end
+	end)
 end)
 
 SlashCmdList["DPS"] = function()

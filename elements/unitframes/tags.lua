@@ -83,9 +83,18 @@ oUF.Tags.Methods['raidnameclass'] = function(unit)
 	return ('%s%s|r'):format(hex(getClassColor(unit) or {1, 1, 1}), unitname or '')
 end
 
+oUF.Tags.Events['allez:cname'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
+oUF.Tags.Methods['allez:cname'] = function(unit)
+	return ('%s%s|r'):format(hex(getClassColor(unit) or {1, 1, 1}), UnitName(unit) or '')
+end
+
 oUF.Tags.Events['allez:name'] = 'UNIT_NAME_UPDATE UNIT_REACTION UNIT_FACTION UNIT_HEALTH'
 oUF.Tags.Methods['allez:name'] = function(unit)
-	return ('%s%s|r'):format(hex(getClassColor(unit) or {1, 1, 1}), UnitName(unit) or '')
+	local tapped = false
+	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+		tapped = true
+	end
+	return ('%s%s|r'):format(hex(tapped and {.3, .3, .3} or {1, 1, 1}), UnitName(unit) or '')
 end
 
 oUF.Tags.Events['allez:power'] = "UNIT_POWER UNIT_MAXPOWER"
