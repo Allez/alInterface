@@ -87,7 +87,7 @@ if GetLocale() == "ruRU" then
 		showparty = "Показывать группу 5 чел",
 		shadow = "Тень",
 		showicon = "Показывать иконку",
-		tankframes = "Tank frames",
+		tankframes = "Танки",
 		threat = "Индикатор угрозы",
 		barheight = "Высота полосы",
 		visiblebars = "Количество видимых полос",
@@ -104,6 +104,7 @@ if GetLocale() == "ruRU" then
 		powerbyclass = "Энергия цветом класса",
 		namebyclass = "Имя цветом класса",
 		search = "Поиск",
+		spellalert = "Предупреждения",
 	}
 elseif GetLocale() == "zhCN" then
 	L = {
@@ -211,6 +212,7 @@ elseif GetLocale() == "zhCN" then
 		powerbyclass = "法力条按职业染色",
 		namebyclass = "名字按职业染色",
 		search = "搜索",
+		spellalert = "Spell alerts",
 	}
 elseif GetLocale() == "zhTW" then
 	L = {
@@ -318,6 +320,7 @@ elseif GetLocale() == "zhTW" then
 		powerbyclass = "法力條按照職業染色",
 		namebyclass = "名字按照職業染色",
 		search = "搜索",
+		spellalert = "Spell alerts",
 	}
 else
 	L = {
@@ -425,5 +428,6 @@ else
 		powerbyclass = "Power bar by class",
 		namebyclass = "Name by class",
 		search = "Search",
+		spellalert = "Spell alerts",
 	}
 end

@@ -17,14 +17,17 @@ local spells = {
 	[8122] = 30,	-- Psychic Scream
 	[47476] = 120,	-- Strangulate
 	[47528] = 10,	-- Mind Freeze
-	[29166] = 180,	-- Innervate
-	[49039] = 120,	-- Lichborne
-	[54428] = 120,	-- Divine Plea
-	[1022] = 300,	-- Hand of Protection
-	[16190] = 180,	-- Mana Tide Totem
+	[34490] = 20,	-- Silencing Shot
 	[51514] = 45,	-- Hex
 	[15487] = 45,	-- Silence
 	[2094] = 180,	-- Blind
+	[57994] = 12,	-- Wind Shear
+	[78675] = 60,	-- Solar Bream
+	[115781] = 24,	-- Optical Blast
+	[102060] = 40,	-- Disrupting Shout
+	[116705] = 15,	-- Spear Hand Strike
+	[80965] = 15,	-- Skull Bash
+	[96231] = 15,	-- Rebuke
 }
 
 local cfg = {}

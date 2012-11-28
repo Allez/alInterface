@@ -77,6 +77,8 @@ local UpdateFrame = function(self)
 
 	if self.hasClass then
 		self.healthBar:SetStatusBarColor(r, g, b)
+	elseif r + b + b > 2 then	-- Tapped
+		self.healthBar:SetStatusBarColor(0.6, 0.6, 0.6)
 	elseif g + b == 0 then	-- Hostile
 		self.healthBar:SetStatusBarColor(0.89, 0.21, 0.21)
 	elseif r + b == 0 then	-- Friendly npc
@@ -142,10 +144,11 @@ local OnHide = function(self)
 	self.highlight:Hide()
 end
 
-local SetFrame = function(frame)
+local SetFrame = function(frame, name)
 	local healthBar, castBar = frame:GetChildren()
 	local _, castbarOverlay, shieldedRegion, spellIconRegion = castBar:GetRegions()
-	local glowRegion, overlayRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
+	local glowRegion, overlayRegion, highlightRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
+	local nameTextRegion = name:GetRegions()
 
 	local offset = UIParent:GetEffectiveScale()
 	
@@ -250,18 +253,14 @@ local SetFrame = function(frame)
 	frame:SetScript("OnShow", UpdateFrame)
 	frame:SetScript("OnHide", OnHide)
 	UpdateFrame(frame)
-
-	frame.done = true
 end
 
 local CheckFrames = function(num, ...)
 	for i = 1, num do
 		local frame = select(i, ...)
-		if not frame:GetName() or frame:GetName():find("NamePlate%d") then
-			overlayRegion = select(2, frame:GetRegions())
-			if not frame.done and overlayRegion and overlayRegion:GetObjectType() == "Texture" and overlayRegion:GetTexture() == overlayTexture then
-				SetFrame(frame)
-			end
+		if frame:GetName() and frame:GetName():find("NamePlate%d") and not frame.done then
+			SetFrame(frame:GetChildren())
+			frame.done = true
 		end
 	end
 end
@@ -270,7 +269,7 @@ local numKids = 0
 local timer = 0
 local OnUpdate = function(self, elapsed)
 	timer = timer + elapsed
-	if timer > 0.1 then
+	if timer > 0.2 then
 		local numChildren = WorldFrame:GetNumChildren()
 		if numChildren ~= numKids then
 			CheckFrames(numChildren, WorldFrame:GetChildren())

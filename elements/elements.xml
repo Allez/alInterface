@@ -21,4 +21,5 @@
 	<Script file='raidcd.lua' />
 	<Script file='enemycd.lua' />
 	<Script file='cc.lua' />
+	<Script file='spellalert.lua' />
 </Ui>

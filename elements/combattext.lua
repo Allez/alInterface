@@ -37,7 +37,7 @@ for i = 1, 4 do
 	elseif i == 4 then
 		f:SetJustifyH("RIGHT")
 		f:SetPoint("CENTER", UIParent, "CENTER", 235, 120)
-		f:SetSize(84, 140)
+		f:SetSize(140, 140)
 	end
 
 	frames[i] = f

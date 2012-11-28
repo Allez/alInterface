@@ -254,22 +254,30 @@ local colors = setmetatable({
 }, {__index = oUF.colors})
 
 local channelingTicks = {
-	-- warlock
-	[GetSpellInfo(1120)] = 6, -- drain soul
-	[GetSpellInfo(689)] = 5, -- drain life
-	[GetSpellInfo(5740)] = 4, -- rain of fire
-	[GetSpellInfo(103103)] = 4, -- Malefic Grasp
-	-- druid
-	[GetSpellInfo(740)] = 4, -- Tranquility
-	[GetSpellInfo(16914)] = 10, -- Hurricane
-	-- priest
-	[GetSpellInfo(15407)] = 3, -- mind flay
-	[GetSpellInfo(48045)] = 5, -- mind sear
-	[GetSpellInfo(47540)] = 2, -- penance
-	-- mage
-	[GetSpellInfo(5143)] = 5, -- arcane missiles
-	[GetSpellInfo(10)] = 5, -- blizzard
-	[GetSpellInfo(12051)] = 4, -- evocation
+	-- Druid
+	[GetSpellInfo(44203)] = 4,	-- Tranquility
+	[GetSpellInfo(16914)] = 10,	-- Hurricane
+	[GetSpellInfo(106996)] = 10,-- Astral Storm
+	-- Mage
+	[GetSpellInfo(5143)] = 5,	-- Arcane Missiles
+	[GetSpellInfo(10)] = 8,		-- Blizzard
+	[GetSpellInfo(12051)] = 4,	-- Evocation
+	-- Monk
+	[GetSpellInfo(115175)] = 9,	-- Soothing Mist
+	-- Priest
+	[GetSpellInfo(15407)] = 3,	-- Mind Flay
+	[GetSpellInfo(48045)] = 5,	-- Mind Sear
+	[GetSpellInfo(47540)] = 2,	-- Penance
+	[GetSpellInfo(64901)] = 4,	-- Hymn of Hope
+	[GetSpellInfo(64843)] = 4,	-- Divine Hymn
+	-- Warlock
+	[GetSpellInfo(689)] = 6,	-- Drain Life
+	[GetSpellInfo(108371)] = 6, -- Harvest Life
+	[GetSpellInfo(1120)] = 6,	-- Drain Soul
+	[GetSpellInfo(755)] = 6,	-- Health Funnel
+	[GetSpellInfo(1949)] = 15,	-- Hellfire
+	[GetSpellInfo(5740)] = 4,	-- Rain of Fire
+	[GetSpellInfo(103103)] = 3,	-- Malefic Grasp
 }
 
 local dummy = function() end
@@ -279,25 +287,40 @@ local indicators = {
 	['TL'] = {'TOPLEFT'},
 	['BR'] = {'BOTTOMRIGHT'},
 	['BL'] = {'BOTTOMLEFT'},
+	['T'] = {'TOP'},
+	['B'] = {'BOTTOM'},
+	['L'] = {'LEFT'},
+	['R'] = {'RIGHT'},
 }
 
 local auras = {
 	[GetSpellInfo(774)]   = {class = 'DRUID', point = 'TR', color = {0.8, 0.4, 0.8}},  -- Rejuvenation
 	[GetSpellInfo(94447)] = {class = 'DRUID', point = 'TL', color = {0.2, 0.8, 0.2}},  -- Lifebloom
 	[GetSpellInfo(48438)] = {class = 'DRUID', point = 'BR', color = {0.4, 0.8, 0.2}},  -- Wild Growth
-	[GetSpellInfo(8936)]  = {class = 'DRUID', point = 'BL', color = {0.8, 0.4, 0}},  -- Regrowth
-	[GetSpellInfo(20707)] = {class = 'WARLOCK', point = 'TL', color = {0.9, 0, 0.9}},
-	[GetSpellInfo(6788)]  = {class = 'PRIEST', point = 'TR', color = {1, 0, 0}},		-- Weakened Soul
-	[GetSpellInfo(33076)] = {class = 'PRIEST', point = 'BR', color = {0.2, 0.7, 0.2}},		-- Prayer of Mending
-	[GetSpellInfo(139)]   = {class = 'PRIEST', point = 'BL', color = {0.4, 0.7, 0.2}}, 		-- Renew
-	[GetSpellInfo(17)]    = {class = 'PRIEST', point = 'TL', color = {0.81, 0.85, 0.1}},	-- Power Word: Shield
-	[GetSpellInfo(53563)] = {class = 'PALADIN', point = 'TR', color = {0.7, 0.3, 0.7}},			-- Beacon of Light
-	[GetSpellInfo(1022)]  = {class = 'PALADIN', point = 'BR', color = {0.2, 0.2, 1}},    -- Hand of Protection
-	[GetSpellInfo(1044)]  = {class = 'PALADIN', point = 'BR', color = {0.89, 0.45, 0}},  -- Hand of Freedom
-	[GetSpellInfo(1038)]  = {class = 'PALADIN', point = 'BR', color = {0.93, 0.75, 0}},  -- Hand of Salvation
-	[GetSpellInfo(61295)] = {class = 'SHAMAN', point = 'TR', color = {0.7, 0.3, 0.7}},		-- Riptide 
-	[GetSpellInfo(974)]   = {class = 'SHAMAN', point = 'BL', color = {0.2, 0.7, 0.2}},		-- Earth Shield
-	[GetSpellInfo(51945)] = {class = 'SHAMAN', point = 'BR', color = {0.7, 0.4, 0}},		-- Earthliving
+	[GetSpellInfo(8936)]  = {class = 'DRUID', point = 'BL', color = {0.8, 0.4, 0}},    -- Regrowth
+	[GetSpellInfo(102342)]  = {class = 'DRUID', point = 'L', color = {0.45, 0.3, 0.2}},	-- Ironbark
+	[GetSpellInfo(102351)]  = {class = 'DRUID', point = 'R', color = {0.4, 0.9, 0.4}},	-- Cenarion Ward
+	[GetSpellInfo(20707)] = {class = 'WARLOCK', point = 'TL', color = {0.9, 0, 0.9}},  -- Soulstone
+	[GetSpellInfo(6788)]  = {class = 'PRIEST', point = 'TR', color = {1, 0, 0}},     -- Weakened Soul
+	[GetSpellInfo(33076)] = {class = 'PRIEST', point = 'BR', color = {0.2, 0.7, 0.2}},	 -- Prayer of Mending
+	[GetSpellInfo(139)]   = {class = 'PRIEST', point = 'BL', color = {0.4, 0.7, 0.2}}, 	 -- Renew
+	[GetSpellInfo(17)]    = {class = 'PRIEST', point = 'TL', color = {0.81, 0.85, 0.1}},  -- Power Word: Shield
+	[GetSpellInfo(33206)] = {class = 'PRIEST', point = 'L', color = {0.89, 0.1, 0.1}},   -- Pain Suppression
+	[GetSpellInfo(47788)] = {class = 'PRIEST', point = 'L', color = {0.86, 0.52, 0}},    -- Guardian Spirit
+	[GetSpellInfo(53563)]  = {class = 'PALADIN', point = 'TR', color = {0.7, 0.3, 0.7}},  -- Beacon of Light
+	[GetSpellInfo(20925)]  = {class = 'PALADIN', point = 'BL', color = {0.9, 0.9, 0.1}},  -- Sacred Shield
+	[GetSpellInfo(114163)] = {class = 'PALADIN', point = 'BL', color = {0.9, 0.6, 0.4}}, -- Eternal Flame
+	[GetSpellInfo(1022)]   = {class = 'PALADIN', point = 'BR', color = {0.2, 0.2, 1}},    -- Hand of Protection
+	[GetSpellInfo(1044)]   = {class = 'PALADIN', point = 'BR', color = {0.89, 0.45, 0}},  -- Hand of Freedom
+	[GetSpellInfo(1038)]   = {class = 'PALADIN', point = 'BR', color = {0.93, 0.75, 0}},  -- Hand of Salvation
+	[GetSpellInfo(114039)] = {class = 'PALADIN', point = 'BR', color = {0.4, 0.6, 0.8}}, -- Hand of Purity
+	[GetSpellInfo(61295)] = {class = 'SHAMAN', point = 'TR', color = {0.7, 0.3, 0.7}},	-- Riptide 
+	[GetSpellInfo(974)]   = {class = 'SHAMAN', point = 'BL', color = {0.2, 0.7, 0.2}},	-- Earth Shield
+	[GetSpellInfo(51945)] = {class = 'SHAMAN', point = 'BR', color = {0.7, 0.4, 0}},   -- Earthliving
+	[GetSpellInfo(119611)] = {class = 'MONK', point = 'TR', color = {0.2, 0.7, 0.7}},  -- Renewing Mist
+	[GetSpellInfo(132120)] = {class = 'MONK', point = 'BL', color = {0.4, 0.8, 0.2}},  -- Enveloping Mist
+	[GetSpellInfo(124081)] = {class = 'MONK', point = 'BR', color = {0.7, 0.4, 0}},	  -- Zen Sphere
+	[GetSpellInfo(116849)] = {class = 'MONK', point = 'TL', color = {0.81, 0.85, 0.1}},  -- Life Cocoon
 }
 
 local CreateShadow = function(parent)
@@ -1126,7 +1149,6 @@ local CreateStyle = function(self, unit)
 		self.RaidDebuffs.count = CreateFS(self.RaidDebuffs)
 		self.RaidDebuffs.count:SetPoint('BOTTOMRIGHT', self.RaidDebuffs, 'BOTTOMRIGHT', 2, 0)
  		self.RaidDebuffs.ShowDispelableDebuff = true
-		self.RaidDebuffs.FilterDispelableDebuff = true
 		self.RaidDebuffs.ShowBossDebuff = true
 		self.RaidDebuffs.MatchBySpellName = true
 		self.RaidDebuffs.Debuffs = ns.raid_debuffs
@@ -1246,6 +1268,20 @@ local CreateStyle = function(self, unit)
 		self.AuraTracker.text:SetPoint('CENTER', self.AuraTracker, 0, 0)
 		self.AuraTracker:SetScript('OnUpdate', UpdateAuraTrackerTime)
 	end
+	
+	-- Aura tracker on party
+	if unit == 'party' then
+		self.AuraTracker = CreateFrame('Frame', nil, self)
+		self.AuraTracker:SetSize(self:GetHeight(), self:GetHeight())
+		self.AuraTracker:SetPoint('LEFT', self, 'RIGHT', 0, 5)
+		self.AuraTracker:SetFrameStrata('HIGH')
+		self.AuraTracker.icon = self.AuraTracker:CreateTexture(nil, 'ARTWORK')
+		self.AuraTracker.icon:SetAllPoints(self.AuraTracker)
+		self.AuraTracker.icon:SetTexCoord(0.07,0.93,0.07,0.93)
+		self.AuraTracker.text = self.AuraTracker:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
+		self.AuraTracker.text:SetPoint('CENTER', self.AuraTracker, 0, 0)
+		self.AuraTracker:SetScript('OnUpdate', UpdateAuraTrackerTime)
+	end
 
 	-- Threat background
 	if self:GetAttribute('unitsuffix') ~= 'target' and unit ~= 'arena' and unit ~= 'boss' and cfg.general.aggro then
@@ -1256,7 +1292,7 @@ local CreateStyle = function(self, unit)
 	end
 
 	-- Player icons
-	if unit=='player' then
+	if unit == 'player' then
 		self.Resting = self.Health:CreateTexture(nil, 'OVERLAY')
 		self.Resting:SetHeight(18)
 		self.Resting:SetWidth(18)

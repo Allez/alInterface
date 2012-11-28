@@ -1,4 +1,6 @@
 
+if IsAddOnLoaded('OmniCC') or IsAddOnLoaded('tullaCC') then return end
+
 local format = string.format
 local floor = math.floor
 local min = math.min
@@ -39,8 +41,8 @@ end
 
 local CreateTimer = function(self)
 	local text = self:CreateFontString(nil, 'OVERLAY')
-	text:SetPoint('CENTER', 0, 0)
-	text:SetFont(GameFontNormal:GetFont(), self:GetParent():GetWidth()*0.6, 'OUTLINE')
+	text:SetPoint('CENTER', 1, 0)
+	text:SetFont(CC_FONT, 8, 'OUTLINEMONOCHROME') --GameFontNormal:GetFont(), self:GetParent():GetWidth()*0.6, 'OUTLINE')
 	text:SetTextColor(1, 1, 1)
 	self.text = text
 	return text

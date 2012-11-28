@@ -42,6 +42,8 @@ local cfg = {}
 UIConfigGUI.bags = config
 UIConfig.bags = cfg
 
+if IsAddOnLoaded('OneBag') or IsAddOnLoaded('Bagnon') then return end
+
 local _, ns = ...
 
 local addon = ns.cargBags:NewImplementation("alBags")

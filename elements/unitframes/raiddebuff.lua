@@ -457,6 +457,80 @@ for k, v in ipairs {
 	106385, -- Crush
 	105841, -- Degenerative bite
 	105445, -- Blistering heat
+
+-- Terrace of Endless Spring
+	-- Protectors of the Endless
+	117519,	-- Touch of Sha
+	117436,	-- Lightning Prison
+	-- Tsulong
+	122752,	-- Shadow Breath
+	123011,	-- Terrorize
+	122777,	-- Nightmares
+	123036,	-- Fright
+	-- Lei Shi
+	123121,	-- Spray
+	123705,	-- Scary Fog
+	-- Sha of Fear
+	119985,	-- Dread Spray
+	119086,	-- Penetrating Bolt
+	120669,	-- Naked and Afraid
+	120629,	-- Huddle in Terror
+-- Heart of Fear
+	-- Imperial Vizier Zor'lok
+	122761,	-- Exhale
+	122740,	-- Convert
+	-- Blade Lord Ta'yak
+	123180,	-- Wind Step
+	123474,	-- Overwhelming Assault
+	-- Garalon
+	122835,	-- Pheromones
+	123081,	-- Pungency
+	-- Wind Lord Mel'jarak
+	129078,	-- Amber Prison
+	122055,	-- Residue
+	122064,	-- Corrosive Resin
+	-- Amber-Shaper Un'sok
+	121949,	-- Parasitic Growth
+	122370,	-- Reshape Life
+	-- Grand Empress Shek'zeer
+	123707,	-- Eyes of the Empress
+	123713,	-- Servant of the Empress
+	123788,	-- Cry of Terror
+	124849,	-- Consuming Terror
+	124863,	-- Visions of Demise
+-- Mogu'shan Vaults
+	-- The Stone Guard
+	125206,	-- Rend Flesh
+	130395,	-- Jasper Chains
+	116281,	-- Cobalt Mine Blast
+	-- Feng the Accursed
+	131788,	-- Lightning Lash
+	116942,	-- Flaming Spear
+	131790,	-- Arcane Shock
+	131792,	-- Shadowburn
+	116374,	-- Lightning Charge
+	116784,	-- Wildfire Spark
+	116417,	-- Arcane Resonance
+	-- Gara'jal the Spiritbinder
+	122151,	-- Voodoo Doll
+	116161,	-- Crossed Over
+	117723,	-- Frail Soul
+	-- The Spirit Kings
+	117708,	-- Maddening Shout
+	118303,	-- Fixate
+	118048,	-- Pillaged
+	118135,	-- Pinned Down
+	118163,	-- Robbed Blind
+	-- Elegon
+	117878,	-- Overcharged
+	117949,	-- Closed Circuit
+	132222,	-- Destabilizing Energies
+	-- Will of the Emperor
+	116835,	-- Devastating Arc
+	116778,	-- Focused Defense
+	116525,	-- Focused Assault
+-- Sha of Anger
+	119626,	-- Aggressive Behavior
 } do
     local spell = GetSpellInfo(v)
     if spell then

@@ -221,8 +221,8 @@ end
 
 DEFAULT_CHATFRAME_ALPHA = 0
 
-CHAT_BATTLEGROUND_GET = "|Hchannel:Battleground|h[BG]|h %s:\32"
-CHAT_BATTLEGROUND_LEADER_GET = "|Hchannel:Battleground|h[BGL]|h %s:\32"
+CHAT_INSTANCE_CHAT_GET = "|Hchannel:Battleground|h[BG]|h %s:\32"
+CHAT_INSTANCE_CHAT_LEADER_GET = "|Hchannel:Battleground|h[BGL]|h %s:\32"
 CHAT_GUILD_GET = "|Hchannel:Guild|h[G]|h %s:\32"
 CHAT_PARTY_GET = "|Hchannel:Party|h[P]|h %s:\32"
 CHAT_PARTY_LEADER_GET = "|Hchannel:party|h[PL]|h %s:\32"
@@ -241,6 +241,6 @@ ChatTypeInfo["GUILD"].sticky = 1
 ChatTypeInfo["OFFICER"].sticky = 1
 ChatTypeInfo["RAID"].sticky = 1
 ChatTypeInfo["RAID_WARNING"].sticky = 1
-ChatTypeInfo["BATTLEGROUND"].sticky = 1
+ChatTypeInfo["INSTANCE_CHAT"].sticky = 1
 ChatTypeInfo["WHISPER"].sticky = 1
 ChatTypeInfo["CHANNEL"].sticky = 1
