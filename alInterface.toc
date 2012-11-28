@@ -4,7 +4,7 @@
 ## Notes: Interface setup
 ## Version: 5.4
 ## RequiredDeps: Blizzard_CombatText
-## OptionalDeps: DBM-Core, Bagnon, OneBag, Aurora
+## OptionalDeps: DBM-Core, Bagnon, OneBag, OmniCC, tullaCC, Aurora
 ## SavedVariables: nothing
 ## SavedVariablesPerCharacter: UISetup5, UISavedPositions, setupUI5
 
