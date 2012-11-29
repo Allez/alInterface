@@ -6,7 +6,7 @@ local oUF = ns.oUF
 local SPELL_POWER_CHI = SPELL_POWER_CHI
 
 local function Update(self, event, unit, powerType)
-	if(self.unit ~= unit or (powerType and powerType ~= 'LIGHT_FORCE')) then return end
+	if(self.unit ~= unit or (powerType and powerType ~= 'CHI') then return end
 
 	local hb = self.HarmonyBar
 
